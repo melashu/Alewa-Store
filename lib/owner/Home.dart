@@ -681,7 +681,7 @@ class _HomeState extends State<Home> {
       Map itemList = json.decode(ecodedString);
       // json.
       if (itemList.isEmpty) {}
-      // var today = EtDatetime.now();
+      var today1 = EtDatetime.now();
       var today = Dates.today;
       var salesPerson = 'Meshu';
       var itemID = itemList['itemID'];
