@@ -1,15 +1,14 @@
-// import 'dart:convert';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
-// import 'package:boticshop/Utility/Utility.dart';
-import 'package:abushakir/abushakir.dart';
-import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/MonthlyReport.dart';
+import 'package:boticshop/owner/RequiredItem.dart';
+import 'package:boticshop/owner/Transaction.dart';
+import 'package:boticshop/owner/WeeklyReport.dart';
 import 'package:boticshop/owner/categorie.dart';
 import 'package:boticshop/owner/expenes.dart';
 import 'package:boticshop/owner/item.dart';
@@ -17,12 +16,9 @@ import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/sync/Item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import "package:flutter/material.dart";
-// import 'package:flutter_beep/flutter_beep.dart';
 import 'package:hive/hive.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
-// import 'QR.dart';
 import 'itemList.dart';
 
 class Home extends StatefulWidget {
@@ -203,6 +199,25 @@ class _HomeState extends State<Home> {
                     },
                   ),
                 ),
+                  Card(
+                  child: ListTile(
+                    horizontalTitleGap: 10,
+                    autofocus: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                    title: Text("አስፈላጊ እቃዎች", style: Style.style1),
+                    subtitle: Text(""),
+                    leading: Icon(
+                      Icons.circle,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return RequiredItem();
+                      }));
+                    },
+                  ),
+                ),
               ],
             ),
             ExpansionTile(
@@ -290,18 +305,6 @@ class _HomeState extends State<Home> {
                   tilePadding: EdgeInsets.only(left: 20),
                   children: [
                     Card(
-                      elevation: 10,
-                      child: ListTile(
-                        horizontalTitleGap: 12,
-                        autofocus: true,
-                        title: Text("ዕለታዊ ሪፖርት", style: Style.style1),
-                        subtitle: Text("Daily Report"),
-                        leading: Icon(Icons.report, color: Colors.orangeAccent),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        onTap: () {},
-                      ),
-                    ),
-                    Card(
                       elevation: 5,
                       child: ListTile(
                         horizontalTitleGap: 12,
@@ -310,7 +313,12 @@ class _HomeState extends State<Home> {
                         leading:
                             Icon(Icons.view_week, color: Colors.orangeAccent),
                         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return WekklyTransaction();
+                          }));
+                        },
                       ),
                     ),
                     Card(
@@ -322,7 +330,12 @@ class _HomeState extends State<Home> {
                         leading:
                             Icon(Icons.next_week, color: Colors.orangeAccent),
                         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        onTap: () {},
+                      onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return MonthlyTransaction();
+                          }));
+                        },
                       ),
                     ),
                   ],
@@ -559,23 +572,9 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
-
               SizedBox(
                 height: 50,
               )
-              // Padding(
-              //   padding: const EdgeInsets.all(5.0),
-              //   child: SingleChildScrollView(
-              //     scrollDirection: Axis.vertical,
-              //     child: ValueListenableBuilder(
-              //         valueListenable: itemBox.listenable(),
-              //         builder: (context, box, _) {
-              //           var data = box.values.toList();
-
-              //           return dataTable(data);
-              //         }),
-              //   ),
-              // )
             ],
           ),
         ),
@@ -606,7 +605,7 @@ class _HomeState extends State<Home> {
           BottomNavigationBarItem(
             backgroundColor: Colors.deepPurpleAccent,
             icon: Icon(Icons.report),
-            label: 'የሽያጭ ሪፖርቶች',
+            label: 'ዕለታዊ የሽያጭ ሪፖርት',
             // title:
           ),
         ],
@@ -620,51 +619,15 @@ class _HomeState extends State<Home> {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ItemList();
             }));
+          } else if (index == 2) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return Transaction();
+            }));
           }
         },
       ),
     );
   }
-
-  // Widget dataTable(data) {
-  //   dataRow.clear();
-  //   for (var itemMap in data) {
-  //     if ((int.parse(itemMap['amount']) > 0) &&
-  //         (itemMap['deleteStatus'] == 'no')) {
-  //       dataRow.add(DataRow(cells: [
-  //         DataCell(TextButton(onPressed: () {}, child: Text("Sell"))),
-  //         DataCell(Text("${itemMap['catName']}")),
-  //         DataCell(Text("${itemMap['brandName']}")),
-  //         DataCell(Text("${itemMap['size']}")),
-  //         DataCell(Text("${itemMap['itemID']}")),
-  //         DataCell(Text("${itemMap['amount']}")),
-  //         DataCell(Text("${itemMap['buyPrices']}")),
-  //         DataCell(Text("${itemMap['soldPrices']}")),
-  //       ]));
-  //     }
-  //   }
-  //   return SingleChildScrollView(
-  //     scrollDirection: Axis.horizontal,
-  //     child: DataTable(
-  //       showBottomBorder: true,
-  //       columns: [
-  //         DataColumn(
-  //             label: Text(
-  //           "ማስተካከያ",
-  //           style: Style.style1,
-  //         )),
-  //         DataColumn(label: Text("የእቃው ምድብ", style: Style.style1)),
-  //         DataColumn(label: Text("የእቃው አይነት", style: Style.style1)),
-  //         DataColumn(label: Text("መጠን", style: Style.style1)),
-  //         DataColumn(label: Text("መለያ ቁጥር ", style: Style.style1)),
-  //         DataColumn(label: Text("ብዛት", style: Style.style1)),
-  //         DataColumn(label: Text("የተገዛበት ዋጋ ", style: Style.style1)),
-  //         DataColumn(label: Text("መሽጫ ዋጋ ", style: Style.style1)),
-  //       ],
-  //       rows: dataRow,
-  //     ),
-  //   );
-  // }
 
   @override
   void dispose() {
@@ -677,17 +640,18 @@ class _HomeState extends State<Home> {
     controller.scannedDataStream.listen((scanData) async {
       var random = Random();
       var tID = random.nextInt(1000000);
-      var ecodedString = json.encode(scanData.code);
-      Map itemList = json.decode(ecodedString);
-      // json.
+      // var ecodedString = json.encode(scanData.code);
+      // print(ecodedString);
+      Map itemList = json.decode(scanData.code);
+      // print(itemList);
       if (itemList.isEmpty) {}
-      var today1 = EtDatetime.now();
       var today = Dates.today;
       var salesPerson = 'Meshu';
       var itemID = itemList['itemID'];
       itemList['salesPerson'] = salesPerson;
       itemList['salesDate'] = today;
       Map item = itemBox.get(itemID);
+      var itemAmount = item['amount'].toString();
       if (item == null) {
         QRcontroler.pauseCamera();
         setState(() {
@@ -698,17 +662,16 @@ class _HomeState extends State<Home> {
               " ቁጥር ሲስትም ላይ ማግኝት አልተችለም፤ እባከወትን ማናጀሩን ያናግሩ፡፡";
           isFinished = true;
         });
-      } else if (item['amount'] > 0) {
+      } else if (int.parse(itemAmount) > 0) {
         QRcontroler.pauseCamera();
         await transactionBox.put("T$tID", itemList);
         if (transactionBox.containsKey("T$tID")) {
-          item['amount'] = (item['amount']) - 1;
-          item["amountSold"] = (item["amountSold"]) + 1;
+          item['amount'] = (int.parse(itemAmount)) - 1;
+          item["amountSold"] = (int.parse(itemAmount)) + 1;
           item['updateStatus'] = 'yes';
           itemBox.put(itemID, item);
-
           setState(() {
-            qrText = today;
+            qrText = itemList['brandName'];
             isSuccess = true;
           });
           // Timer(Duration(seconds: 10), () {

@@ -1,5 +1,3 @@
-// import 'dart:math';
-
 import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
@@ -9,8 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:screenshot/screenshot.dart';
 
 class EditItem extends StatefulWidget {
-  // const EditItem({ Key? key }) : super(key: key);
-  Map itemList;
+ final Map itemList;
   EditItem(this.itemList);
   @override
   _EditItemState createState() => _EditItemState(itemList);
@@ -219,7 +216,7 @@ class _EditItemState extends State<EditItem> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: TextFormField(
-                    controller: amountController..text = data['amount'],
+                    controller: amountController..text = data['amount'].toString(),
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.number,
                     onChanged: (val) {

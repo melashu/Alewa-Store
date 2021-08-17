@@ -19,6 +19,25 @@ class _ItemListState extends State<StoreLevel> {
       appBar: AppBar(
         title: Text(setting.get("orgName")),
       ),
+      persistentFooterButtons: [
+        // OutlinedButton(
+        //   child: Text("Generate as PDF"),
+        //   onPressed: () {
+        //     print("Pdf Generated");
+        //   },
+        // ),
+        OutlinedButton(
+          child: Text("በሱቁ ውስጥ ያለው አጠቃላይ ሀብት በ ብር"),
+          style: Style.outlinedButtonStyle,
+          onPressed: () async {
+            // var soldItemList = await Report.getDailyTransaction();
+            // Utility.showTotalSales(
+            //     data: soldItemList,
+            //     context: context,
+            //     date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት");
+          },
+        )
+      ],
       body: ListView(
         children: [
           Padding(
@@ -54,17 +73,14 @@ class _ItemListState extends State<StoreLevel> {
               future: getStoreLevel(),
               builder: (context, data) {
                 if (data.hasData) {
-                  // return ListView.builder(
-                  //     itemCount: data.data.length,
-                  //     itemBuilder: (context, index) {
-                  //       var dataList = data.data;
-                  //       return ListTile(
-                  //         title: Text(dataList[index]['brandName']),
-                  //       );
-                  //     });
-
-                  // if (data.hasData) {
-                  return dataTable(data.data, context);
+                  return ListView.builder(
+                      itemCount: data.data.length,
+                      itemBuilder: (context, index) {
+                        var dataList = data.data;
+                        return ListTile(
+                          title: Text(dataList[index]['brandName']),
+                        );
+                      });
                 } else
                   return Center(
                     child: Text('Just Wait'),

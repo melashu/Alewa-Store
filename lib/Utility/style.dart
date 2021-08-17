@@ -1,6 +1,14 @@
 import "package:flutter/material.dart";
 
 class Style {
+  static ButtonStyle get outlinedButtonStyle {
+    return OutlinedButton.styleFrom(
+        side: BorderSide(
+            color: Colors.deepPurpleAccent,
+            width: 1,
+            style: BorderStyle.solid));
+  }
+
   static TextStyle get style1 {
     return TextStyle(
       fontSize: 15,

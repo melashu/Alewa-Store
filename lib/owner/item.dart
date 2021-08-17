@@ -1,16 +1,10 @@
-// import 'dart:io';
 import 'dart:math';
-import 'dart:typed_data';
-
-// import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:abushakir/abushakir.dart';
 
 class Item extends StatefulWidget {
   @override
@@ -27,7 +21,7 @@ class _ItemState extends State<Item> {
   var screenshotController = ScreenshotController();
   var itemBox = Hive.box('item');
   var itemCata = Hive.box('categorie');
-
+  var brandFocus = FocusNode();
   String initVal = 'Select';
   var qrStatus = 'On';
   bool isQR = true;
@@ -120,6 +114,7 @@ class _ItemState extends State<Item> {
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: TextFormField(
                           controller: brandController,
+                          focusNode: brandFocus,
                           autofocus: true,
                           onChanged: (val) {
                             if (formKey.currentState.validate()) {}
@@ -254,16 +249,14 @@ class _ItemState extends State<Item> {
                       Utility.showSnakBar(
                           context, "እባክውትን የእቃውን ምድብ ይምርጦ", Colors.red);
                     } else {
-                      var date = EtDatetime.now().toString();
                       var random = Random();
-
                       var itemID = random.nextInt(1000000);
                       Map itemMap = {
                         'itemID': 'Item_$itemID',
                         'userName': 'meshu',
                         'brandName': brandController.text,
                         'catName': initVal,
-                        'createDate': date,
+                        'createDate': Dates.today,
                         'size': sizeController.text,
                         'buyPrices': buyPricesController.text,
                         'soldPrices': soldPricesController.text,
@@ -282,7 +275,6 @@ class _ItemState extends State<Item> {
                         'amount': '1',
                       };
 
-                  
                       if (isQR) {
                         var image = await screenshotController
                             .captureFromWidget(Utility.qrCodetoImage(qr));
@@ -290,13 +282,20 @@ class _ItemState extends State<Item> {
                             image, "Item_$itemID" + "_" + brandController.text);
                       }
 
-                          itemBox.put("Item_$itemID", itemMap);
+                      itemBox.put("Item_$itemID", itemMap);
                       var isKey = itemBox.containsKey("Item_$itemID");
 
                       if (isKey) {
                         // print('Size=${itemBox.length}');
                         Utility.showSnakBar(
-                            context, "በትክክል ተመዝግቦል1!!", Colors.greenAccent);
+                            context, "በትክክል ተመዝግቦል!!", Colors.greenAccent);
+                        // brandFocus.requestFocus();
+                        // brandController.text = '';
+                        // amountController.text = '';
+                        // buyPricesController.text = '';
+                        // soldPricesController.text = '';
+                        // sizeController.text = '';
+                        brandFocus.requestFocus();
                       } else {
                         Utility.showSnakBar(
                             context,
