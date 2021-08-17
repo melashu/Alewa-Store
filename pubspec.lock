@@ -160,6 +160,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_riverpod:
+    dependency: "direct main"
+    description:
+      name: flutter_riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -353,12 +360,12 @@ packages:
     source: hosted
     version: "4.0.0"
   riverpod:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.0+3"
+    version: "0.12.4"
   screenshot:
     dependency: "direct main"
     description:

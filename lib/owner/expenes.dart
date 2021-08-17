@@ -1,47 +1,48 @@
 import 'dart:math';
+import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class Expeness extends StatefulWidget {
-  @override
-  _AddcategorieState createState() => _AddcategorieState();
-}
+final isDailyProvider = StateProvider<bool>((ref) => false);
+final dailyCaseProvider = StateProvider<String>((ref) => "ለሰራተኛ");
+final isVisibleProvider = StateProvider<bool>((ref) => false);
+final itemIDProvider = StateProvider<String>((ref) => "ለሰራተኛ");
+final payementDateProvider = StateProvider<String>((ref) => "ቀን");
+final payementMonthProvider = StateProvider<String>((ref) => "ወር");
+final payementYearProvider = StateProvider<String>((ref) => "ዓ.ም");
+final otherIDProvider = StateProvider<String>((ref) => "");
 
-class _AddcategorieState extends State<Expeness> {
-  final formKey = GlobalKey<FormState>();
-  var payementController = TextEditingController();
-  var dayliPayementController = TextEditingController();
-  var cata4EditingController = TextEditingController();
-  var dateController = TextEditingController();
-  var otherController = TextEditingController();
-  var isVisible = false;
-  var isDaily = false;
-  var dataRow = <DataRow>[];
-  var initEmpID = "ለሥራተኛ";
-  var dailyCase = "ለሥራተኛ";
-  var otherID;
-  var payementDate = 'ቀን';
-  var payementMonth = 'ወር';
-  var payementYear = 'ዓ.ም';
-  var _monthFocus = FocusNode();
-  var _dayliFocus = FocusNode();
-  var dailyController = TextEditingController();
-  Box catBox = Hive.box("categorie");
-  @override
-  void initState() {
-    super.initState();
-  }
+var isVisible = false;
 
+class Expeness extends ConsumerWidget {
   @override
-  void dispose() {
-    super.dispose();
-  }
+  Widget build(BuildContext context, watch) {
+    final formKey = GlobalKey<FormState>();
+    var payementController = TextEditingController();
+    var dayliPayementController = TextEditingController();
+    var dailyController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
+    // var cata4EditingController = TextEditingController();
+    var expenessBox = Hive.lazyBox("expeness");
+
+    var otherController = TextEditingController();
+    var isVisible = watch(isVisibleProvider).state;
+    var isDaily = watch(isDailyProvider).state;
+    // var dataRow = <DataRow>[];
+    var initEmpID = watch(itemIDProvider).state;
+    var dailyCase = watch(dailyCaseProvider).state;
+    var payementDate = watch(payementDateProvider).state;
+    var payementMonth = watch(payementMonthProvider).state;
+    var payementYear = watch(payementYearProvider).state;
+    // var otherID = watch(otherIDProvider);
+
+    var _monthFocus = FocusNode();
+    var _dayliFocus = FocusNode();
+    // Box catBox = Hive.box("categorie");
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -90,13 +91,13 @@ class _AddcategorieState extends State<Expeness> {
                               width: 10,
                             ),
                             DropdownButton<String>(
-                              // focusColor: Colors.deepPurple,
+                              focusColor: Colors.deepPurple,
                               autofocus: true,
                               dropdownColor: Colors.deepPurple,
                               style: Style.dropDouwnStyle,
                               items: [
                                 DropdownMenuItem(
-                                  child: Text('ለሥራተኛ'),
+                                  child: Text('ለራተኛ'),
                                   value: 'ለሥራተኛ',
                                 ),
                                 DropdownMenuItem(
@@ -114,16 +115,14 @@ class _AddcategorieState extends State<Expeness> {
                               ],
                               value: dailyCase,
                               onChanged: (String value) {
-                                setState(() {
-                                  if (value == 'other') {
-                                    dailyCase = value;
-                                    isDaily = true;
-                                    _dayliFocus.requestFocus();
-                                  } else {
-                                    isDaily = false;
-                                    dailyCase = value;
-                                  }
-                                });
+                                if (value == 'other') {
+                                  watch(dailyCaseProvider).state = value;
+                                  watch(isDailyProvider).state = true;
+                                  _dayliFocus.requestFocus();
+                                } else {
+                                  watch(isDailyProvider).state = false;
+                                  watch(dailyCaseProvider).state = value;
+                                }
                               },
                             ),
                             Divider(),
@@ -145,22 +144,15 @@ class _AddcategorieState extends State<Expeness> {
                                 return null;
                               },
                               onChanged: (val) {
-                                setState(() {
-                                  otherID = val;
-                                });
+                                watch(otherIDProvider).state = val;
                               },
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    // borderRadius: BorderRadius.circular(0.5)
-                                    ),
+                                border: OutlineInputBorder(),
                                 labelText: "የወጭ አይነት",
                                 hintText: 'ለሥራተኛ',
-                                // helperText: 'Paid Salary ',
-                                // prefixIcon: Icon(Icons.people)
                               ),
                             ),
                           ),
-                          // )
                         ),
                         TextFormField(
                             controller: dayliPayementController,
@@ -195,6 +187,10 @@ class _AddcategorieState extends State<Expeness> {
                             if (formKey.currentState.validate()) {
                               var random = Random();
                               var randomID = random.nextInt(1000000);
+                              var expenessMap = {
+                              
+                              };
+
                             }
                           },
                           child: Text(
@@ -214,8 +210,6 @@ class _AddcategorieState extends State<Expeness> {
                     ),
                   ),
                 ),
-
-                //here
               ],
             ),
           ),
@@ -272,16 +266,14 @@ class _AddcategorieState extends State<Expeness> {
                         ],
                         value: initEmpID,
                         onChanged: (String value) {
-                          setState(() {
-                            if (value == 'other') {
-                              initEmpID = value;
-                              isVisible = true;
-                              _monthFocus.requestFocus();
-                            } else {
-                              isVisible = false;
-                              initEmpID = value;
-                            }
-                          });
+                          if (value == 'other') {
+                            watch(itemIDProvider).state = value;
+                            watch(isVisibleProvider).state = true;
+                            _monthFocus.requestFocus();
+                          } else {
+                            watch(isVisibleProvider).state = false;
+                            watch(itemIDProvider).state = value;
+                          }
                         },
                       ),
                       Divider(),
@@ -303,22 +295,15 @@ class _AddcategorieState extends State<Expeness> {
                           return null;
                         },
                         onChanged: (val) {
-                          setState(() {
-                            otherID = val;
-                          });
+                          watch(otherIDProvider).state = val;
                         },
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              // borderRadius: BorderRadius.circular(0.5)
-                              ),
+                          border: OutlineInputBorder(),
                           labelText: "የወጭ አይነት",
                           hintText: 'ለሥራተኛ',
-                          // helperText: 'Paid Salary ',
-                          // prefixIcon: Icon(Icons.people)
                         ),
                       ),
                     ),
-                    // )
                   ),
                   TextFormField(
                       controller: payementController,
@@ -358,9 +343,7 @@ class _AddcategorieState extends State<Expeness> {
                         value: payementDate,
                         dropdownColor: Colors.deepPurple,
                         onChanged: (val) {
-                          setState(() {
-                            payementDate = val;
-                          });
+                          watch(payementDateProvider).state = val;
                         },
                       ),
                       DropdownButton(
@@ -369,9 +352,7 @@ class _AddcategorieState extends State<Expeness> {
                         value: payementMonth,
                         dropdownColor: Colors.deepPurple,
                         onChanged: (val) {
-                          setState(() {
-                            payementMonth = val;
-                          });
+                          watch(payementMonthProvider).state = val;
                         },
                       ),
                       DropdownButton(
@@ -380,9 +361,7 @@ class _AddcategorieState extends State<Expeness> {
                         value: payementYear,
                         dropdownColor: Colors.deepPurple,
                         onChanged: (val) {
-                          setState(() {
-                            payementYear = val;
-                          });
+                          watch(payementYearProvider).state = val;
                         },
                       ),
                     ],
@@ -396,10 +375,7 @@ class _AddcategorieState extends State<Expeness> {
                           "catName": payementController.text,
                           "catID": 'I$randomID',
                           "isSync": 'false'
-                          // "deleteStatus": 'no'
                         };
-                        // catMap.toString();
-                        catBox.put("I$randomID", catMap);
                       }
                     },
                     child: Text(

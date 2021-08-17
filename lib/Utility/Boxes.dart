@@ -27,6 +27,11 @@ static Future<LazyBox> getTotalItem() async {
     return box;
 }
 
+static Future<LazyBox> getExpenesBox() async{
+  var box = await Hive.openLazyBox("expeness");
+    return box;
+}
+
   // static Future<List<Map>> getItemValue() async {
   //   var values = <Map>[];
   //   var box = await getItemBox();

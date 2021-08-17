@@ -1,5 +1,6 @@
 import 'package:boticshop/Utility/Boxes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'owner/Home.dart';
@@ -12,10 +13,11 @@ Future main() async {
   await Boxes.getSetting();
   await Boxes.getTransactionBox();
   await Boxes.getTotalItem();
+  await Boxes.getExpenesBox();
 
   // var result = await (Connectivity().checkConnectivity());
 
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
