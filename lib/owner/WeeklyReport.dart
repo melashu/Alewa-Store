@@ -40,17 +40,16 @@ class _WekklyTransaction extends State<WekklyTransaction> {
           style: Style.outlinedButtonStyle,
 
           onPressed: () {
-            print("Pdf Generated");
+            // print("Pdf Generated");
           },
         ),
         OutlinedButton(
           child: Text("View Total"),
           style: Style.outlinedButtonStyle,
-
           onPressed: () async {
             var soldItemList = await Report.getWeeklyTransaction();
             Utility.showTotalSales(data:soldItemList, context:context,date:
-                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} የሽያጭ ሪፖርት");
+                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",expenes: Report.getWeeklyExpenes());
           },
         )
       ],

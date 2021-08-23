@@ -288,7 +288,7 @@ class _ItemState extends State<Item> {
                       if (isKey) {
                         // print('Size=${itemBox.length}');
                         Utility.showSnakBar(
-                            context, "በትክክል ተመዝግቦል!!", Colors.greenAccent);
+                            context, "በትክክል ተመዝግቧል!", Colors.greenAccent);
                         // brandFocus.requestFocus();
                         // brandController.text = '';
                         // amountController.text = '';

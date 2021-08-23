@@ -27,8 +27,8 @@ static Future<LazyBox> getTotalItem() async {
     return box;
 }
 
-static Future<LazyBox> getExpenesBox() async{
-  var box = await Hive.openLazyBox("expeness");
+static Future<Box> getExpenesBox() async{
+  var box = await Hive.openBox("expenes");
     return box;
 }
 

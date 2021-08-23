@@ -5,13 +5,14 @@ import 'dart:math';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/owner/MonthlyReport.dart';
+import 'package:boticshop/sales/MonthlyReport.dart';
 import 'package:boticshop/owner/RequiredItem.dart';
-import 'package:boticshop/owner/Transaction.dart';
-import 'package:boticshop/owner/WeeklyReport.dart';
+import 'package:boticshop/sales/Transaction.dart';
+import 'package:boticshop/sales/WeeklyReport.dart';
 import 'package:boticshop/owner/categorie.dart';
 import 'package:boticshop/owner/expenes.dart';
 import 'package:boticshop/owner/item.dart';
+import 'package:boticshop/owner/itemList.dart';
 import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/sync/Item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -19,7 +20,7 @@ import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'itemList.dart';
+// import 'itemList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -58,15 +59,14 @@ class _HomeState extends State<Home> {
     Connectivity().onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile &&
           Hive.box("setting").get("mobSync")) {
-        SyncItem().syncInsertItemList(context);
-        SyncItem().syncUpdateItem(context);
-        SyncItem().syncDeleteItem(context);
+        // SyncItem().syncInsertItemList(context);
+        // SyncItem().syncUpdateItem(context);
         SyncItem().syncSelect(context);
-        SyncItem.getTotalItem();
+        // SyncItem().syncDeleteItem(context);
       } else if (event == ConnectivityResult.wifi) {
-        SyncItem().syncInsertItemList(context);
-        SyncItem().syncUpdateItem(context);
-        SyncItem().syncDeleteItem(context);
+        // SyncItem().syncInsertItemList(context);
+        // SyncItem().syncUpdateItem(context);
+        // SyncItem().syncDeleteItem(context);
         SyncItem().syncSelect(context);
         SyncItem.getTotalItem();
       } else {
@@ -88,16 +88,6 @@ class _HomeState extends State<Home> {
         ),
         elevation: 10,
       ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 10,
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (contex) {
-            return Item();
-          }));
-        },
-        child: Icon(Icons.add_shopping_cart_outlined),
-      ),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       drawer: Drawer(
         child: ListView(
           children: [
@@ -108,61 +98,14 @@ class _HomeState extends State<Home> {
                         radius: 20,
                         backgroundColor: Colors.white,
                         child: Icon(Icons.people_outlined)),
-                    accountName: Text("Meshu"),
+                    accountName: Text("Gelaw"),
                     accountEmail: Text("working"))),
-            Card(
-              child: ListTile(
-                autofocus: true,
-                title: Text("Add Branch"),
-                subtitle: Text(""),
-                leading: Icon(Icons.shop_two_outlined, color: Colors.blue[400]),
-                onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                  //   return QRViewExample();
-                  // }));
-                },
-              ),
-            ),
             ExpansionTile(
               title: Text("ንብረት አስተዳደር", style: Style.style1),
               tilePadding: EdgeInsets.only(left: 20),
               leading: Icon(Icons.inventory, color: Colors.blue[400]),
               subtitle: Text("Inventory Management"),
               children: [
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("Add Categorie"),
-                    subtitle: Text(""),
-                    leading: Icon(Icons.category_outlined,
-                        color: Colors.deepPurpleAccent),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (contex) {
-                        return Addcategorie();
-                      }));
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("አዲስ እቃ መመዝገቢያ", style: Style.style1),
-                    subtitle: Text("Register New Item"),
-                    leading: Icon(Icons.add_box_outlined,
-                        color: Colors.deepPurpleAccent),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (contex) {
-                        return Item();
-                      }));
-                    },
-                  ),
-                ),
                 Card(
                   child: ListTile(
                     horizontalTitleGap: 10,
@@ -231,72 +174,6 @@ class _HomeState extends State<Home> {
               subtitle: Text("Finacial Management"),
               leading: Icon(Icons.file_copy_outlined, color: Colors.blue[400]),
               children: [
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 12,
-                    title: Text("የውጭ መመዝገቢያ ", style: Style.style1),
-                    subtitle: Text("Register Expeness"),
-                    leading: Icon(
-                      Icons.money_off,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Expeness();
-                      }));
-                    },
-                  ),
-                ),
-
-                // ExpansionTile(
-                //   title: Text("ትርፍ እና ኪሳራ", style: Style.style1),
-                //   subtitle: Text("Income Statement"),
-                //   leading: Icon(
-                //     Icons.album_rounded,
-                //     color: Colors.deepPurpleAccent,
-                //   ),
-                //   tilePadding: EdgeInsets.only(left: 20),
-                //   children: [
-                //     Card(
-                //       elevation: 10,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         autofocus: true,
-                //         title: Text("ዕለታዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Daily Report"),
-                //         leading: Icon(Icons.report, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //     Card(
-                //       elevation: 5,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         title: Text("ሳምንታዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Weekliy Report"),
-                //         leading:
-                //             Icon(Icons.view_week, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //     Card(
-                //       elevation: 10,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         title: Text("ወራሃዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Monthliy Report"),
-                //         leading:
-                //             Icon(Icons.next_week, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
                 ExpansionTile(
                   title: Text(
                     "የሽያጭ ሪፖርት",
@@ -345,46 +222,6 @@ class _HomeState extends State<Home> {
                     ),
                   ],
                 )
-              ],
-            ),
-            Card(
-              child: ListTile(
-                horizontalTitleGap: 10,
-                autofocus: true,
-                title: Text("የብድር አስተዳደር", style: Style.style1),
-                subtitle: Text("Debt Management"),
-                leading: Icon(Icons.control_point_duplicate_outlined,
-                    color: Colors.blue[400]),
-                onTap: () {},
-              ),
-            ),
-            ExpansionTile(
-              title: Text(
-                "የሰራተኞች አስተዳደር",
-                style: Style.style1,
-              ),
-              subtitle: Text("Employee Management"),
-              leading: Icon(
-                Icons.album_rounded,
-                color: Colors.deepPurpleAccent,
-              ),
-              tilePadding: EdgeInsets.only(left: 20),
-              children: [
-                Card(
-                  elevation: 5,
-                  child: ListTile(
-                    horizontalTitleGap: 12,
-                    title: Text("User Account ", style: Style.style1),
-                    leading: Icon(Icons.view_week, color: Colors.orangeAccent),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        // return WekklyTransaction();
-                      }));
-                    },
-                  ),
-                ),
               ],
             ),
             Card(
@@ -680,7 +517,7 @@ class _HomeState extends State<Home> {
       // print(itemList);
       if (itemList.isEmpty) {}
       var today = Dates.today;
-      var salesPerson = 'Meshu';
+      var salesPerson = 'Gelaw';
       var itemID = itemList['itemID'];
       itemList['salesPerson'] = salesPerson;
       itemList['salesDate'] = today;
@@ -703,6 +540,7 @@ class _HomeState extends State<Home> {
           item['amount'] = (int.parse(itemAmount)) - 1;
           item["amountSold"] = (int.parse(itemAmount)) + 1;
           item['updateStatus'] = 'yes';
+          // itemBox.co
           itemBox.put(itemID, item);
           setState(() {
             qrText = itemList['brandName'];

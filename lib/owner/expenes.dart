@@ -1,7 +1,9 @@
 import 'dart:math';
-import 'package:boticshop/Utility/Boxes.dart';
+import 'package:abushakir/abushakir.dart';
+import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/expenesslist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -22,12 +24,13 @@ class Expeness extends ConsumerWidget {
   @override
   Widget build(BuildContext context, watch) {
     final formKey = GlobalKey<FormState>();
-    var payementController = TextEditingController();
     var dayliPayementController = TextEditingController();
+    var monthlyPayementController = TextEditingController();
+
     var dailyController = TextEditingController();
 
     // var cata4EditingController = TextEditingController();
-    var expenessBox = Hive.lazyBox("expeness");
+    var expenessBox = Hive.box("expenes");
 
     var otherController = TextEditingController();
     var isVisible = watch(isVisibleProvider).state;
@@ -50,6 +53,16 @@ class Expeness extends ConsumerWidget {
           style: Style.style1,
         ),
       ),
+      persistentFooterButtons: [
+        OutlinedButton(
+            style: Style.outlinedButtonStyle,
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ExpenessList();
+              }));
+            },
+            child: Text('የወጭ ዝርዝሮች'))
+      ],
       body: ListView(
         padding: EdgeInsets.all(15),
         children: [
@@ -98,7 +111,7 @@ class Expeness extends ConsumerWidget {
                               items: [
                                 DropdownMenuItem(
                                   child: Text('ለራተኛ'),
-                                  value: 'ለሥራተኛ',
+                                  value: 'ለሰራተኛ',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('ለቤት ኪራይ'),
@@ -135,6 +148,7 @@ class Expeness extends ConsumerWidget {
                             child: TextFormField(
                               focusNode: _dayliFocus,
                               controller: dailyController,
+                              autofocus: true,
                               validator: (value) {
                                 if (value.isEmpty)
                                   return 'የወጭ አይነት ያስገቡ';
@@ -144,19 +158,19 @@ class Expeness extends ConsumerWidget {
                                 return null;
                               },
                               onChanged: (val) {
-                                watch(otherIDProvider).state = val;
+                                // watch(otherIDProvider).state = val;
                               },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 labelText: "የወጭ አይነት",
-                                hintText: 'ለሥራተኛ',
+                                hintText: 'ለሰራተኛ',
                               ),
                             ),
                           ),
                         ),
                         TextFormField(
                             controller: dayliPayementController,
-                            autofocus: true,
+                            // autofocus: true,
                             enableSuggestions: true,
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
@@ -184,13 +198,31 @@ class Expeness extends ConsumerWidget {
                         Divider(),
                         OutlinedButton(
                           onPressed: () async {
+                            // Hive.lazyBox("expeness").clear();
                             if (formKey.currentState.validate()) {
                               var random = Random();
-                              var randomID = random.nextInt(1000000);
+                              var eID = random.nextInt(1000000);
+                              String other = dailyController.text;
                               var expenessMap = {
-                              
+                                'eID': 'e-$eID',
+                                'dailyCase': isDaily ? other : dailyCase,
+                                'paidAmount': dayliPayementController.text,
+                                'date': Dates.today,
+                                'payementType': 'ዕለታዊ',
+                                'insertStatus': 'no',
+                                'updateStatus': 'no',
+                                'deleteStatus': 'no'
                               };
-
+                              await expenessBox.put('e-$eID', expenessMap);
+                              if (expenessBox.containsKey('e-$eID')) {
+                                Utility.showSnakBar(context, "በትክክል ተመዝግቦል!",
+                                    Colors.greenAccent);
+                              } else {
+                                Utility.showSnakBar(
+                                    context,
+                                    "አልተመዘገበም እባክወትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
+                                    Colors.redAccent);
+                              }
                             }
                           },
                           child: Text(
@@ -236,6 +268,41 @@ class Expeness extends ConsumerWidget {
                   ),
                   Row(
                     children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12.0),
+                        child: Text("ክፍያ የሚፈጸምበት"),
+                      ),
+                      DropdownButton(
+                        items: Dates.getDay(),
+                        style: Style.dropDouwnStyle,
+                        value: payementDate,
+                        dropdownColor: Colors.deepPurple,
+                        onChanged: (val) {
+                          watch(payementDateProvider).state = val;
+                        },
+                      ),
+                      DropdownButton(
+                        items: Dates.getMonth(),
+                        style: Style.dropDouwnStyle,
+                        value: payementMonth,
+                        dropdownColor: Colors.deepPurple,
+                        onChanged: (val) {
+                          watch(payementMonthProvider).state = val;
+                        },
+                      ),
+                      DropdownButton(
+                        items: Dates.getYear(),
+                        style: Style.dropDouwnStyle,
+                        value: payementYear,
+                        dropdownColor: Colors.deepPurple,
+                        onChanged: (val) {
+                          watch(payementYearProvider).state = val;
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
                       Text(
                         "የወጭ አይነት",
                         style: Style.style1,
@@ -248,8 +315,8 @@ class Expeness extends ConsumerWidget {
                         style: Style.dropDouwnStyle,
                         items: [
                           DropdownMenuItem(
-                            child: Text('ለሥራተኛ'),
-                            value: 'ለሥራተኛ',
+                            child: Text('ለሰራተኛ'),
+                            value: 'ለሰራተኛ',
                           ),
                           DropdownMenuItem(
                             child: Text('ለቤት ኪራይ'),
@@ -285,6 +352,7 @@ class Expeness extends ConsumerWidget {
                       padding: const EdgeInsets.all(10.0),
                       child: TextFormField(
                         controller: otherController,
+                        autofocus: true,
                         focusNode: _monthFocus,
                         validator: (value) {
                           if (value.isEmpty)
@@ -295,19 +363,18 @@ class Expeness extends ConsumerWidget {
                           return null;
                         },
                         onChanged: (val) {
-                          watch(otherIDProvider).state = val;
+                          // watch(otherIDProvider).state = val;
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: "የወጭ አይነት",
-                          hintText: 'ለሥራተኛ',
+                          hintText: 'ለሰራተኛ',
                         ),
                       ),
                     ),
                   ),
                   TextFormField(
-                      controller: payementController,
-                      autofocus: true,
+                      controller: monthlyPayementController,
                       enableSuggestions: true,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.words,
@@ -323,59 +390,51 @@ class Expeness extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15),
                       decoration: InputDecoration(
-                          labelText: " የክፍያ መጠን በብር",
-                          hintText: ' የክፍያ መጠን በብር',
+                          labelText: "የክፍያ መጠን በብር",
+                          hintText: 'የክፍያ መጠን በብር',
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
                           contentPadding: EdgeInsets.all(3),
                           errorStyle: TextStyle(color: Colors.red))),
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
-                        child: Text("ክፍያ የሚፈጽምበ"),
-                      ),
-                      DropdownButton(
-                        items: Dates.getDay(),
-                        style: Style.dropDouwnStyle,
-                        value: payementDate,
-                        dropdownColor: Colors.deepPurple,
-                        onChanged: (val) {
-                          watch(payementDateProvider).state = val;
-                        },
-                      ),
-                      DropdownButton(
-                        items: Dates.getMonth(),
-                        style: Style.dropDouwnStyle,
-                        value: payementMonth,
-                        dropdownColor: Colors.deepPurple,
-                        onChanged: (val) {
-                          watch(payementMonthProvider).state = val;
-                        },
-                      ),
-                      DropdownButton(
-                        items: Dates.getYear(),
-                        style: Style.dropDouwnStyle,
-                        value: payementYear,
-                        dropdownColor: Colors.deepPurple,
-                        onChanged: (val) {
-                          watch(payementYearProvider).state = val;
-                        },
-                      ),
-                    ],
-                  ),
                   OutlinedButton(
                     onPressed: () async {
-                      if (formKey.currentState.validate()) {
+                      if (payementDate != 'ቀን' &&
+                          payementMonth != 'ወር' &&
+                          payementYear != 'ዓ.ም') {
                         var random = Random();
-                        var randomID = random.nextInt(1000000);
-                        Map catMap = {
-                          "catName": payementController.text,
-                          "catID": 'I$randomID',
-                          "isSync": 'false'
+                        var eID = random.nextInt(1000000);
+                        String other = otherController.text;
+                        var expenessMap = {
+                          'eID': 'e-$eID',
+                          'dailyCase': isDaily ? other : dailyCase,
+                          'paidAmount': monthlyPayementController.text,
+                          'date': EtDatetime(
+                                  year: int.parse(payementYear),
+                                  month: int.parse(payementMonth),
+                                  day: int.parse(payementDate))
+                              .toString(),
+                          'payementType': 'ወርሃዊ',
+                          'insertStatus': 'no',
+                          'updateStatus': 'no',
+                          'deleteStatus': 'no'
                         };
+                        // print(dayliPayementController.text + '$other');
+
+                        await expenessBox.put('e-$eID', expenessMap);
+                        if (expenessBox.containsKey('e-$eID')) {
+                          Utility.showSnakBar(
+                              context, "በትክክል ተመዝግቧል!", Colors.greenAccent);
+                        } else {
+                          Utility.showSnakBar(
+                              context,
+                              "አልተመዘገበም እባክወትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
+                              Colors.redAccent);
+                        }
+                      } else {
+                        Utility.showSnakBar(context,
+                            "እባክወትን ትክክለኛውን የክፍያ ቀን ይምረጡ", Colors.redAccent);
                       }
                     },
                     child: Text(

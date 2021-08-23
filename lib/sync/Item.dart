@@ -110,4 +110,6 @@ class SyncItem {
     });
     // print("Length=${totalItemBox.length}");
   }
+
+  void syncSelect(BuildContext context) {}
 }

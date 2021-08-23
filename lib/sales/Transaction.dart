@@ -2,7 +2,7 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/owner/Home.dart';
+import 'package:boticshop/sales/Home.dart';
 import 'package:boticshop/owner/itemList.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -35,27 +35,27 @@ class _TransactionState extends State<Transaction> {
           style: Style.style1,
         ),
       ),
-      persistentFooterButtons: [
-        OutlinedButton(
-          child: Text("Generate as PDF"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () {
-            print("Pdf Generated");
-          },
-        ),
-        OutlinedButton(
-          child: Text("View Total"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () async {
+      // persistentFooterButtons: [
+      //   OutlinedButton(
+      //     child: Text("Generate as PDF"),
+      //     style: Style.outlinedButtonStyle,
+      //     onPressed: () {
+      //       print("Pdf Generated");
+      //     },
+      //   ),
+      //   OutlinedButton(
+      //     child: Text("View Total"),
+      //     style: Style.outlinedButtonStyle,
+      //     onPressed: () async {
             
-            var soldItemList = await Report.getDailyTransaction();
-            Utility.showTotalSales(
-                data: soldItemList,
-                context: context,
-                date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",expenes: Report.getDailyExpenes());
-          },
-        )
-      ],
+      //       var soldItemList = await Report.getDailyTransaction(userName: 'Gelaw');
+      //       Utility.showTotalSales(
+      //           data: soldItemList,
+      //           context: context,
+      //           date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",expenes: Report.getDailyExpenes());
+      //     },
+      //   )
+      // ],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepPurple,
         // selectedFontSize: 12,
@@ -119,11 +119,28 @@ class _TransactionState extends State<Transaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getDailyTransaction(),
+                  future: Report.getDailyTransaction(userName: 'Gelaw'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(child: Text("ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",style: Style.style1,));
+                        return  Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Center(
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  margin: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
+                                          color: Colors.deepPurpleAccent)),
+                                  child: Text(
+                                    "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም ፡፡ ",
+                                    style: Style.style1,
+                                    textAlign: TextAlign.center,
+                                  ))),
+                        );
+                        
+                        
                       }
                       return ListView.builder(
                           shrinkWrap: true,

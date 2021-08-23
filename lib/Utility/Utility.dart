@@ -1,17 +1,29 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:boticshop/Utility/Boxes.dart';
-import 'package:boticshop/Utility/date.dart';
+import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+// final monthlyFutureProvider = FutureProvider<double>((ref) {});
+
+final monthlyStateProvider = StateProvider<double>((ref) {
+  // var totalstate = ref.watch(monthlyFutureProvider);
+  // var total = 0.0;
+  // totalstate.whenData((value) {
+  //   total = value;
+  // });
+  return Report.getDailyExpenessPerMonth() / 30;
+});
+
 class Utility {
   var itemBox = Hive.box("item");
-
+  var expenes = Hive.box("expenes");
   static showSnakBar(BuildContext context, String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message, style: Style.style1),
@@ -119,7 +131,10 @@ class Utility {
     return valueList;
   }
 
-  static void showTotalSales({List data, BuildContext context, String date}) {
+  static void showTotalSales(
+      {List data, BuildContext context, String date, double expenes}) {
+    var total = Report.getDailyExpenessPerMonth() / 30;
+
     showModalBottomSheet(
         enableDrag: true,
         context: context,
@@ -191,6 +206,24 @@ class Utility {
                       "አጠቃላይ ያልተጣራ ትርፍ: ${totalSell - totalBuy} ብር",
                       style: Style.style1,
                     ),
+                    Divider(
+                      thickness: 1,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    Text('ወርሃዊ ወጭ፡  $total ብር', style: Style.style1),
+                    Divider(
+                      thickness: 1,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    Text('ዕለታዊ ወጭ፡  $expenes ብር', style: Style.style1),
+                    Divider(
+                      thickness: 1,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    Text(
+                      'የተጣራ ትርፍ ${(totalSell - totalBuy) - (total + expenes)} ብር',
+                      style: Style.style1,
+                    ),
                   ],
                 ),
               );
@@ -208,5 +241,45 @@ class Utility {
         await ImageGallerySaver.saveImage(image, name: path, quality: 50);
     print("Success ${result['isSuccess']}");
     return result['filePath'];
+  }
+
+  static void showTotalAssetinBirr(BuildContext context) {
+    var itemB = Utility().itemBox.values.toList();
+    var totalBirr = 0.0;
+    for (var i in itemB) {
+      if (i['deleteStatus'] == 'no') {
+        totalBirr =
+            totalBirr + (
+              
+            double.parse(i['amount'].toString()) * double.parse(i['buyPrices']));
+      }
+    }
+    // totalBirr=double.parse(source)
+    showModalBottomSheet(
+        enableDrag: true,
+        context: context,
+        isScrollControlled: true,
+        builder: (context) {
+          return DraggableScrollableSheet(
+            expand: false,
+            initialChildSize: 0.4,
+            // minChildSize: 0.5,
+            builder: (context, ScrollController scrollController) {
+              return Padding(
+                padding: EdgeInsets.all(5),
+              
+                child: Center(
+                    child: Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Colors.deepPurpleAccent)),
+                        child: Text(
+                            "አጠቃላይ ያለው ንብረት በብር ሲተመን  $totalBirr ብር ይሆናል፡፡ ",style: Style.style1,textAlign: TextAlign.center,))),
+              );
+            },
+          );
+        });
   }
 }

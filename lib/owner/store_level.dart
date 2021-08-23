@@ -1,45 +1,47 @@
+import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
 import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class StoreLevel extends StatefulWidget {
-  @override
-  _ItemListState createState() => _ItemListState();
+final levelFutureProvider = FutureProvider<List>((ref) {
+  return getStoreLevel();
+});
+
+Future<List> getStoreLevel() async {
+  var store = [];
+  final storeLevel = Hive.lazyBox("totalitem");
+
+  var keys = storeLevel.keys.toList();
+  for (var key in keys) {
+    var item = await storeLevel.get(key);
+    store.add(item);
+  }
+  return store;
 }
 
-class _ItemListState extends State<StoreLevel> {
-  var setting = Hive.box("setting");
-  var storeLevel = Hive.lazyBox("totalitem");
-  var dataRow = <DataRow>[];
-  var filltered = [];
+class StoreLevel extends ConsumerWidget {
+  final setting = Hive.box("setting");
+  final dataRow = <DataRow>[];
+  final filltered = [];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, watch) {
+    var leverProvider = watch(levelFutureProvider);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(setting.get("orgName")),
-      ),
-      persistentFooterButtons: [
-        // OutlinedButton(
-        //   child: Text("Generate as PDF"),
-        //   onPressed: () {
-        //     print("Pdf Generated");
-        //   },
-        // ),
-        OutlinedButton(
-          child: Text("በሱቁ ውስጥ ያለው አጠቃላይ ሀብት በ ብር"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () async {
-            // var soldItemList = await Report.getDailyTransaction();
-            // Utility.showTotalSales(
-            //     data: soldItemList,
-            //     context: context,
-            //     date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት");
-          },
-        )
-      ],
-      body: ListView(
-        children: [
+        appBar: AppBar(
+          title: Text(setting.get("orgName")),
+        ),
+        persistentFooterButtons: [
+          OutlinedButton(
+            child: Text("በሱቁ ውስጥ ያለው አጠቃላይ ሀብት በ ብር"),
+            style: Style.outlinedButtonStyle,
+            onPressed: () async {
+              Utility.showTotalAssetinBirr(context);
+            },
+          )
+        ],
+        body: ListView(children: [
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Center(
@@ -69,30 +71,64 @@ class _ItemListState extends State<StoreLevel> {
               ),
             ),
           ),
-          FutureBuilder<List<Map>>(
-              future: getStoreLevel(),
-              builder: (context, data) {
-                if (data.hasData) {
-                  return ListView.builder(
-                      itemCount: data.data.length,
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: leverProvider.when(
+                  data: (dataList) => ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: dataList.length,
                       itemBuilder: (context, index) {
-                        var dataList = data.data;
-                        return ListTile(
-                          title: Text(dataList[index]['brandName']),
+                        // var dataList = data.data;
+                        return ExpansionTile(
+                          subtitle: Text(
+                            "ሱቅ ላይ ያለው የ እቃ ብዛት: ${dataList[index]['amount']}",
+                          ),
+                          title: Text("የእቃው ምድብ ${dataList[index]['catName']}",
+                              style: Style.style1),
+                          leading: Icon(Icons.arrow_right_outlined),
+                          tilePadding: EdgeInsets.only(left: 20),
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "መለያ ቁጥር: ${dataList[index]['itemID']} ",
+                                        style: Style.style1),
+                                    Text(
+                                        "የእቃው አይነት: ${dataList[index]['brandName']}",
+                                        style: Style.style1),
+                                    Text("መጠን: ${dataList[index]['size']}",
+                                        style: Style.style1),
+                                    Text(
+                                        "ያልተሸጠው የእቃ ብዛት: ${dataList[index]['amount']}",
+                                        style: Style.style1),
+                                    Text(
+                                        "የተሸጠው የእቃ ብዛት: ${dataList[index]['amountSold']}",
+                                        style: Style.style1),
+                                    Text(
+                                        "የተገዛበት ዋጋ: ${dataList[index]['buyPrices']} ",
+                                        style: Style.style1),
+                                    Text(
+                                        "መሽጫ ዋጋ: ${dataList[index]['soldPrices']} ",
+                                        style: Style.style1),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         );
-                      });
-                } else
-                  return Center(
-                    child: Text('Just Wait'),
-                  );
-              })
-        ],
-      ),
-    );
+                      }),
+                  loading: () => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                  error: (message, er) => Text("Error: $er"))),
+        ]));
   }
 
   Widget dataTable(List data, BuildContext context) {
-    // dataRow.clear();
     for (var itemMap in data) {
       dataRow.add(DataRow(cells: [
         DataCell(Text("${itemMap['catName']}")),
@@ -123,15 +159,5 @@ class _ItemListState extends State<StoreLevel> {
         rows: dataRow,
       ),
     );
-  }
-
-  Future<List<Map>> getStoreLevel() async {
-    var store = [];
-    var keys = storeLevel.keys.toList();
-    for (var key in keys) {
-      var item = await storeLevel.get(key);
-      store.add(item);
-    }
-    return store;
   }
 }

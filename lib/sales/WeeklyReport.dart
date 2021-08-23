@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-class MonthlyTransaction extends StatefulWidget {
+class WekklyTransaction extends StatefulWidget {
   @override
-  _MonthlyTransaction createState() => _MonthlyTransaction();
+  _WekklyTransaction createState() => _WekklyTransaction();
 }
 
-class _MonthlyTransaction extends State<MonthlyTransaction> {
+class _WekklyTransaction extends State<WekklyTransaction> {
   final formKey = GlobalKey<FormState>();
   Box catBox = Hive.box("categorie");
   @override
@@ -34,34 +34,33 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           style: Style.style1,
         ),
       ),
-      persistentFooterButtons: [
-        OutlinedButton(
-          child: Text("Generate as PDF"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () {
-            print("Pdf Generated");
-          },
-        ),
-        OutlinedButton(
-          child: Text("View Total"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () async {
-            var soldItemList = await Report.getMonthlyTransaction();
-            Utility.showTotalSales(
-                data: soldItemList,
-                context: context,
-                date: "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
-                expenes: Report.getMonthlyExpenes());
-          },
-        )
-      ],
+      // persistentFooterButtons: [
+      //   OutlinedButton(
+      //     child: Text("Generate as PDF"),
+      //     style: Style.outlinedButtonStyle,
+
+      //     onPressed: () {
+      //       // print("Pdf Generated");
+      //     },
+      //   ),
+      //   OutlinedButton(
+      //     child: Text("View Total"),
+      //     style: Style.outlinedButtonStyle,
+      //     onPressed: () async {
+      //       var soldItemList = await Report.getWeeklyTransaction(userName: 'Gelaw');
+      //       Utility.showTotalSales(data:soldItemList, context:context,date:
+      //               "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",expenes: Report.getWeeklyExpenes());
+      //     },
+      //   )
+      // ],
+     
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} የሽያጭ ሪፖርት",
+                "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
                 style: Style.style1,
               ),
             ),
@@ -73,15 +72,27 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getMonthlyTransaction(),
+                  future: Report.getWeeklyTransaction(userName: 'Gelaw'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      if (snapshot.data.length == 0) {
-                        return Center(
-                            child: Text(
-                          "ይቅርታ ላለፉት 30 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
-                          style: Style.style1,
-                        ));
+                       if (snapshot.data.length == 0) {
+                           return Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Center(
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  margin: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
+                                          color: Colors.deepPurpleAccent)),
+                                  child: Text(
+                                     "ይቅርታ ላለፉት 7 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
+                                    style: Style.style1,
+                                    textAlign: TextAlign.center,
+                                  ))),
+                        );
+                    
                       }
                       return ListView.builder(
                           shrinkWrap: true,
@@ -125,6 +136,7 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
                                         Text(
                                             "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
                                             style: Style.style1),
+                                       
                                       ],
                                     ),
                                   ),

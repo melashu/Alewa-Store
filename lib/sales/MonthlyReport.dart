@@ -34,27 +34,29 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           style: Style.style1,
         ),
       ),
-      persistentFooterButtons: [
-        OutlinedButton(
-          child: Text("Generate as PDF"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () {
-            print("Pdf Generated");
-          },
-        ),
-        OutlinedButton(
-          child: Text("View Total"),
-          style: Style.outlinedButtonStyle,
-          onPressed: () async {
-            var soldItemList = await Report.getMonthlyTransaction();
-            Utility.showTotalSales(
-                data: soldItemList,
-                context: context,
-                date: "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
-                expenes: Report.getMonthlyExpenes());
-          },
-        )
-      ],
+      // persistentFooterButtons: [
+      //   OutlinedButton(
+      //     child: Text("Generate as PDF"),
+      //     style: Style.outlinedButtonStyle,
+      //     onPressed: () {
+      //       print("Pdf Generated");
+      //     },
+      //   ),
+      //   OutlinedButton(
+      //     child: Text("View Total"),
+      //     style: Style.outlinedButtonStyle,
+      //     onPressed: () async {
+      //       var soldItemList =
+      //           await Report.getMonthlyTransaction(userName: 'Gelaw');
+      //       Utility.showTotalSales(
+      //           data: soldItemList,
+      //           context: context,
+      //           date:
+      //               "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
+      //           expenes: Report.getMonthlyExpenes());
+      //     },
+      //   )
+      // ],
       body: ListView(
         children: [
           Padding(
@@ -73,15 +75,26 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getMonthlyTransaction(),
+                  future: Report.getMonthlyTransaction(userName: 'Gelaw'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(
-                            child: Text(
-                          "ይቅርታ ላለፉት 30 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
-                          style: Style.style1,
-                        ));
+                        return Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Center(
+                              child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  margin: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 1,
+                                          color: Colors.deepPurpleAccent)),
+                                  child: Text(
+                                    "ይቅርታ ላለፉት 30 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
+                                    style: Style.style1,
+                                    textAlign: TextAlign.center,
+                                  ))),
+                        );
                       }
                       return ListView.builder(
                           shrinkWrap: true,
