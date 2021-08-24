@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/PdfInvoice.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:open_file/open_file.dart';
 class WekklyTransaction extends StatefulWidget {
   @override
   _WekklyTransaction createState() => _WekklyTransaction();
@@ -38,22 +41,32 @@ class _WekklyTransaction extends State<WekklyTransaction> {
         OutlinedButton(
           child: Text("Generate as PDF"),
           style: Style.outlinedButtonStyle,
-
-          onPressed: () {
-            // print("Pdf Generated");
+          onPressed: () async {
+            var soldItemList =
+                await Report.getWeeklyTransaction(userName: 'owner');
+            File lastPdf = await PdfInvoice.generatePDF(
+                soldItemList,
+                 "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
+                Report.getWeeklyExpenes(),
+                '7');
+            await OpenFile.open(lastPdf.path);
           },
         ),
         OutlinedButton(
           child: Text("View Total"),
           style: Style.outlinedButtonStyle,
           onPressed: () async {
-            var soldItemList = await Report.getWeeklyTransaction();
-            Utility.showTotalSales(data:soldItemList, context:context,date:
-                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",expenes: Report.getWeeklyExpenes());
+            var soldItemList =
+                await Report.getWeeklyTransaction(userName: 'owner');
+            Utility.showTotalSales(
+                data: soldItemList,
+                context: context,
+                date:
+                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
+                expenes: Report.getWeeklyExpenes());
           },
         )
       ],
-     
       body: ListView(
         children: [
           Padding(
@@ -72,10 +85,10 @@ class _WekklyTransaction extends State<WekklyTransaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getWeeklyTransaction(),
+                  future: Report.getWeeklyTransaction(userName: 'owner'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                       if (snapshot.data.length == 0) {
+                      if (snapshot.data.length == 0) {
                         return Center(
                             child: Text(
                           "ይቅርታ ላለፉት 7 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
@@ -124,7 +137,6 @@ class _WekklyTransaction extends State<WekklyTransaction> {
                                         Text(
                                             "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
                                             style: Style.style1),
-                                       
                                       ],
                                     ),
                                   ),

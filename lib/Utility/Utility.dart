@@ -158,9 +158,9 @@ class Utility {
                     "\n የእቃው ስም፡ " +
                     row['brandName'] +
                     " : "
-                        // " የተገዛበት ዋጋ፡ " +
-                        // row['buyPrices'] +
-                        " የተሽጠበት ዋጋ፡ " +
+                        " የተገዛበት ዋጋ፡ " +
+                    row['buyPrices'] +
+                    " የተሽጠበት ዋጋ፡ " +
                     row['soldPrices'] +
                     " ብር ";
               });
@@ -168,12 +168,18 @@ class Utility {
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  // scrollDirection: Axis.vertical,
                   children: [
-                    Text(
-                      date,
-                      style: Style.style1,
-                    ),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Colors.deepPurpleAccent)),
+                        child: Text(
+                          date,
+                          style: Style.style1,
+                          textAlign: TextAlign.center,
+                        )),
                     Divider(
                       thickness: 1,
                       color: Colors.deepPurpleAccent,
@@ -248,10 +254,9 @@ class Utility {
     var totalBirr = 0.0;
     for (var i in itemB) {
       if (i['deleteStatus'] == 'no') {
-        totalBirr =
-            totalBirr + (
-              
-            double.parse(i['amount'].toString()) * double.parse(i['buyPrices']));
+        totalBirr = totalBirr +
+            (double.parse(i['amount'].toString()) *
+                double.parse(i['buyPrices']));
       }
     }
     // totalBirr=double.parse(source)
@@ -267,7 +272,6 @@ class Utility {
             builder: (context, ScrollController scrollController) {
               return Padding(
                 padding: EdgeInsets.all(5),
-              
                 child: Center(
                     child: Container(
                         padding: EdgeInsets.all(10),
@@ -276,7 +280,10 @@ class Utility {
                             border: Border.all(
                                 width: 1, color: Colors.deepPurpleAccent)),
                         child: Text(
-                            "አጠቃላይ ያለው ንብረት በብር ሲተመን  $totalBirr ብር ይሆናል፡፡ ",style: Style.style1,textAlign: TextAlign.center,))),
+                          "አጠቃላይ ያለው ንብረት በብር ሲተመን  $totalBirr ብር ይሆናል፡፡ ",
+                          style: Style.style1,
+                          textAlign: TextAlign.center,
+                        ))),
               );
             },
           );

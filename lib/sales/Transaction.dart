@@ -137,7 +137,8 @@ class _TransactionState extends State<Transaction> {
                                     "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም ፡፡ ",
                                     style: Style.style1,
                                     textAlign: TextAlign.center,
-                                  ))),
+                                  ))
+                                  ),
                         );
                         
                         

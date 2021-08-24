@@ -6,6 +6,7 @@ import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/MonthlyReport.dart';
+import 'package:boticshop/owner/Qr-Pdf.dart';
 import 'package:boticshop/owner/RequiredItem.dart';
 import 'package:boticshop/owner/Transaction.dart';
 import 'package:boticshop/owner/WeeklyReport.dart';
@@ -397,6 +398,20 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (contex) {
                     return Setting();
+                  }));
+                },
+              ),
+            ),
+             Card(
+              elevation: 10,
+              child: ListTile(
+                horizontalTitleGap: 10,
+                autofocus: true,
+                title: Text("Qr-Pdf Preparation", style: Style.style1),
+                leading: Icon(Icons.settings, color: Colors.blue[400]),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
+                    return QrPdf();
                   }));
                 },
               ),

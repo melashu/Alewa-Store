@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
+import 'package:boticshop/owner/PdfInvoice.dart';
 import 'package:boticshop/owner/itemList.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:open_file/open_file.dart';
 
 class Transaction extends StatefulWidget {
   @override
@@ -39,20 +43,28 @@ class _TransactionState extends State<Transaction> {
         OutlinedButton(
           child: Text("Generate as PDF"),
           style: Style.outlinedButtonStyle,
-          onPressed: () {
-            print("Pdf Generated");
+          onPressed: () async {
+            var soldItemList =
+                await Report.getDailyTransaction(userName: 'owner');
+            File lastPdf = await PdfInvoice.generatePDF(
+                soldItemList,
+                "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",
+                Report.getDailyExpenes(),
+                Dates.today);
+            await OpenFile.open(lastPdf.path);
           },
         ),
         OutlinedButton(
           child: Text("View Total"),
           style: Style.outlinedButtonStyle,
           onPressed: () async {
-            
-            var soldItemList = await Report.getDailyTransaction();
+            var soldItemList =
+                await Report.getDailyTransaction(userName: 'owner');
             Utility.showTotalSales(
                 data: soldItemList,
                 context: context,
-                date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",expenes: Report.getDailyExpenes());
+                date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",
+                expenes: Report.getDailyExpenes());
           },
         )
       ],
@@ -119,11 +131,15 @@ class _TransactionState extends State<Transaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getDailyTransaction(),
+                  future: Report.getDailyTransaction(userName: 'owner'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(child: Text("ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",style: Style.style1,));
+                        return Center(
+                            child: Text(
+                          "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",
+                          style: Style.style1,
+                        ));
                       }
                       return ListView.builder(
                           shrinkWrap: true,

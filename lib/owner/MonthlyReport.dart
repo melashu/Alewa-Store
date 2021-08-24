@@ -46,7 +46,7 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           child: Text("View Total"),
           style: Style.outlinedButtonStyle,
           onPressed: () async {
-            var soldItemList = await Report.getMonthlyTransaction();
+            var soldItemList = await Report.getMonthlyTransaction(userName: 'owner');
             Utility.showTotalSales(
                 data: soldItemList,
                 context: context,
@@ -73,7 +73,7 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           Container(
               padding: EdgeInsets.all(15),
               child: FutureBuilder<List>(
-                  future: Report.getMonthlyTransaction(),
+                  future: Report.getMonthlyTransaction(userName: 'owner'),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {

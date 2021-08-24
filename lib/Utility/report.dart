@@ -10,7 +10,7 @@ class Report {
     for (var key in keyList) {
       var items = await transactionBox.get(key);
       items['tID'] = key;
-      if (Dates.today == items['salesDate'] && userName == null) {
+      if (Dates.today == items['salesDate'] && userName == 'owner') {
         itemLists.add(items);
       } else if (Dates.today == items['salesDate'] &&
           userName == items['salesPerson']) {
@@ -32,7 +32,7 @@ class Report {
                   .difference(EtDatetime.parse(items['salesDate']))
                   .inDays) <=
               7) &&
-          userName == null) {
+          (userName == 'owner')) {
         itemLists.add(items);
       } else if (((EtDatetime.parse(Dates.today)
                   .difference(EtDatetime.parse(items['salesDate']))
@@ -54,9 +54,10 @@ class Report {
       var items = await transactionBox.get(key);
       // items['tID'] = key;
       if ((EtDatetime.parse(Dates.today)
-              .difference(EtDatetime.parse(items['salesDate']))
-              .inDays) <=
-          30 && userName==null) {
+                  .difference(EtDatetime.parse(items['salesDate']))
+                  .inDays) <=
+              30 &&
+          userName == 'owner') {
         itemLists.add(items);
       } else if (((EtDatetime.parse(Dates.today)
                   .difference(EtDatetime.parse(items['salesDate']))
