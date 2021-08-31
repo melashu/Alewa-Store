@@ -9,6 +9,16 @@ class Style {
             style: BorderStyle.solid));
   }
 
+  static ButtonStyle get elevatedButtonStyle {
+    return ElevatedButton.styleFrom(
+        padding: EdgeInsets.all(12),
+        elevation: 8,
+        textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        primary: Colors.deepPurple,
+        onPrimary: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+  }
+
   static TextStyle get style1 {
     return TextStyle(
       fontSize: 15,

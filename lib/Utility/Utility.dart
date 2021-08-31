@@ -140,10 +140,12 @@ class Utility {
         context: context,
         isScrollControlled: true,
         builder: (context) {
+
           return DraggableScrollableSheet(
             expand: false,
             initialChildSize: 0.8,
             builder: (BuildContext context, ScrollController scrollController) {
+
               var content = '';
               var totalBuy = 0.0;
               var totalSell = 0.0;
@@ -166,8 +168,8 @@ class Utility {
               });
               return Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
+                  shrinkWrap: true,
                   children: [
                     Container(
                         padding: EdgeInsets.all(10),

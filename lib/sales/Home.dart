@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:boticshop/Utility/date.dart';
+import 'package:boticshop/Utility/login.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/sales/MonthlyReport.dart';
@@ -234,6 +235,20 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (contex) {
                     return Setting();
+                  }));
+                },
+              ),
+            ),
+              Card(
+              elevation: 10,
+              child: ListTile(
+                horizontalTitleGap: 10,
+                autofocus: true,
+                title: Text("Logout", style: Style.style1),
+                leading: Icon(Icons.settings, color: Colors.blue[400]),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
+                    return Login();
                   }));
                 },
               ),

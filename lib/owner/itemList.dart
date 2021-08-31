@@ -9,12 +9,18 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'editItem.dart';
 
 final itemListStateProvider = StateProvider<List>((ref) {
-  return [];
+  return Hive.box("item").values.toList();
+});
+
+final selectedItemStateProvider = StateProvider<List>((ref) {
+  var selected = ref.watch(itemListStateProvider).state;
+  return selected;
 });
 
 class ItemList extends ConsumerWidget {
   final setting = Hive.box("setting");
   final itemBox = Hive.box('item');
+
   @override
   Widget build(BuildContext context, watch) {
     return Scaffold(
@@ -72,29 +78,83 @@ class ItemList extends ConsumerWidget {
         },
       ),
       body: Container(
-        child: ValueListenableBuilder(
-            valueListenable: itemBox.listenable(),
-            builder: (context, box, _) {
-              List data = box.values.toList();
-              watch(itemListStateProvider).state.add(data);
-              return dataTable(context);
-            }),
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Center(
+                child: Text(
+                  "እቃዎች ዝርዝር ",
+                  style: Style.style1,
+                ),
+              ),
+            ),
+            Divider(
+              thickness: 1,
+              color: Colors.lightBlue,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: TextField(
+                onChanged: (val) {
+                  List filtered = [];
+                  if (val.isEmpty) {
+                    filtered = watch(itemListStateProvider).state;
+                  } else {
+                    var itemes = watch(itemListStateProvider).state;
+                    filtered = itemes
+                        .where((row) =>
+                            (row['brandName']
+                                .toString()
+                                .toLowerCase()
+                                .contains(val.toLowerCase())) ||
+                            (row['catName']
+                                .toString()
+                                .toLowerCase()
+                                .contains(val.toLowerCase())))
+                        .toList();
+                  }
+                  watch(selectedItemStateProvider).state = filtered;
+                },
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.search_outlined),
+                    onPressed: () {},
+                  ),
+                  labelText: "የእቃውን አይነት ያስገቡ",
+                  labelStyle: Style.style1,
+                  contentPadding: EdgeInsets.all(10),
+                ),
+              ),
+            ),
+            ValueListenableBuilder(
+                valueListenable: itemBox.listenable(),
+                builder: (context, box, _) {
+                  // List data = box.values.toList();
+                  // watch(itemListStateProvider).state.add(data);
+                  return dataTable(context);
+                }),
+          ],
+        ),
       ),
     );
   }
 
   Widget dataTable(BuildContext context) {
-    var data = context.read(itemListStateProvider).state[0];
+    var selectedItem = context.read(selectedItemStateProvider).state;
     return ListView.builder(
-        itemCount: data.length,
+        itemCount: selectedItem.length,
         shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
-          if (data[index]['deleteStatus'] == 'no') {
+          if (selectedItem[index]['deleteStatus'] == 'no' &&
+              int.parse(selectedItem[index]['amount'].toString()) > 0) {
             return ExpansionTile(
               subtitle: Text(
-                "ሱቅ ላይ ያለው የ እቃ ብዛት: ${data[index]['amount']}",
+                "ሱቅ ላይ ያለው የ እቃ ብዛት: ${selectedItem[index]['amount']}",
               ),
-              title: Text("የእቃው አይነት ${data[index]['brandName']}",
+              title: Text("የእቃው አይነት ${selectedItem[index]['brandName']}",
                   style: Style.style1),
               leading: PopupMenuButton(
                   color: Colors.deepPurple,
@@ -104,12 +164,12 @@ class ItemList extends ConsumerWidget {
                       // Utility.editItem(itemMap, context);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
-                        return EditItem(data[index]);
+                        return EditItem(selectedItem[index]);
                       }));
                     } else if (i == 1) {
                       // _EditItemState().editItem( itemMap,context);
                       Utility.showConfirmDialog(
-                          context: context, itemMap: data[index]);
+                          context: context, itemMap: selectedItem[index]);
                     }
                   },
                   itemBuilder: (context) {
@@ -132,23 +192,40 @@ class ItemList extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("መለያ ቁጥር: ${data[index]['itemID']} ",
+                        Text("መለያ ቁጥር: ${selectedItem[index]['itemID']} ",
                             style: Style.style1),
-                        Text("የእቃው ምድብ: ${data[index]['catName']}",
+                        Text("የእቃው ምድብ: ${selectedItem[index]['catName']}",
                             style: Style.style1),
-                        Text("የእቃው አይነት: ${data[index]['brandName']}",
+                        Text("የእቃው አይነት: ${selectedItem[index]['brandName']}",
                             style: Style.style1),
-                        Text("መጠን: ${data[index]['size']}",
+                        Text("መጠን: ${selectedItem[index]['size']}",
                             style: Style.style1),
-                        Text("ብዛት: ${data[index]['amount'].runtimeType}",
+                        Text("ብዛት: ${selectedItem[index]['amount']}",
+                            style: Style.style1),
+                        Text("የተገዛበት ዋጋ: ${selectedItem[index]['buyPrices']} ",
+                            style: Style.style1),
+                        Text("መሽጫ ዋጋ: ${selectedItem[index]['soldPrices']} ",
                             style: Style.style1),
                         Text(
-                            "የተገዛበት ዋጋ: ${data[index]['buyPrices'].runtimeType} ",
+                            "የተመዘገበብት ቀን: ${selectedItem[index]['createDate']} ",
                             style: Style.style1),
-                        Text("መሽጫ ዋጋ: ${data[index]['soldPrices']} ",
-                            style: Style.style1),
-                        Text("የተመዘገበብት ቀን: ${data[index]['createDate']} ",
-                            style: Style.style1),
+                        OutlinedButton(
+                          onPressed: () async {
+                            showDialog(context: context, builder: (context) {});
+                          },
+                          child: Text(
+                            "Order",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                              minimumSize: Size(100, 30),
+                              backgroundColor: Colors.deepPurple,
+                              padding: EdgeInsets.all(3),
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              )),
+                        )
                       ],
                     ),
                   ),

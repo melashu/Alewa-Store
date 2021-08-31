@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:boticshop/Utility/date.dart';
+import 'package:boticshop/Utility/login.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/MonthlyReport.dart';
@@ -14,6 +15,7 @@ import 'package:boticshop/owner/categorie.dart';
 import 'package:boticshop/owner/expenes.dart';
 import 'package:boticshop/owner/item.dart';
 import 'package:boticshop/owner/store_level.dart';
+import 'package:boticshop/owner/useraccont.dart';
 import 'package:boticshop/sync/Item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import "package:flutter/material.dart";
@@ -376,12 +378,12 @@ class _HomeState extends State<Home> {
                   child: ListTile(
                     horizontalTitleGap: 12,
                     title: Text("User Account ", style: Style.style1),
-                    leading: Icon(Icons.view_week, color: Colors.orangeAccent),
+                    leading: Icon(Icons.view_week, color: Colors.deepPurpleAccent),
                     contentPadding: EdgeInsets.symmetric(horizontal: 20),
                     onTap: () {
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        // return WekklyTransaction();
+                        return Useraccount();
                       }));
                     },
                   ),
@@ -402,7 +404,7 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-             Card(
+            Card(
               elevation: 10,
               child: ListTile(
                 horizontalTitleGap: 10,
@@ -412,6 +414,20 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (contex) {
                     return QrPdf();
+                  }));
+                },
+              ),
+            ),
+             Card(
+              elevation: 10,
+              child: ListTile(
+                horizontalTitleGap: 10,
+                autofocus: true,
+                title: Text("Logout", style: Style.style1),
+                leading: Icon(Icons.settings, color: Colors.blue[400]),
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
+                    return Login();
                   }));
                 },
               ),

@@ -46,26 +46,29 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
           child: Text("View Total"),
           style: Style.outlinedButtonStyle,
           onPressed: () async {
-            var soldItemList = await Report.getMonthlyTransaction(userName: 'owner');
+            var soldItemList =
+                await Report.getMonthlyTransaction(userName: 'owner');
             Utility.showTotalSales(
                 data: soldItemList,
                 context: context,
-                date: "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
+                date:
+                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
                 expenes: Report.getMonthlyExpenes());
           },
         )
       ],
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Center(
+          Container(
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  border: Border.all(width: 1, color: Colors.deepPurpleAccent)),
               child: Text(
                 "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} የሽያጭ ሪፖርት",
                 style: Style.style1,
-              ),
-            ),
-          ),
+                textAlign: TextAlign.center,
+              )),
           Divider(
             thickness: 1,
             color: Colors.deepPurpleAccent,
@@ -77,14 +80,21 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(
+                        return Container(
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Colors.deepPurpleAccent)),
                             child: Text(
-                          "ይቅርታ ላለፉት 30 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
-                          style: Style.style1,
-                        ));
+                              "ይቅርታ ላለፉት 30 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
+                              style: Style.style1,
+                              textAlign: TextAlign.center,
+                            ));
                       }
                       return ListView.builder(
                           shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             return ExpansionTile(

@@ -32,6 +32,11 @@ static Future<Box> getExpenesBox() async{
     return box;
 }
 
+static Future<Box> getUserAccount() async{
+  var box = await Hive.openBox("useraccount");
+    return box;
+}
+
   // static Future<List<Map>> getItemValue() async {
   //   var values = <Map>[];
   //   var box = await getItemBox();

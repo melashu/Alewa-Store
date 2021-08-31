@@ -1,4 +1,5 @@
 import 'package:boticshop/Utility/Boxes.dart';
+import 'package:boticshop/Utility/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -14,6 +15,7 @@ Future main() async {
   await Boxes.getTransactionBox();
   await Boxes.getTotalItem();
   await Boxes.getExpenesBox();
+  await Boxes.getUserAccount();
 
   // var result = await (Connectivity().checkConnectivity());
 
@@ -43,6 +45,6 @@ class MyApp extends StatelessWidget {
               )),
           primarySwatch: Colors.deepPurple,
         ),
-        home: Home());
+        home: Login());
   }
 }

@@ -135,14 +135,21 @@ class _TransactionState extends State<Transaction> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(
+                        return Container(
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Colors.deepPurpleAccent)),
                             child: Text(
-                          "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",
-                          style: Style.style1,
-                        ));
+                              "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",
+                              style: Style.style1,
+                              textAlign: TextAlign.center,
+                            ));
                       }
                       return ListView.builder(
                           shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             return ExpansionTile(

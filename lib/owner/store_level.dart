@@ -21,6 +21,14 @@ Future<List> getStoreLevel() async {
   return store;
 }
 
+final selectedLevelFutureProvider = FutureProvider<List>((ref) {
+  var se = [];
+  ref.watch(levelFutureProvider).whenData((value) {
+    se = value;
+  });
+  // return se;
+});
+
 class StoreLevel extends ConsumerWidget {
   final setting = Hive.box("setting");
   final dataRow = <DataRow>[];
@@ -76,6 +84,7 @@ class StoreLevel extends ConsumerWidget {
               child: leverProvider.when(
                   data: (dataList) => ListView.builder(
                       shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
                       itemCount: dataList.length,
                       itemBuilder: (context, index) {
                         // var dataList = data.data;
@@ -85,7 +94,8 @@ class StoreLevel extends ConsumerWidget {
                           ),
                           title: Text("የእቃው ምድብ ${dataList[index]['catName']}",
                               style: Style.style1),
-                          leading: Icon(Icons.arrow_right_outlined),
+                          leading: Icon(Icons.arrow_right_outlined,
+                              color: Colors.deepPurpleAccent),
                           tilePadding: EdgeInsets.only(left: 20),
                           children: [
                             Padding(

@@ -36,6 +36,7 @@ class _ItemState extends State<Item> {
   var qrData = '';
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -325,6 +326,7 @@ class _ItemState extends State<Item> {
         ),
       ),
     );
+  
   }
 
   void getItemMenu() {

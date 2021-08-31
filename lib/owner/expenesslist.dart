@@ -41,12 +41,31 @@ class ExpenessList extends ConsumerWidget {
         ),
         body: Container(
             padding: EdgeInsets.all(15),
-            child: ValueListenableBuilder(
-                valueListenable: expenessBox.listenable(),
-                builder: (context, box, _) {
-                  List data = box.values.toList();
-                  return dataTable(data, context);
-                })
+            child: ListView(
+              
+              children: [
+                  Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Center(
+                    child: Text(
+                      "የወጭ ዝርዝሮች ",
+                      style: Style.style1,
+                    ),
+                  ),
+                ),
+                Divider(
+                  thickness: 1,
+                  color: Colors.lightBlue,
+                ),
+              
+                ValueListenableBuilder(
+                    valueListenable: expenessBox.listenable(),
+                    builder: (context, box, _) {
+                      List data = box.values.toList();
+                      return dataTable(data, context);
+                    }),
+              ],
+            )
 
             //  futureExpenessList.when(
             //   data: (data) {

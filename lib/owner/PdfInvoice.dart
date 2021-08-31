@@ -6,32 +6,40 @@ import 'package:pdf/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PdfInvoice {
-    // final font = await rootBundle.load("assets/hind.ttf");
-   Uint8List fontData = File('asset/op.ttf').readAsBytesSync();
-  final ttf = Font.ttf(PdfInvoice().fontData.buffer.asByteData());
+  // final font = await rootBundle.load("assets/hind.ttf");
+  // Uint8List fontData = File('asset/op.ttf').readAsBytesSync();
+  // final ttf = Font.ttf(PdfInvoice().fontData.buffer.asByteData());
 
   static get style1 => TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        font: PdfInvoice().ttf
+        fontSize: 15, fontWeight: FontWeight.bold,
+
+        // font: PdfInvoice().ttf
       );
 
   static Future<File> generatePDF(
       List data, String date, double expenes, String report) async {
- 
-
     var pdf = Document();
     var total = Report.getDailyExpenessPerMonth() / 30;
-    var content = '';
+    var content = '${data.length}';
     var totalBuy = 0.0;
     var totalSell = 0.0;
-    data.forEach((row) {
+    for(var row in data) {
       totalBuy = totalBuy +
           (double.parse(row['buyPrices']) * int.parse(row['amount']));
       totalSell = totalSell +
           (double.parse(row['soldPrices']) * int.parse(row['amount']));
-
       content = content +
+          "\n Item Name " +
+          row['brandName'] +
+          " \n "+
+              " Buy Prices " +
+          row['buyPrices'] +
+          " Sold Prices " +
+          row['soldPrices'] +
+          " Birr ";
+    }
+/**
+ * content = content +
           "\n የእቃው ስም፡ " +
           row['brandName'] +
           " : "
@@ -41,18 +49,21 @@ class PdfInvoice {
           row['soldPrices'] +
           " ብር ";
     });
-// pdf.addPage(Page(build: build))
+ */
 
-    pdf.addPage(MultiPage(
+    pdf.addPage(
+      
+      MultiPage(
+
         pageFormat: PdfPageFormat.a4,
         header: (context) => Text("Pdf Report"),
+        // maxPages: 10,
         footer: (context) => Text("BY Meshu"),
         build: (context) {
           return [
             Padding(
               padding: const EdgeInsets.all(15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Wrap(
                 children: [
                   Container(
                       padding: EdgeInsets.all(10),
@@ -61,7 +72,7 @@ class PdfInvoice {
                           border: Border.all(
                               width: 1, color: PdfColors.deepPurpleAccent)),
                       child: Text(
-                        date,
+                        "Today",
                         style: style1,
                         textAlign: TextAlign.center,
                       )),
@@ -70,6 +81,7 @@ class PdfInvoice {
                     color: PdfColors.deepPurpleAccent,
                   ),
                   Text(
+                    // '${data.length}',
                     content,
                     style: style1,
                   ),
@@ -77,13 +89,13 @@ class PdfInvoice {
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
-                  Text("አጠቃላይ ሽያጭ: $totalSell ብር", style: style1),
+                  Text("Total Sell $totalSell Birr", style: style1),
                   Divider(
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
                   Text(
-                    "አጠቃላይ እቃው የተገዛበት: $totalBuy ብር",
+                    "Total Item amount $totalBuy Birr",
                     style: style1,
                   ),
                   Divider(
@@ -91,25 +103,25 @@ class PdfInvoice {
                     color: PdfColors.deepPurpleAccent,
                   ),
                   Text(
-                    "አጠቃላይ ያልተጣራ ትርፍ: ${totalSell - totalBuy} ብር",
+                    "Total Profite before ${totalSell - totalBuy} Birr",
                     style: style1,
                   ),
                   Divider(
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
-                  Text('ወርሃዊ ወጭ፡  $total ብር', style: style1),
+                  Text('Montly Expens  $total Birr', style: style1),
                   Divider(
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
-                  Text('ዕለታዊ ወጭ፡  $expenes ብር', style: style1),
+                  Text('Daily Expenes  $expenes Birr', style: style1),
                   Divider(
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
                   Text(
-                    'የተጣራ ትርፍ ${(totalSell - totalBuy) - (total + expenes)} ብር',
+                    'Total Profit ${(totalSell - totalBuy) - (total + expenes)} Birr',
                     style: style1,
                   ),
                 ],
@@ -125,7 +137,7 @@ class PdfInvoice {
   static Future<File> savePdf(Document pdf, String report) async {
     var bytes = await pdf.save();
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/$report .pdf');
+    final file = File('${dir.path}/report .pdf');
     var lastPdf = await file.writeAsBytes(bytes);
     return lastPdf;
   }

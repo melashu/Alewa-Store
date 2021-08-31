@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:open_file/open_file.dart';
+
 class WekklyTransaction extends StatefulWidget {
   @override
   _WekklyTransaction createState() => _WekklyTransaction();
@@ -46,10 +47,11 @@ class _WekklyTransaction extends State<WekklyTransaction> {
                 await Report.getWeeklyTransaction(userName: 'owner');
             File lastPdf = await PdfInvoice.generatePDF(
                 soldItemList,
-                 "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
+                "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
                 Report.getWeeklyExpenes(),
                 '7');
-            await OpenFile.open(lastPdf.path);
+                      await OpenFile.open(lastPdf.path);
+
           },
         ),
         OutlinedButton(
@@ -69,15 +71,17 @@ class _WekklyTransaction extends State<WekklyTransaction> {
       ],
       body: ListView(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Center(
+          Container(
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                  border:
+                      Border.all(width: 1, color: Colors.deepPurpleAccent)),
               child: Text(
                 "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
                 style: Style.style1,
-              ),
-            ),
-          ),
+                textAlign: TextAlign.center,
+              )),
           Divider(
             thickness: 1,
             color: Colors.deepPurpleAccent,
@@ -89,14 +93,21 @@ class _WekklyTransaction extends State<WekklyTransaction> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
-                        return Center(
+                        return Container(
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Colors.deepPurpleAccent)),
                             child: Text(
-                          "ይቅርታ ላለፉት 7 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
-                          style: Style.style1,
-                        ));
+                              "ይቅርታ ላለፉት 7 ቀናት ምንም አይነት ሽያጭ አልተካሂደም::",
+                              style: Style.style1,
+                              textAlign: TextAlign.center,
+                            ));
                       }
                       return ListView.builder(
                           shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
                             return ExpansionTile(
