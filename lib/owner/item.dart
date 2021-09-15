@@ -257,6 +257,7 @@ class _ItemState extends State<Item> {
                         'userName': 'meshu',
                         'brandName': brandController.text,
                         'catName': initVal,
+                        
                         'createDate': Dates.today,
                         'size': sizeController.text,
                         'buyPrices': buyPricesController.text,

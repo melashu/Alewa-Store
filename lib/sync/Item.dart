@@ -41,7 +41,7 @@ class SyncItem {
         Utility.showSnakBar(context, response.body, Colors.redAccent);
       }
     } else {
-      print("Nothing to sync");
+      // print("Nothing to sync");
     }
   }
 
@@ -111,5 +111,24 @@ class SyncItem {
     // print("Length=${totalItemBox.length}");
   }
 
-  void syncSelect(BuildContext context) {}
+  int itemSyncStatus(String status, String result) {
+    int count = 0;
+    var itemList = itemBox.values.toList();
+    for (var item in itemList) {
+      if (item[status] == result) {
+        count = count + 1;
+      }
+    }
+    return count;
+  }
+
+  Future<void> syncSelect(BuildContext context) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {
+      "action": "update_item",
+      'orgCode': Hive.box('setting').get("orgCode")
+    });
+
+    
+  }
 }

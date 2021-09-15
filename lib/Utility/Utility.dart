@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui';
 import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
@@ -140,12 +141,10 @@ class Utility {
         context: context,
         isScrollControlled: true,
         builder: (context) {
-
           return DraggableScrollableSheet(
             expand: false,
             initialChildSize: 0.8,
             builder: (BuildContext context, ScrollController scrollController) {
-
               var content = '';
               var totalBuy = 0.0;
               var totalSell = 0.0;
@@ -291,4 +290,40 @@ class Utility {
           );
         });
   }
+
+  static void showDialogBox(BuildContext context, String message, Color color) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            scrollable: true,
+            contentPadding: EdgeInsets.all(10),
+            actions: [
+              Center(
+                  child: OutlinedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  'Ok',
+                  style: TextStyle(color: Colors.white, fontSize: 14),
+                ),
+                style: Style.smallButton,
+              ))
+            ],
+            content: Text(
+              message,
+              style: Style.style1,
+            ),
+            backgroundColor: color,
+          );
+        });
+  }
+
+static ListView filteredLists(){
+
+} 
+
+
+
 }

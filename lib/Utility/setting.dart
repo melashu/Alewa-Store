@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:boticshop/Utility/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -9,7 +10,7 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  var message = ".Data Off ነው. ሞባይል ዳታወትን ኦን እስከሚያደርጉ ዳታው ከስልክው ላይ የቀመጣል";
+  // var message = ".Data Off ነው. ሞባይል ዳታወትን ኦን እስከሚያደርጉ ዳታው ከስልክው ላይ የቀመጣል";
   @override
   void initState() {
     super.initState();
@@ -39,12 +40,47 @@ class _SettingState extends State<Setting> {
               child: ListTile(
                 horizontalTitleGap: 5,
                 contentPadding: EdgeInsets.all(1),
-                subtitle: Text(
-                  message,
-                  style: TextStyle(fontSize: 12),
-                ),
                 title: Text(
-                  "ሞባይል ዳታ በመጠቀም ዳታን ሴብ ማድርግ",
+                  "Auto sync with Wifi",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                ),
+                leading: Icon(
+                  Icons.wifi,
+                  color: Colors.deepPurpleAccent,
+                  size: 30,
+                ),
+                trailing: Hive.box("setting").get("wifiSync")
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.toggle_on_outlined,
+                          size: 40,
+                          color: Colors.deepPurpleAccent,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            Hive.box("setting").put("wifiSync", false);
+                            // message =
+                            //     ".Data Off ነው. ሞባይል ዳታወትን ኦን እስከሚያደርጉ ዳታው ከስልክው ላይ የቀመጣል";
+                          });
+                        })
+                    : IconButton(
+                        icon: Icon(Icons.toggle_off_outlined,
+                            size: 40, color: Colors.grey),
+                        onPressed: () {
+                          setState(() {
+                            Hive.box("setting").put("wifiSync", true);
+                            // message =
+                            //     "Data On ነው. ሞባይል ዳታን በመጠቀም ዳታወትን ወድ ሰርበር እየላኩ ነው፡፡";
+                          });
+                        }),
+              ),
+            ),
+            Card(
+              child: ListTile(
+                horizontalTitleGap: 5,
+                contentPadding: EdgeInsets.all(1),
+                title: Text(
+                  "Auto sync with Mobile data",
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 leading: Icon(
@@ -57,13 +93,11 @@ class _SettingState extends State<Setting> {
                         icon: Icon(
                           Icons.toggle_on_outlined,
                           size: 40,
-                          color: Colors.lightBlueAccent,
+                          color: Colors.deepPurpleAccent,
                         ),
                         onPressed: () {
                           setState(() {
                             Hive.box("setting").put("mobSync", false);
-                            message =
-                                ".Data Off ነው. ሞባይል ዳታወትን ኦን እስከሚያደርጉ ዳታው ከስልክው ላይ የቀመጣል";
                           });
                         })
                     : IconButton(
@@ -72,31 +106,31 @@ class _SettingState extends State<Setting> {
                         onPressed: () {
                           setState(() {
                             Hive.box("setting").put("mobSync", true);
-                            message =
-                                "Data On ነው. ሞባይል ዳታን በመጠቀም ዳታወትን ወድ ሰርበር እየላኩ ነው፡፡";
                           });
                         }),
               ),
             ),
-            
             Card(
               child: ListTile(
                 // horizontalTitleGap: 5,
                 autofocus: true,
                 contentPadding: EdgeInsets.all(1),
-                title: Text("ስልክወት ላይ ያለው የ Data መጠን",),
+                title: Text(
+                  "Storge Management",
+                ),
                 subtitle: Text(""),
+
                 leading: Icon(
                   Icons.file_present,
                   size: 30,
                   color: Colors.deepPurpleAccent,
                 ),
-            trailing: InkWell(
-              child: Text("Clear All",style: TextStyle(fontSize: 12,color: Colors.deepPurpleAccent),),
-              onTap: (){
-
-              },
-            ),
+                onTap: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return Storage();
+                  }));
+                },
               ),
             ),
           ],

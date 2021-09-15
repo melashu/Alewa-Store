@@ -24,7 +24,7 @@ Future<List> getStoreLevel() async {
 final selectedLevelFutureProvider = FutureProvider<List>((ref) {
   var se = [];
   ref.watch(levelFutureProvider).whenData((value) {
-    se = value;
+    // se = value;
   });
   // return se;
 });

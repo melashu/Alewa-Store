@@ -1,6 +1,18 @@
 import "package:flutter/material.dart";
 
 class Style {
+  static ButtonStyle get smallButton {
+    return OutlinedButton.styleFrom(
+        minimumSize: Size(100, 30),
+        backgroundColor: Colors.deepPurple,
+        
+        padding: EdgeInsets.all(3),
+        elevation: 5,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ));
+  }
+
   static ButtonStyle get outlinedButtonStyle {
     return OutlinedButton.styleFrom(
         side: BorderSide(

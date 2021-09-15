@@ -80,22 +80,28 @@ class _TransactionState extends State<Transaction> {
             color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
         iconSize: 40,
         elevation: 10,
-        items: [
+ items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            label: 'ዋና',
+            // label: 'ዋና',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_outlined),
-            label: 'የእቃዎች ዝርዝር',
+            // label: 'የእቃዎች ዝርዝር',
+            label: 'Item List',
+            // title:
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.deepPurpleAccent,
             icon: Icon(Icons.report),
-            label: 'ዕለታዊ የሽያጭ ሪፖርት',
+            // label: 'ዕለታዊ የሽያጭ ሪፖርት',
+            label: 'Daily Sales',
+
             // title:
           ),
         ],
+        
         currentIndex: 2,
         onTap: (index) {
           if (index == 0) {
@@ -188,7 +194,7 @@ class _TransactionState extends State<Transaction> {
                                             "የሽያጭ ባለሙያው ስም ፡ ${snapshot.data[index]['salesPerson']}",
                                             style: Style.style1),
                                         Text(
-                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
+                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - (int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount'].toString()))} ብር",
                                             style: Style.style1),
                                         OutlinedButton(
                                           onPressed: () async {
@@ -233,27 +239,34 @@ class _TransactionState extends State<Transaction> {
                                                                   .data[index]
                                                               ['tID'];
 
-                                                          Map item = itemBox.get(
-                                                                      itemID) ==
-                                                                  null
-                                                              ? await Hive.lazyBox(
-                                                                      "transaction")
-                                                                  .get(tID)
-                                                              : itemBox
-                                                                  .get(itemID);
+                                                          // Map item = itemBox.get(
+                                                          //             itemID) ==
+                                                          //         null
+                                                          //     ? await Hive.lazyBox(
+                                                          //             "transaction")
+                                                          //         .get(tID)
+                                                          // :
+
+                                                          Map item = itemBox
+                                                              .get(itemID);
                                                           item['deleteStatus'] =
                                                               'no';
                                                           var itemAmount =
-                                                              item['amount']
+                                                              snapshot
+                                                                  .data[index]
+                                                                      ['amount']
                                                                   .toString();
+
                                                           item['amount'] =
-                                                              (int.parse(
+                                                             ( (int.parse(
                                                                       itemAmount)) +
-                                                                  1;
+                                                                  (int.parse(item[
+                                                                  'amount'].toString())));
                                                           item["amountSold"] =
-                                                              (int.parse(
+                                                              ((int.parse(
                                                                       itemAmount)) -
-                                                                  1;
+                                                                  (int.parse(item[
+                                                                  'amount'].toString())));
                                                           item['updateStatus'] =
                                                               'yes';
                                                           itemBox.put(
@@ -261,6 +274,12 @@ class _TransactionState extends State<Transaction> {
                                                           await Hive.lazyBox(
                                                                   "transaction")
                                                               .delete(tID);
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) {
+                                                            return Transaction();
+                                                          }));
                                                         },
                                                         child: Text(
                                                           'Yes',

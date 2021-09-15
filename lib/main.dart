@@ -25,8 +25,21 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Hive.box("setting").put("orgName", "IMount Plc");
-    Hive.box("setting").put("mobSync", false);
+    // Hive.box("setting").put("orgName", "Nini Kids Fashion Center");
+    // Hive.box("setting").put("mobSync", false);
+    // Hive.box("setting").put("wifiSync", false);
+    Hive.box("setting").get("orgName") == null
+        ? Hive.box("setting").put("orgName", "Mount Digital Solution")
+        : Hive.box("setting")
+            .put("orgName", Hive.box("setting").get("orgName"));
+    Hive.box('setting').get('mobSync') == null
+        ? Hive.box("setting").put("mobSync", false)
+        : Hive.box("setting")
+            .put("mobSync", Hive.box('setting').get('mobSync'));
+    Hive.box('setting').get('wifiSync') == null
+        ? Hive.box("setting").put("wifiSync", false)
+        : Hive.box("setting")
+            .put("wifiSync", Hive.box('setting').get('wifiSync'));
 
     // print("Length=${Hive.box("setting").length}");
     // var orgList = Hive.box("setting").values.toList();

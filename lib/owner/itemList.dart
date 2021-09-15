@@ -1,4 +1,6 @@
+import 'dart:math';
 import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
 import 'package:boticshop/owner/Transaction.dart';
@@ -9,7 +11,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'editItem.dart';
 
 final itemListStateProvider = StateProvider<List>((ref) {
-  return Hive.box("item").values.toList();
+  var item = Hive.box("item").values.toList();
+  return item;
 });
 
 final selectedItemStateProvider = StateProvider<List>((ref) {
@@ -20,6 +23,9 @@ final selectedItemStateProvider = StateProvider<List>((ref) {
 class ItemList extends ConsumerWidget {
   final setting = Hive.box("setting");
   final itemBox = Hive.box('item');
+  final orderController = TextEditingController();
+  final pricesController = TextEditingController();
+  final transactionBox = Hive.lazyBox("transaction");
 
   @override
   Widget build(BuildContext context, watch) {
@@ -46,20 +52,25 @@ class ItemList extends ConsumerWidget {
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
-            label: 'ዋና',
+            // label: 'ዋና',
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_outlined),
-            label: 'የእቃዎች ዝርዝር',
+            // label: 'የእቃዎች ዝርዝር',
+            label: 'Item List',
             // title:
           ),
           BottomNavigationBarItem(
             backgroundColor: Colors.deepPurpleAccent,
             icon: Icon(Icons.report),
-            label: 'ዕለታዊ የሽያጭ ሪፖርት',
+            // label: 'ዕለታዊ የሽያጭ ሪፖርት',
+            label: 'Daily Sales',
+
             // title:
           ),
         ],
+        
         currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
@@ -128,13 +139,14 @@ class ItemList extends ConsumerWidget {
                 ),
               ),
             ),
-            ValueListenableBuilder(
-                valueListenable: itemBox.listenable(),
-                builder: (context, box, _) {
-                  // List data = box.values.toList();
-                  // watch(itemListStateProvider).state.add(data);
-                  return dataTable(context);
-                }),
+            // ValueListenableBuilder(
+            //     valueListenable: itemBox.listenable(),
+            //     builder: (context, box, _) {
+            //       // List data = box.values.toList();
+            //       return
+
+            dataTable(context)
+            // }),
           ],
         ),
       ),
@@ -148,6 +160,7 @@ class ItemList extends ConsumerWidget {
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
+          
           if (selectedItem[index]['deleteStatus'] == 'no' &&
               int.parse(selectedItem[index]['amount'].toString()) > 0) {
             return ExpansionTile(
@@ -211,7 +224,174 @@ class ItemList extends ConsumerWidget {
                             style: Style.style1),
                         OutlinedButton(
                           onPressed: () async {
-                            showDialog(context: context, builder: (context) {});
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      content: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ListView(
+                                          shrinkWrap: true,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: TextField(
+                                                onChanged: (val) {
+                                                  var quantity = int.parse(
+                                                      val.isEmpty ? '0' : val);
+                                                  var prices = int.parse(
+                                                      selectedItem[index]
+                                                              ['soldPrices']
+                                                          .toString());
+                                                  var total = quantity * prices;
+                                                  pricesController
+                                                    ..text = total.toString();
+                                                },
+                                                controller: orderController
+                                                  ..text = '1',
+                                                decoration: InputDecoration(
+                                                    labelText: 'የእቃውን ብዛት ያስገቡ',
+                                                    border:
+                                                        OutlineInputBorder()),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: TextField(
+                                                controller: pricesController
+                                                  ..text = selectedItem[index]
+                                                          ['soldPrices']
+                                                      .toString(),
+                                                decoration: InputDecoration(
+                                                    labelText: 'መሽጫ ዋጋ ያስገቡ',
+                                                    border:
+                                                        OutlineInputBorder()),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      // ),
+                                      actions: [
+                                        OutlinedButton(
+                                          onPressed: () async {
+                                            var amountOrder =
+                                                int.parse(orderController.text);
+
+                                            var amount = int.parse(
+                                                selectedItem[index]['amount']
+                                                    .toString());
+                                            var selectedItemSoldPrices =
+                                                selectedItem[index]
+                                                        ['soldPrices']
+                                                    .toString();
+
+                                            if (int.tryParse(
+                                                        orderController.text) ==
+                                                    null ||
+                                                amountOrder == 0) {
+                                              Utility.showSnakBar(
+                                                  context,
+                                                  "እባክወትን ቁጥር ብቻ ያስገቡ፡፡",
+                                                  Colors.redAccent);
+                                            } else if (amount < amountOrder) {
+                                              Utility.showDialogBox(
+                                                  context,
+                                                  "ያለወት እቃ ዝቅተኛ ነው፡፡",
+                                                  Colors.redAccent);
+                                            } else {
+                                              var itemList =
+                                                  selectedItem[index];
+                                              var random = Random();
+                                              var tID = random.nextInt(1000000);
+                                              var today = Dates.today;
+                                              var salesPerson = 'Meshu';
+                                              var itemID = itemList['itemID'];
+                                              var order = orderController.text;
+                                              itemList['salesPerson'] =
+                                                  salesPerson;
+                                              itemList['salesDate'] = today;
+                                              itemList['soldPrices'] =
+                                                  pricesController.text;
+                                              itemList['amount'] = order;
+                                              Map item = itemBox.get(itemID);
+
+                                              await transactionBox.put(
+                                                  "T$tID", itemList);
+                                              if (transactionBox
+                                                  .containsKey("T$tID")) {
+                                                item['amount'] =
+                                                    (amount - amountOrder)
+                                                        .toString();
+                                                item["amountSold"] = (int.parse(
+                                                        item["amountSold"]
+                                                            .toString()) +
+                                                    amountOrder);
+                                                item['soldPrices'] =
+                                                    selectedItemSoldPrices;
+                                                item['updateStatus'] = 'yes';
+                                                itemBox.put(itemID, item);
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return AlertDialog(
+                                                        content: Padding(
+                                                          padding:
+                                                              EdgeInsets.all(8),
+                                                          child: Text(
+                                                              " ${itemList['brandName']} ሽያጩ በትክክል ተካሂዶል::"),
+                                                        ),
+                                                        actions: [
+                                                          OutlinedButton(
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) {
+                                                                  return ItemList();
+                                                                }));
+                                                              },
+                                                              style: Style
+                                                                  .smallButton,
+                                                              child: Text(
+                                                                "Ok",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ))
+                                                        ],
+                                                      );
+                                                    });
+                                              }
+                                            }
+                                          },
+                                          autofocus: true,
+                                          child: Text(
+                                            'Sell',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          style: Style.smallButton,
+                                        ),
+                                        OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Close',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold)),
+                                          style: Style.smallButton,
+                                        )
+                                      ]);
+                                });
                           },
                           child: Text(
                             "Order",
