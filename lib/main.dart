@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'owner/Home.dart';
+import 'package:boticshop/owner/MainPage.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +17,6 @@ Future main() async {
   await Boxes.getExpenesBox();
   await Boxes.getUserAccount();
 
-  // var result = await (Connectivity().checkConnectivity());
-
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -29,7 +27,7 @@ class MyApp extends StatelessWidget {
     // Hive.box("setting").put("mobSync", false);
     // Hive.box("setting").put("wifiSync", false);
     Hive.box("setting").get("orgName") == null
-        ? Hive.box("setting").put("orgName", "Mount Digital Solution")
+        ? Hive.box("setting").put("orgName", "Alewa")
         : Hive.box("setting")
             .put("orgName", Hive.box("setting").get("orgName"));
     Hive.box('setting').get('mobSync') == null
@@ -58,6 +56,6 @@ class MyApp extends StatelessWidget {
               )),
           primarySwatch: Colors.deepPurple,
         ),
-        home: Login());
+        home: MainPage());
   }
 }

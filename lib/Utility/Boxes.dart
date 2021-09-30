@@ -22,21 +22,25 @@ class Boxes {
     return box;
   }
 
-static Future<LazyBox> getTotalItem() async {
+  static Future<LazyBox> getTotalItem() async {
     var box = await Hive.openLazyBox("totalitem");
     return box;
-}
+  }
 
-static Future<Box> getExpenesBox() async{
-  var box = await Hive.openBox("expenes");
+  static Future<Box> getExpenesBox() async {
+    var box = await Hive.openBox("expenes");
     return box;
-}
+  }
 
-static Future<Box> getUserAccount() async{
-  var box = await Hive.openBox("useraccount");
+  static Future<Box> getUserAccount() async {
+    var box = await Hive.openBox("useraccount");
     return box;
-}
+  }
 
+  static Future<Box> getOrgProfileBox() async {
+    var box = await Hive.openBox("orgprofile");
+    return box;
+  }
   // static Future<List<Map>> getItemValue() async {
   //   var values = <Map>[];
   //   var box = await getItemBox();

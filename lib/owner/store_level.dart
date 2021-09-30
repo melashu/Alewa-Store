@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:pdf/widgets.dart';
 
 final levelFutureProvider = FutureProvider<List>((ref) {
   return getStoreLevel();
@@ -24,7 +25,7 @@ Future<List> getStoreLevel() async {
 final selectedLevelFutureProvider = FutureProvider<List>((ref) {
   var se = [];
   ref.watch(levelFutureProvider).whenData((value) {
-    // se = value;
+    se = value;
   });
   // return se;
 });
@@ -40,15 +41,15 @@ class StoreLevel extends ConsumerWidget {
         appBar: AppBar(
           title: Text(setting.get("orgName")),
         ),
-        persistentFooterButtons: [
-          OutlinedButton(
-            child: Text("በሱቁ ውስጥ ያለው አጠቃላይ ሀብት በ ብር"),
-            style: Style.outlinedButtonStyle,
-            onPressed: () async {
-              Utility.showTotalAssetinBirr(context);
-            },
-          )
-        ],
+        // persistentFooterButtons: [
+        //   OutlinedButton(
+        //     child: Text("በሱቁ ውስጥ ያለው አጠቃላይ ሀብት በ ብር"),
+        //     style: Style.outlinedButtonStyle,
+        //     onPressed: () async {
+        //       Utility.showTotalAssetinBirr(context);
+        //     },
+        //   )
+        // ],
         body: ListView(children: [
           Padding(
             padding: const EdgeInsets.all(12.0),
@@ -82,55 +83,68 @@ class StoreLevel extends ConsumerWidget {
           Padding(
               padding: const EdgeInsets.all(8.0),
               child: leverProvider.when(
-                  data: (dataList) => ListView.builder(
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount: dataList.length,
-                      itemBuilder: (context, index) {
-                        // var dataList = data.data;
-                        return ExpansionTile(
-                          subtitle: Text(
-                            "ሱቅ ላይ ያለው የ እቃ ብዛት: ${dataList[index]['amount']}",
-                          ),
-                          title: Text("የእቃው ምድብ ${dataList[index]['catName']}",
-                              style: Style.style1),
-                          leading: Icon(Icons.arrow_right_outlined,
-                              color: Colors.deepPurpleAccent),
-                          tilePadding: EdgeInsets.only(left: 20),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        "መለያ ቁጥር: ${dataList[index]['itemID']} ",
-                                        style: Style.style1),
-                                    Text(
-                                        "የእቃው አይነት: ${dataList[index]['brandName']}",
-                                        style: Style.style1),
-                                    Text("መጠን: ${dataList[index]['size']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "ያልተሸጠው የእቃ ብዛት: ${dataList[index]['amount']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "የተሸጠው የእቃ ብዛት: ${dataList[index]['amountSold']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "የተገዛበት ዋጋ: ${dataList[index]['buyPrices']} ",
-                                        style: Style.style1),
-                                    Text(
-                                        "መሽጫ ዋጋ: ${dataList[index]['soldPrices']} ",
-                                        style: Style.style1),
-                                  ],
-                                ),
+                  data: (dataList) {
+                    if (dataList.length == 0)
+                      return TextButton(onPressed: () {}, child: Text('እባክዎትን ይህን ይጫነኑ'),style: TextButton.styleFrom(
+                        padding: EdgeInsets.all(10),
+                        animationDuration: Duration(seconds: 20),
+                        backgroundColor: Colors.deepPurpleAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        )
+                      ),);
+                    else
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: dataList.length,
+                          itemBuilder: (context, index) {
+                            return ExpansionTile(
+                              subtitle: Text(
+                                "ሱቅ ላይ ያለው የ እቃ ብዛት: ${dataList[index]['amount']}",
                               ),
-                            ),
-                          ],
-                        );
-                      }),
+                              title: Text(
+                                  "የእቃው ምድብ ${dataList[index]['catName']}",
+                                  style: Style.style1),
+                              leading: Icon(Icons.arrow_right_outlined,
+                                  color: Colors.deepPurpleAccent),
+                              tilePadding: EdgeInsets.only(left: 20),
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Container(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "መለያ ቁጥር: ${dataList[index]['itemID']} ",
+                                            style: Style.style1),
+                                        Text(
+                                            "የእቃው አይነት: ${dataList[index]['brandName']}",
+                                            style: Style.style1),
+                                        Text("መጠን: ${dataList[index]['size']}",
+                                            style: Style.style1),
+                                        Text(
+                                            "ያልተሸጠው የእቃ ብዛት: ${dataList[index]['amount']}",
+                                            style: Style.style1),
+                                        Text(
+                                            "የተሸጠው የእቃ ብዛት: ${dataList[index]['amountSold']}",
+                                            style: Style.style1),
+                                        Text(
+                                            "የተገዛበት ዋጋ: ${dataList[index]['buyPrices']} ",
+                                            style: Style.style1),
+                                        Text(
+                                            "መሽጫ ዋጋ: ${dataList[index]['soldPrices']} ",
+                                            style: Style.style1),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
+                  },
                   loading: () => Center(
                         child: CircularProgressIndicator(),
                       ),

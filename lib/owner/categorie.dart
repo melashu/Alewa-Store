@@ -170,10 +170,14 @@ class _AddcategorieState extends State<Addcategorie> {
 
   void showEditingBox(String row, String key) {
     showDialog(
+
         barrierDismissible: false,
         context: context,
+        
         builder: (context) {
+
           return AlertDialog(
+            
             title: Text("Editing $row"),
             actions: [
               TextButton(
@@ -209,23 +213,16 @@ class _AddcategorieState extends State<Addcategorie> {
                 child: Text("Cancel"),
               )
             ],
-            content: ListView(
-              padding: EdgeInsets.all(15),
-              children: [
-                Form(
-                    child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                          labelText: 'Catagorie Name',
-                          border: OutlineInputBorder()),
-                      controller: cata4EditingController..text = row,
-                    )
-                  ],
-                ))
-              ],
-            ),
+            content: Form(
+                child: TextFormField(
+                  decoration: InputDecoration(
+                      labelText: 'Catagorie Name',
+                      border: OutlineInputBorder()),
+                  controller: cata4EditingController..text = row,
+                )),
           );
+     
+     
         });
   }
 }

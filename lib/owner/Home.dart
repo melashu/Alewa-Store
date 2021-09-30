@@ -3,20 +3,12 @@ import 'dart:io';
 import 'dart:math';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
-import 'package:boticshop/Utility/login.dart';
-import 'package:boticshop/Utility/setting.dart';
+import 'package:boticshop/Utility/drawer.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/owner/MonthlyReport.dart';
-import 'package:boticshop/owner/Qr-Pdf.dart';
-import 'package:boticshop/owner/RequiredItem.dart';
+import 'package:boticshop/https/Item.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/Transaction.dart';
-import 'package:boticshop/owner/WeeklyReport.dart';
-import 'package:boticshop/owner/categorie.dart';
-import 'package:boticshop/owner/expenes.dart';
 import 'package:boticshop/owner/item.dart';
-import 'package:boticshop/owner/store_level.dart';
-import 'package:boticshop/owner/useraccont.dart';
-import 'package:boticshop/sync/Item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
@@ -60,8 +52,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-  Hive.box("setting").put("isLogBefore",true);
-
     super.initState();
     listOfData = itemBox.values.toList();
     Connectivity().onConnectivityChanged.listen((event) {
@@ -76,9 +66,9 @@ class _HomeState extends State<Home> {
         SyncItem().syncInsertItemList(context);
         SyncItem().syncUpdateItem(context);
         SyncItem().syncDeleteItem(context);
-
       } else {}
     });
+    // startPlatform();
   }
 
   @override
@@ -104,341 +94,7 @@ class _HomeState extends State<Home> {
         child: Icon(Icons.add_shopping_cart_outlined),
       ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-                decoration: BoxDecoration(color: Colors.white),
-                child: UserAccountsDrawerHeader(
-                    currentAccountPicture: CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.people_outlined)),
-                    accountName: Text("Welecome Meshu"),
-                    accountEmail: Text("working"))),
-            Card(
-              child: ListTile(
-                autofocus: true,
-                title: Text("ቅርንጭፍ ያክሉ"),
-                subtitle: Text("Add Branch"),
-                leading: Icon(Icons.shop_two_outlined, color: Colors.blue[400]),
-                onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                  //   return QRViewExample();
-                  // }));
-                },
-              ),
-            ),
-            ExpansionTile(
-              title: Text("ንብረት አስተዳደር", style: Style.style1),
-              tilePadding: EdgeInsets.only(left: 20),
-              leading: Icon(Icons.inventory, color: Colors.blue[400]),
-              subtitle: Text("Inventory Management"),
-              children: [
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("ምድብ ያክሉ"),
-                    subtitle: Text("Add Categorie"),
-                    leading: Icon(Icons.category_outlined,
-                        color: Colors.deepPurpleAccent),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (contex) {
-                        return Addcategorie();
-                      }));
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("አዲስ እቃ መመዝገቢያ", style: Style.style1),
-                    subtitle: Text("Register New Item"),
-                    leading: Icon(Icons.add_box_outlined,
-                        color: Colors.deepPurpleAccent),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (contex) {
-                        return Item();
-                      }));
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text(
-                      "የእቃ ብዛት",
-                      style: Style.style1,
-                    ),
-                    subtitle: Text("Store Levle"),
-                    leading: Icon(Icons.store_outlined,
-                        color: Colors.deepPurpleAccent),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return StoreLevel();
-                      }));
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("የእቃ ዝርዝር", style: Style.style1),
-                    subtitle: Text("Item List"),
-                    leading: Icon(
-                      Icons.list_alt_outlined,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return ItemList();
-                      }));
-                    },
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 10,
-                    autofocus: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    title: Text("አስፈላጊ እቃዎች", style: Style.style1),
-                    subtitle: Text("Required Item"),
-                    leading: Icon(
-                      Icons.circle,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onTap: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) {
-                        return RequiredItem();
-                      }));
-                    },
-                  ),
-                ),
-              ],
-            ),
-            ExpansionTile(
-              title: Text(
-                "የሒሳብ አስተዳደር ",
-                style: Style.style1,
-              ),
-              subtitle: Text("Finacial Management"),
-              leading: Icon(Icons.file_copy_outlined, color: Colors.blue[400]),
-              children: [
-                Card(
-                  child: ListTile(
-                    horizontalTitleGap: 12,
-                    title: Text("የውጭ መመዝገቢያ ", style: Style.style1),
-                    subtitle: Text("Expeness Register"),
-                    leading: Icon(
-                      Icons.money_off,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Expeness();
-                      }));
-                    },
-                  ),
-                ),
-
-                // ExpansionTile(
-                //   title: Text("ትርፍ እና ኪሳራ", style: Style.style1),
-                //   subtitle: Text("Income Statement"),
-                //   leading: Icon(
-                //     Icons.album_rounded,
-                //     color: Colors.deepPurpleAccent,
-                //   ),
-                //   tilePadding: EdgeInsets.only(left: 20),
-                //   children: [
-                //     Card(
-                //       elevation: 10,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         autofocus: true,
-                //         title: Text("ዕለታዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Daily Report"),
-                //         leading: Icon(Icons.report, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //     Card(
-                //       elevation: 5,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         title: Text("ሳምንታዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Weekliy Report"),
-                //         leading:
-                //             Icon(Icons.view_week, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //     Card(
-                //       elevation: 10,
-                //       child: ListTile(
-                //         horizontalTitleGap: 12,
-                //         title: Text("ወራሃዊ ሪፖርት", style: Style.style1),
-                //         subtitle: Text("Monthliy Report"),
-                //         leading:
-                //             Icon(Icons.next_week, color: Colors.orangeAccent),
-                //         contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                //         onTap: () {},
-                //       ),
-                //     ),
-                //   ],
-                // ),
-
-                ExpansionTile(
-                  title: Text(
-                    "የሽያጭ ሪፖርት",
-                    style: Style.style1,
-                  ),
-                  subtitle: Text("Sales Report"),
-                  leading: Icon(
-                    Icons.album_rounded,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  tilePadding: EdgeInsets.only(left: 20),
-                  children: [
-                    Card(
-                      elevation: 5,
-                      child: ListTile(
-                        horizontalTitleGap: 12,
-                        title: Text("ሳምንታዊ ሪፖርት", style: Style.style1),
-                        subtitle: Text("Weekliy Report"),
-                        leading:
-                            Icon(Icons.view_week, color: Colors.orangeAccent),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return WekklyTransaction();
-                          }));
-                        },
-                      ),
-                    ),
-                    Card(
-                      elevation: 10,
-                      child: ListTile(
-                        horizontalTitleGap: 12,
-                        title: Text("ወራሃዊ ሪፖርት", style: Style.style1),
-                        subtitle: Text("Monthliy Report"),
-                        leading:
-                            Icon(Icons.next_week, color: Colors.orangeAccent),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                        onTap: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return MonthlyTransaction();
-                          }));
-                        },
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            Card(
-              child: ListTile(
-                horizontalTitleGap: 10,
-                autofocus: true,
-                title: Text("የብድር አስተዳደር", style: Style.style1),
-                subtitle: Text("Debt Management"),
-                leading: Icon(Icons.control_point_duplicate_outlined,
-                    color: Colors.blue[400]),
-                onTap: () {},
-              ),
-            ),
-            ExpansionTile(
-              title: Text(
-                "የሰራተኞች አስተዳደር",
-                style: Style.style1,
-              ),
-              subtitle: Text("Employee Management"),
-              leading: Icon(
-                Icons.album_rounded,
-                color: Colors.deepPurpleAccent,
-              ),
-              tilePadding: EdgeInsets.only(left: 20),
-              children: [
-                Card(
-                  elevation: 5,
-                  child: ListTile(
-                    horizontalTitleGap: 12,
-                    title: Text("User Account ", style: Style.style1),
-                    leading:
-                        Icon(Icons.view_week, color: Colors.deepPurpleAccent),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Useraccount();
-                      }));
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Card(
-              elevation: 10,
-              child: ListTile(
-                horizontalTitleGap: 10,
-                autofocus: true,
-                title: Text("Setting", style: Style.style1),
-                leading: Icon(Icons.settings, color: Colors.blue[400]),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                    return Setting();
-                  }));
-                },
-              ),
-            ),
-            Card(
-              elevation: 10,
-              child: ListTile(
-                horizontalTitleGap: 10,
-                autofocus: true,
-                title: Text("Qr-Pdf Preparation", style: Style.style1),
-                leading: Icon(Icons.settings, color: Colors.blue[400]),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                    return QrPdf();
-                  }));
-                },
-              ),
-            ),
-            Card(
-              elevation: 10,
-              child: ListTile(
-                horizontalTitleGap: 10,
-                autofocus: true,
-                title: Text("Logout", style: Style.style1),
-                leading: Icon(Icons.settings, color: Colors.blue[400]),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (contex) {
-                    return Login();
-                  }));
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      drawer: Drawers.getMainMenu(context),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -472,7 +128,7 @@ class _HomeState extends State<Home> {
                   child: ListTile(
                       title: Center(
                           child: Text(
-                        '$qrText ሽያጩ በትክክል ተካሂዶል',
+                        'You successfuly sold 1 $qrText ',
                         style: Style.style1,
                       )),
                       trailing: CircleAvatar(
@@ -646,30 +302,30 @@ class _HomeState extends State<Home> {
                   border: OutlineInputBorder(),
                   suffixIcon: IconButton(
                       icon: Icon(Icons.search_outlined), onPressed: () {}),
-                  labelText: "የእቃውን አይነት ያስገቡ",
+                  labelText: "Search here ",
                   labelStyle: Style.style1,
                   contentPadding: EdgeInsets.all(10),
                 ),
               ),
             ),
-            // SizedBox(
-            //   height: 50,
-            // ),
+
             Expanded(
               child: ListView.builder(
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
                   itemCount: selectedItem.length,
                   itemBuilder: (context, index) {
+                    // if (selectedItem.length == 0)
+                    //   return Text("Sorry item is not found");
                     if (selectedItem[index]['deleteStatus'] == 'no' &&
                         int.parse(selectedItem[index]['amount'].toString()) >
                             0) {
                       return ExpansionTile(
                         subtitle: Text(
-                          "ሱቅ ላይ ያለው የ እቃ ብዛት: ${selectedItem[index]['amount']}",
+                          "Number of Items: ${selectedItem[index]['amount']}",
                         ),
                         title: Text(
-                            "የእቃው አይነት ${selectedItem[index]['brandName']}",
+                            "Item Name ${selectedItem[index]['brandName']}",
                             style: Style.style1),
                         tilePadding: EdgeInsets.only(left: 20),
                         children: [
@@ -680,26 +336,27 @@ class _HomeState extends State<Home> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                      "መለያ ቁጥር: ${selectedItem[index]['itemID']} ",
+                                      "Item ID: ${selectedItem[index]['itemID']} ",
                                       style: Style.style1),
                                   Text(
-                                      "የእቃው ምድብ: ${selectedItem[index]['catName']}",
+                                      "Item Category: ${selectedItem[index]['catName']}",
                                       style: Style.style1),
                                   Text(
-                                      "የእቃው አይነት: ${selectedItem[index]['brandName']}",
+                                      "Item Name: ${selectedItem[index]['brandName']}",
                                       style: Style.style1),
-                                  Text("መጠን: ${selectedItem[index]['size']}",
-                                      style: Style.style1),
-                                  Text("ብዛት: ${selectedItem[index]['amount']}",
+                                  Text("Size: ${selectedItem[index]['size']}",
                                       style: Style.style1),
                                   Text(
-                                      "የተገዛበት ዋጋ: ${selectedItem[index]['buyPrices']} ",
+                                      "Qunatity: ${selectedItem[index]['amount']}",
                                       style: Style.style1),
                                   Text(
-                                      "መሽጫ ዋጋ: ${selectedItem[index]['soldPrices']} ",
+                                      "Buy Price: ${selectedItem[index]['buyPrices']} ",
                                       style: Style.style1),
                                   Text(
-                                      "የተመዘገበብት ቀን: ${selectedItem[index]['createDate']} ",
+                                      "Retailer Prices : ${selectedItem[index]['soldPrices']} ",
+                                      style: Style.style1),
+                                  Text(
+                                      "Registered Date: ${selectedItem[index]['createDate']} ",
                                       style: Style.style1),
                                   OutlinedButton(
                                     onPressed: () async {
@@ -740,11 +397,12 @@ class _HomeState extends State<Home> {
                                                           controller:
                                                               orderController
                                                                 ..text = '1',
-                                                          decoration: InputDecoration(
-                                                              labelText:
-                                                                  'የእቃውን ብዛት ያስገቡ',
-                                                              border:
-                                                                  OutlineInputBorder()),
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  labelText:
+                                                                      'Quantity',
+                                                                  border:
+                                                                      OutlineInputBorder()),
                                                         ),
                                                       ),
                                                       Padding(
@@ -757,11 +415,12 @@ class _HomeState extends State<Home> {
                                                                         index][
                                                                     'soldPrices']
                                                                 .toString(),
-                                                          decoration: InputDecoration(
-                                                              labelText:
-                                                                  'መሽጫ ዋጋ ያስገቡ',
-                                                              border:
-                                                                  OutlineInputBorder()),
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  labelText:
+                                                                      'Prices',
+                                                                  border:
+                                                                      OutlineInputBorder()),
                                                         ),
                                                       ),
                                                     ],
@@ -792,13 +451,13 @@ class _HomeState extends State<Home> {
                                                           amountOrder == 0) {
                                                         Utility.showSnakBar(
                                                             context,
-                                                            "እባክወትን ቁጥር ብቻ ያስገቡ፡፡",
+                                                            "Please Enter Number only ",
                                                             Colors.redAccent);
                                                       } else if (amount <
                                                           amountOrder) {
                                                         Utility.showDialogBox(
                                                             context,
-                                                            "ያለወት እቃ ዝቅተኛ ነው፡፡",
+                                                            "You have limited item",
                                                             Colors.redAccent);
                                                       } else {
                                                         var itemList =
@@ -859,7 +518,10 @@ class _HomeState extends State<Home> {
                                                                         EdgeInsets
                                                                             .all(8),
                                                                     child: Text(
-                                                                        " ${itemList['brandName']} ሽያጩ በትክክል ተካሂዶል::"),
+                                                                      " ${itemList['brandName']} is sold::",
+                                                                      style: Style
+                                                                          .style1,
+                                                                    ),
                                                                   ),
                                                                   actions: [
                                                                     OutlinedButton(
@@ -940,15 +602,13 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.deepPurple,
-        // selectedFontSize: 12,
         selectedItemColor: Colors.white,
-        // unselectedFontSize: 12,
         unselectedItemColor: Colors.white60,
         selectedLabelStyle: TextStyle(
             color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
         unselectedLabelStyle: TextStyle(
             color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-        iconSize: 40,
+        iconSize: 25,
         elevation: 10,
         items: [
           BottomNavigationBarItem(
@@ -970,18 +630,29 @@ class _HomeState extends State<Home> {
 
             // title:
           ),
+          // BottomNavigationBarItem(
+          //   backgroundColor: Colors.deepPurpleAccent,
+          //   icon: Icon(Icons.report),
+          //   // label: 'ዕለታዊ የሽያጭ ሪፖርት',
+          //   label: 'inpox',
+          //   // title:
+          // ),
         ],
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Home();
+              return MainPage();
             }));
           } else if (index == 1) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ItemList();
             }));
           } else if (index == 2) {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return Transaction();
+            }));
+          } else if (index == 3) {
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return Transaction();
             }));
@@ -994,7 +665,6 @@ class _HomeState extends State<Home> {
   @override
   void dispose() {
     super.dispose();
-    // QRcontroler.dispose();
   }
 
   void onQRViewCreated(QRViewController controller) {
@@ -1002,10 +672,7 @@ class _HomeState extends State<Home> {
     controller.scannedDataStream.listen((scanData) async {
       var random = Random();
       var tID = random.nextInt(1000000);
-      // var ecodedString = json.encode(scanData.code);
-      // print(ecodedString);
       Map itemList = json.decode(scanData.code);
-      // print(itemList);
       if (itemList.isEmpty) {}
       var today = Dates.today;
       var salesPerson = 'Meshu';
@@ -1018,11 +685,11 @@ class _HomeState extends State<Home> {
       if (item == null) {
         QRcontroler.pauseCamera();
         setState(() {
-          finalMessage = "ይቅርታ " +
+          finalMessage = "Sorry " +
               itemList['brandName'] +
-              " ባለ " +
+              " with size " +
               itemList['size'] +
-              " ቁጥር ሲስትም ላይ ማግኝት አልተችለም፤ እባከወትን ማናጀሩን ያናግሩ፡፡";
+              " is not found፡";
           isFinished = true;
         });
       } else if (int.parse(itemAmount) > 0) {
@@ -1044,9 +711,9 @@ class _HomeState extends State<Home> {
         QRcontroler.pauseCamera();
         setState(() {
           finalMessage = itemList['brandName'] +
-              " ባለ " +
+              ", size " +
               itemList['size'] +
-              " ቁጥር ተሸጦ አልቆል";
+              " finished";
           isFinished = true;
         });
       }

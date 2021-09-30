@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:boticshop/Utility/report.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';

@@ -1,7 +1,10 @@
-
+import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/sync/Item.dart';
+import 'package:boticshop/https/Item.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -49,39 +52,65 @@ class _StorageState extends State<Storage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                            "${SyncItem().itemSyncStatus("insertStatus", 'no')} item Looking for inseration synchronization",
+                            "Save  መደረግ የሚፈልግ የእቃ ብዛት = ${SyncItem().itemSyncStatus("insertStatus", 'no')} ",
                             style: Style.style1),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                            "${SyncItem().itemSyncStatus("deleteStatus", 'yes')} item looking for deletion synchronization",
+                            "Delete መደረግ የሚፈልግ የእቃ ብዛት = ${SyncItem().itemSyncStatus("deleteStatus", 'yes')} ",
                             style: Style.style1),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                            "${SyncItem().itemSyncStatus("updateStatus", 'yes')} item looking for updation synchronization",
+                            "Update መደረግ የሚፈልግ የእቃ ብዛት = ${SyncItem().itemSyncStatus("updateStatus", 'yes')} ",
                             style: Style.style1),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: OutlinedButton(
-                          onPressed: () {
-                            SyncItem().syncInsertItemList(context);
-                            SyncItem().syncUpdateItem(context);
-                            SyncItem().syncDeleteItem(context);
-                            MaterialPageRoute(builder: (context) {
-                              return Storage();
-                            });
+                          onPressed: () async {
+                            ConnectivityResult connectivityResult =
+                                await Connectivity().checkConnectivity();
+                            if (connectivityResult != ConnectivityResult.none) {
+                              SyncItem().syncInsertItemList(context);
+                              SyncItem().syncUpdateItem(context);
+                              SyncItem().syncDeleteItem(context);
+                              Utility.successMessage(
+                                  context, "ዳታዎት በትክክል ሴብ ተደርጎል፡፡");
+                              MaterialPageRoute(builder: (context) {
+                                return Storage();
+                              });
+                            } else {
+                              Utility.infoMessage(context,
+                                  "ዳታዎትን ሴብ ሲያደርጉ wifi or Data ያስፈልገዉታል፡፡");
+                            }
                           },
                           child: Text("Sync"),
                           style: Style.outlinedButtonStyle,
                         ),
                       ),
                       OutlinedButton(
-                        onPressed: () {
-                          SyncItem().syncSelect(context);
+                        onPressed: () async {
+                          ConnectivityResult connectivityResult =
+                              await Connectivity().checkConnectivity();
+                          if (connectivityResult != ConnectivityResult.none) {
+                            var result = await SyncItem().syncSelect(context);
+                            if (result >= 1) {
+                              Utility.successMessage(context,
+                                  'በትክክል $result እቃዎችን ስልክዎት ላይ አስቀምጠዋል፡፡ ');
+                            } else {
+                              DangerAlertBoxCenter(
+                                  context: context,
+                                  buttonColor: Colors.deepPurpleAccent,
+                                  buttonText: 'Ok',
+                                  messageText: 'ሁሉም እቃ ስልክዎት ላይ ነው ያለው፡፡');
+                            }
+                          } else {
+                            Utility.infoMessage(context,
+                                "ዳታዎትን ሴብ ሲያደርጉ wifi or Data ያስፈልገዉታል፡፡");
+                          }
                         },
                         child: Text("Refresh Local Storage"),
                         style: Style.outlinedButtonStyle,
@@ -89,7 +118,34 @@ class _StorageState extends State<Storage> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: OutlinedButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            ConfirmAlertBox(
+                                context: context,
+                                title: 'Message',
+                                infoMessage: 'ስልክዎት ላይ የተመዘገበዎን እቃ ማጥፋት ይፈልጋሉ?',
+                                buttonColorForNo: Colors.deepPurple,
+                                buttonColorForYes: Colors.deepPurpleAccent,
+                                onPressedYes: () async {
+                                  var result =
+                                      await SyncItem().cleanBox(context);
+                                  if (result == 0) {
+                                    Hive.box('item').clear();
+                                    Utility.successMessage(context,
+                                        "በትክክል ስልክዎ ላይ ያለውን ዳታ አጥፍተዎል፡፡");
+                                  } else {
+                                    WarningAlertBoxCenter(
+                                      messageText:
+                                          'ሲብ ያልተደረገ $result እቃ አለ እባክዎት ከላይ ያለውን Sync የሚለዎን ይጫኑ፡፡',
+                                      buttonText: 'Ok',
+                                      context: context,
+                                    );
+                                  }
+                                },
+                                onPressedNo: () {
+                                  Navigator.of(context).pop();
+                                  // Navigator.of(context).pop();
+                                });
+                          },
                           child: Text("Clean Local Storage"),
                           style: Style.outlinedButtonStyle,
                         ),
@@ -115,14 +171,12 @@ class _StorageState extends State<Storage> {
                           color: Colors.redAccent,
                           thickness: 1,
                         ),
-                         Padding(
+                        Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
-                            onPressed: () {
-                           
-                              MaterialPageRoute(builder: (context) {
-                                return Storage();
-                              });
+                            onPressed: () async {
+                              var listT = await Report.getTransaction();
+                              print(listT);
                             },
                             child: Text("Sync"),
                             style: Style.outlinedButtonStyle,
@@ -136,8 +190,7 @@ class _StorageState extends State<Storage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
-                            onPressed: () {
-                            },
+                            onPressed: () {},
                             child: Text("Refresh Local Storage"),
                             style: Style.outlinedButtonStyle,
                           ),

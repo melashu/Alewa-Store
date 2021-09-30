@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:boticshop/Utility/Utility.dart';
-import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/https/login.dart';
 import 'package:boticshop/owner/Home.dart' as owner;
-import 'package:boticshop/owner/useraccont.dart';
+import 'package:boticshop/owner/OrgProf.dart';
 import 'package:boticshop/sales/Home.dart' as sales;
-import 'package:steppers/steppers.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
@@ -18,14 +21,9 @@ class Login extends ConsumerWidget {
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, watch) {
-    var loginStatus = Hive.box("setting").get("isLogBefore") == null;
+    // watch.call()
+    var loginStatus = Hive.box("setting").get("isLocal") == null;
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     Hive.box("setting").get("orgName"),
-      //     style: Style.style1,
-      //   ),
-      // ),
       body: Container(
         color: Colors.amberAccent,
         child: ListView(
@@ -41,7 +39,7 @@ class Login extends ConsumerWidget {
                 ),
               ),
               child: Center(
-                  child: Text("Nini Kids Fashion Center",
+                  child: Text("${Hive.box('setting').get('orgName')}",
                       style: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontFamily: '',
@@ -139,7 +137,6 @@ class Login extends ConsumerWidget {
                             },
                             obscureText: true,
                             obscuringCharacter: '*',
-                            textCapitalization: TextCapitalization.characters,
                             decoration: InputDecoration(
                                 labelText: "Enter Password",
                                 hintText: 'Like. abc#123',
@@ -157,40 +154,135 @@ class Login extends ConsumerWidget {
                           ),
                         ),
                         OutlinedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (loginStatus) {
                               if (formKey.currentState.validate()) {
                                 var userName = userNameController.text;
                                 var password = passwordController.text;
-                                if (userBox.containsKey(userName)) {
-                                  var selectedUser = userBox.get(userName);
-                                  if (password == selectedUser['password']) {
-                                    var role = selectedUser['role'];
-                                    if (role.toString().toLowerCase() ==
-                                        'owner') {
-                                      Hive.box("setting")
-                                          .put("deviceUser", userName);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return owner.Home();
-                                      }));
-                                    } else if (role.toString().toLowerCase() ==
-                                        'sales') {
-                                      Hive.box("setting")
-                                          .put("deviceUser", userName);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) {
-                                        return sales.Home();
-                                      }));
+                                var orgId = companyIDController.text;
+
+                                ConnectivityResult connectivityResult =
+                                    await Connectivity().checkConnectivity();
+                                if (connectivityResult !=
+                                    ConnectivityResult.none) {
+                                  var userMap = {
+                                    'userName': userName,
+                                    'orgId': orgId.toUpperCase(),
+                                    'action': 'login'
+                                  };
+                                  Utility.showProgress(context);
+                                  var result =
+                                      await Logins().userLogin(userMap);
+                                  // print("Result==" + result);
+                                  var dataList = result == 'notOk'
+                                      ? null
+                                      : jsonDecode(result) as List;
+                                  if (dataList != null) {
+                                    var data = dataList[0];
+                                    var dbpassword = data['password'];
+                                    var role = data['role'];
+                                    var isActive = data['isActive'];
+                                    var orgName = data['orgName'];
+                                    if (password == dbpassword) {
+
+                                      if (isActive != 1) {
+
+                                        if (role.toString().toLowerCase() ==
+                                            'owner') {
+                                          Hive.box("setting")
+                                              .put("deviceUser", userName);
+                                          Hive.box("setting")
+                                              .put("isLocal", true);
+                                          Hive.box("setting")
+                                              .put("orgName", orgName);
+                                          Hive.box("setting")
+                                              .put("orgId", orgId);
+                                          userBox.put(userName, data);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return owner.Home();
+                                          }));
+                                        } else if (role
+                                                .toString()
+                                                .toLowerCase() ==
+                                            'sales') {
+                                          Hive.box("setting")
+                                              .put("deviceUser", userName);
+                                          Hive.box("setting")
+                                              .put("isLocal", true);
+                                          Hive.box("setting")
+                                              .put("orgName", orgName);
+                                          Hive.box("setting")
+                                              .put("orgId", orgId);
+                                          userBox.put(userName, data);
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return sales.Home();
+                                          }));
+                                        }
+
+                                        
+                                      } else {
+                                        Utility.showSnakBar(
+                                            context,
+                                            "ለጊዜዎ መጠቀም አይችሉም፡፡ እባክዎትን ወደ 0980631983 ይደውሉ",
+                                            Colors.redAccent);
+                                      }
+                                    } else {
+                                      Utility.showSnakBar(
+                                          context,
+                                          "Password ተሳስተዎል፡፡",
+                                          Colors.redAccent);
                                     }
                                   } else {
-                                    Utility.showSnakBar(context,
-                                        "Wrong Password", Colors.redAccent);
+                                    Utility.showSnakBar(
+                                        context,
+                                        "Username ወይም Company ID ተሳስተዋል፡፡",
+                                        Colors.redAccent);
                                   }
                                 } else {
-                                  Utility.showSnakBar(context, "Wrong Username",
-                                      Colors.redAccent);
+                                  InfoAlertBoxCenter(
+                                    context: context,
+                                    title: "Wifi / Mobile Data",
+                                    infoMessage:
+                                        "ለመጀመሪያ ጊዜ እየገቡ ሰለሆነ Wifi / Mobile data ያስፈልገዎታል፡፡   ",
+                                    buttonText: 'Ok',
+                                    buttonColor: Colors.deepPurpleAccent,
+                                    titleTextColor: Colors.deepPurple,
+                                  );
                                 }
+
+                                // if (userBox.containsKey(userName)) {
+                                //   var selectedUser = userBox.get(userName);
+                                //   if (password == selectedUser['password']) {
+                                //     var role = selectedUser['role'];
+                                //     if (role.toString().toLowerCase() ==
+                                //         'owner') {
+                                //       Hive.box("setting")
+                                //           .put("deviceUser", userName);
+                                //       Navigator.of(context).push(
+                                //           MaterialPageRoute(builder: (context) {
+                                //         return owner.Home();
+                                //       }));
+                                //     } else if (role.toString().toLowerCase() ==
+                                //         'sales') {
+                                //       Hive.box("setting")
+                                //           .put("deviceUser", userName);
+                                //       Navigator.of(context).push(
+                                //           MaterialPageRoute(builder: (context) {
+                                //         return sales.Home();
+                                //       }));
+                                //     }
+                                //   } else {
+                                //     Utility.showSnakBar(context,
+                                //         "Wrong Password", Colors.redAccent);
+                                //   }
+                                // } else {
+                                //   Utility.showSnakBar(context, "Wrong Username",
+                                //       Colors.redAccent);
+                                // }
                               }
                             } else {
                               var password = passwordController.text;
@@ -218,10 +310,10 @@ class Login extends ConsumerWidget {
                             onPressed: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
-                                return Useraccount();
+                                return OrgProf();
                               }));
                             },
-                            child: Text("Create Account"),
+                            child: Text("Register Your Business"),
                             style: OutlinedButton.styleFrom(
                                 backgroundColor: Colors.white,
                                 padding: EdgeInsets.all(10),

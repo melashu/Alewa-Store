@@ -5,6 +5,7 @@ import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/PdfInvoice.dart';
 import 'package:boticshop/owner/itemList.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,8 @@ class _TransactionState extends State<Transaction> {
                 await Report.getDailyTransaction(userName: 'owner');
             File lastPdf = await PdfInvoice.generatePDF(
                 soldItemList,
-                "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",
+                // "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት"
+                "Daily Sales Report",
                 Report.getDailyExpenes(),
                 Dates.today);
             await OpenFile.open(lastPdf.path);
@@ -63,7 +65,7 @@ class _TransactionState extends State<Transaction> {
             Utility.showTotalSales(
                 data: soldItemList,
                 context: context,
-                date: "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት",
+                date: "Today sales report",
                 expenes: Report.getDailyExpenes());
           },
         )
@@ -80,7 +82,7 @@ class _TransactionState extends State<Transaction> {
             color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
         iconSize: 40,
         elevation: 10,
- items: [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
             // label: 'ዋና',
@@ -101,12 +103,12 @@ class _TransactionState extends State<Transaction> {
             // title:
           ),
         ],
-        
+
         currentIndex: 2,
         onTap: (index) {
           if (index == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Home();
+              return MainPage();
             }));
           } else if (index == 1) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -125,7 +127,8 @@ class _TransactionState extends State<Transaction> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                "የቀን ${Dates.today}  የሽያጭ ሪፖርት",
+                // "የቀን ${Dates.today}  የሽያጭ ሪፖርት",
+                "Daily Sales Report",
                 style: Style.style1,
               ),
             ),
@@ -148,7 +151,7 @@ class _TransactionState extends State<Transaction> {
                                 border: Border.all(
                                     width: 1, color: Colors.deepPurpleAccent)),
                             child: Text(
-                              "ይቅርታ በዛሬ ዕለት ምንም አይነት ሽያጭ አልተካሂደም::",
+                              "Sorry, sales is not done yet!",
                               style: Style.style1,
                               textAlign: TextAlign.center,
                             ));
@@ -160,7 +163,7 @@ class _TransactionState extends State<Transaction> {
                           itemBuilder: (context, index) {
                             return ExpansionTile(
                               title: Text(
-                                  "የእቃው አይነት ${snapshot.data[index]['brandName']}",
+                                  "Item Name ${snapshot.data[index]['brandName']}",
                                   style: Style.style1),
                               // subtitle: Text("የእቃው አይነት ${snapshot.data[index]['brandName']}"),
                               leading: Icon(
@@ -177,24 +180,24 @@ class _TransactionState extends State<Transaction> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "የእቃው አይነት ፡ ${snapshot.data[index]['brandName']} ቁጥር ${snapshot.data[index]['size']}",
+                                          "Item Name፡ ${snapshot.data[index]['brandName']} Size ${snapshot.data[index]['size']}",
                                           style: Style.style1,
                                         ),
                                         Text(
-                                          "የተገዛበት ዋጋ ፡ ${snapshot.data[index]['buyPrices']} ብር",
+                                          "Orginal Prices፡ ${snapshot.data[index]['buyPrices']} Birr",
                                           style: Style.style1,
                                         ),
                                         Text(
-                                            "የተሸጠበት ዋጋ ፡ ${snapshot.data[index]['soldPrices']} ብር",
+                                            "Retailer Prices፡ ${snapshot.data[index]['soldPrices']} Birr",
                                             style: Style.style1),
                                         Text(
-                                            "የተሸጠው እቃ ብዛት ፡ ${snapshot.data[index]['amount']}",
+                                            "Qunatity ፡ ${snapshot.data[index]['amount']}",
                                             style: Style.style1),
                                         Text(
-                                            "የሽያጭ ባለሙያው ስም ፡ ${snapshot.data[index]['salesPerson']}",
+                                            "Sales Person ፡ ${snapshot.data[index]['salesPerson']}",
                                             style: Style.style1),
                                         Text(
-                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - (int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount'].toString()))} ብር",
+                                            "Difference ፡ ${int.parse(snapshot.data[index]['soldPrices']) - (int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount'].toString()))} Birr",
                                             style: Style.style1),
                                         OutlinedButton(
                                           onPressed: () async {
@@ -203,7 +206,7 @@ class _TransactionState extends State<Transaction> {
                                                 builder: (context) {
                                                   return AlertDialog(
                                                     content: Text(
-                                                        "  ${snapshot.data[index]['brandName']} ቁጥር ${snapshot.data[index]['size']} መመለስ ይፈልጋሉ? "),
+                                                        "  ${snapshot.data[index]['brandName']} Size ${snapshot.data[index]['size']} Do you want return back? "),
                                                     actions: [
                                                       OutlinedButton(
                                                         autofocus: true,
@@ -257,16 +260,19 @@ class _TransactionState extends State<Transaction> {
                                                                       ['amount']
                                                                   .toString();
 
-                                                          item['amount'] =
-                                                             ( (int.parse(
+                                                          item['amount'] = ((int
+                                                                  .parse(
                                                                       itemAmount)) +
-                                                                  (int.parse(item[
-                                                                  'amount'].toString())));
-                                                          item["amountSold"] =
-                                                              ((int.parse(
+                                                              (int.parse(item[
+                                                                      'amount']
+                                                                  .toString())));
+                                                          item[
+                                                              "amountSold"] = ((int
+                                                                  .parse(
                                                                       itemAmount)) -
-                                                                  (int.parse(item[
-                                                                  'amount'].toString())));
+                                                              (int.parse(item[
+                                                                      'amount']
+                                                                  .toString())));
                                                           item['updateStatus'] =
                                                               'yes';
                                                           itemBox.put(

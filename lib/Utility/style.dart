@@ -5,7 +5,6 @@ class Style {
     return OutlinedButton.styleFrom(
         minimumSize: Size(100, 30),
         backgroundColor: Colors.deepPurple,
-        
         padding: EdgeInsets.all(3),
         elevation: 5,
         shape: RoundedRectangleBorder(
@@ -34,6 +33,26 @@ class Style {
   static TextStyle get style1 {
     return TextStyle(
       fontSize: 15,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  static TextStyle get mainStyle1 {
+    return TextStyle(
+        fontSize: 15, fontWeight: FontWeight.bold, color: Colors.blue);
+  }
+
+  static TextStyle get mainStyle2 {
+    return TextStyle(
+      fontSize: 13,
+      color: Colors.blue,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
+  static TextStyle get style2 {
+    return TextStyle(
+      fontSize: 13,
       fontWeight: FontWeight.bold,
     );
   }

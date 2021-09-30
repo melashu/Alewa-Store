@@ -122,13 +122,46 @@ class SyncItem {
     return count;
   }
 
-  Future<void> syncSelect(BuildContext context) async {
+  Future<int> syncSelect(BuildContext context) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var response = await client.post(url, body: {
       "action": "update_item",
-      'orgCode': Hive.box('setting').get("orgCode")
+      'orgId': Hive.box('setting').get("orgId")
     });
+    // print(response.body);
+    var val = 0;
+    if (response.body == 'notOk') {
+      val = -1;
+    } else {
+      var itemList = jsonDecode(response.body) as List;
+      for (Map item in itemList) {
+        String itemCode = item['itemID'];
+        if (!itemBox.containsKey(itemCode)) {
+          val = val + 1;
+          // item[]
+          // item['insertStatus'] = 'no';
+          // item['updateStatus'] = 'no';
+          item['deleteStatus'] = 'no';
+          itemBox.put(itemCode, item);
 
-    
+          // print(itemBox.get(itemCode));
+        }
+      }
+    }
+    // itemBox.put("Item_$itemID", itemMap);
+    return val;
+  }
+
+  Future<int> cleanBox(BuildContext context) async {
+    var itemLists = itemBox.values.toList();
+    int val = 0;
+    for (var item in itemLists) {
+      if ((item['insertStatus'] == 'no') ||
+          (item['updateStatus'] == 'yes') ||
+          (item['deleteStatus'] == 'yes')) {
+        val = val + 1;
+      }
+    }
+    return val;
   }
 }

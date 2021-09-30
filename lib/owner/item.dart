@@ -18,6 +18,7 @@ class _ItemState extends State<Item> {
   var buyPricesController = TextEditingController();
   var soldPricesController = TextEditingController();
   var amountController = TextEditingController();
+  var colorController=TextEditingController();
   var screenshotController = ScreenshotController();
   var itemBox = Hive.box('item');
   var itemCata = Hive.box('categorie');
@@ -92,7 +93,7 @@ class _ItemState extends State<Item> {
                         child: Row(
                           children: [
                             Text(
-                              "የእቃው ምድብ",
+                              "Item Categorie",
                               style: Style.style1,
                             ),
                             Spacer(),
@@ -128,8 +129,23 @@ class _ItemState extends State<Item> {
                           },
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                              labelText: "የእቃው አይነት",
+                              labelText: "Item Name",
                               hintText: 'Like. Nike and addidass',
+                              border: OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.auto),
+                        ),
+                      ),
+                          Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: TextFormField(
+                          controller: colorController,
+                          textInputAction: TextInputAction.next,
+                        
+                          // textCapitalization: TextCapitalization.characters,
+                          decoration: InputDecoration(
+                              labelText: "Color",
+                              hintText: 'Like. pink',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -151,7 +167,7 @@ class _ItemState extends State<Item> {
                           },
                           textCapitalization: TextCapitalization.characters,
                           decoration: InputDecoration(
-                              labelText: "የእቃው ቁጥር",
+                              labelText: "Size",
                               hintText: 'Like. XL, XXL or 42 ,41',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
@@ -174,7 +190,7 @@ class _ItemState extends State<Item> {
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                              labelText: "የተገዛበት ዋጋ",
+                              labelText: "Orginal Prices",
                               hintText: 'Like. 2000',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
@@ -200,7 +216,7 @@ class _ItemState extends State<Item> {
                           },
                           focusNode: _focusNode,
                           decoration: InputDecoration(
-                              labelText: "መሽጫ ዋጋ",
+                              labelText: "Retiler Prices",
                               hintText: 'Like. 2000',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
@@ -225,7 +241,7 @@ class _ItemState extends State<Item> {
                             return null;
                           },
                           decoration: InputDecoration(
-                              labelText: "የእቃው ብዛት ",
+                              labelText: "Quantity ",
                               hintText: 'Like. 20',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
@@ -257,7 +273,9 @@ class _ItemState extends State<Item> {
                         'userName': 'meshu',
                         'brandName': brandController.text,
                         'catName': initVal,
-                        
+                        'orgId': Hive.box("setting").get("orgId"),
+                        'branch':'1',
+                        'color':colorController.text,
                         'createDate': Dates.today,
                         'size': sizeController.text,
                         'buyPrices': buyPricesController.text,

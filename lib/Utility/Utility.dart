@@ -5,12 +5,13 @@ import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 // final monthlyFutureProvider = FutureProvider<double>((ref) {});
 
 final monthlyStateProvider = StateProvider<double>((ref) {
@@ -109,9 +110,9 @@ class Utility {
             Center(
               child: Text(
                 '''
-           መለያ ቁጥር: ${qr['itemID']}
-           የእቃው አይነት: ${qr['brandName']}
-           የእቃው መጠን:  ${qr['size']}
+           Product Code: ${qr['itemID']}
+           Product Name : ${qr['brandName']}
+           Size:  ${qr['size']}
                          ''',
                 style: TextStyle(color: Colors.red),
               ),
@@ -239,18 +240,17 @@ class Utility {
         });
   }
 
-  static Future<String> saveToGalary(Uint8List image, String itemID,
+  static Future<bool> saveToGalary(Uint8List image, String itemID,
       [String pre]) async {
     await [Permission.storage].request();
     String path;
     path = pre == null ? '$itemID' : pre + "_" + '$itemID';
     var result =
         await ImageGallerySaver.saveImage(image, name: path, quality: 50);
-    print("Success ${result['isSuccess']}");
-    return result['filePath'];
+    return result['isSuccess'];
   }
 
-  static void showTotalAssetinBirr(BuildContext context) {
+  static Widget showTotalAssetinBirr(BuildContext context) {
     var itemB = Utility().itemBox.values.toList();
     var totalBirr = 0.0;
     for (var i in itemB) {
@@ -260,35 +260,22 @@ class Utility {
                 double.parse(i['buyPrices']));
       }
     }
-    // totalBirr=double.parse(source)
-    showModalBottomSheet(
-        enableDrag: true,
-        context: context,
-        isScrollControlled: true,
-        builder: (context) {
-          return DraggableScrollableSheet(
-            expand: false,
-            initialChildSize: 0.4,
-            // minChildSize: 0.5,
-            builder: (context, ScrollController scrollController) {
-              return Padding(
-                padding: EdgeInsets.all(5),
-                child: Center(
-                    child: Container(
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            border: Border.all(
-                                width: 1, color: Colors.deepPurpleAccent)),
-                        child: Text(
-                          "አጠቃላይ ያለው ንብረት በብር ሲተመን  $totalBirr ብር ይሆናል፡፡ ",
-                          style: Style.style1,
-                          textAlign: TextAlign.center,
-                        ))),
-              );
-            },
-          );
-        });
+    return Center(
+      child: Container(
+          padding: EdgeInsets.all(10),
+          margin: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(
+                color: Colors.deepPurpleAccent,
+                width: 1,
+              )),
+          child: Text(
+            "አጠቃላይ ያለው ንብረት በብር ሲተመን  $totalBirr ብር ነው፡፡ ",
+            style: Style.style1,
+            textAlign: TextAlign.center,
+          )),
+    );
   }
 
   static void showDialogBox(BuildContext context, String message, Color color) {
@@ -320,10 +307,123 @@ class Utility {
         });
   }
 
-static ListView filteredLists(){
+  static void showProgress(BuildContext context) {
+    ProgressDialog pd = ProgressDialog(context: context);
+    pd.show(
+        max: 100,
+        msg: "Wait",
+        backgroundColor: Colors.white,
+        barrierDismissible: true,
+        borderRadius: 20,
+        msgColor: Colors.deepPurple,
+        msgFontSize: 14,
+        progressBgColor: Colors.white,
+        progressType: ProgressType.valuable);
+  }
 
-} 
+  static Widget saveOrgProfile(Map orgMap, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Container(
+        width: MediaQuery.of(context).size.width * .8,
+        height: MediaQuery.of(context).size.height * .8,
+        padding: EdgeInsets.all(15),
+        // margin: EdgeInsets.only(top: 60),
+        child: ListView(
+          children: [
+            Text("ይህ መረጃ ለሌላ ጊዜ ስለሚስፈልገዎ፡፡\n በጥንቃቂ ያስቀምጡ፡፡",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            Divider(
+              color: Colors.deepPurpleAccent,
+              thickness: 1,
+            ),
+            Text(" የድርጅትዎ ስም፡ ${orgMap['orgName']}",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            Divider(
+              color: Colors.deepPurpleAccent,
+              thickness: 1,
+            ),
+            Text(
+              '''    
+መታወቂያ (Company ID)፡ ${orgMap['orgId']}  
 
+E-mail: ${orgMap['email']}
 
+Phone 1: +251${orgMap['phone1']}
 
+Phone 2: +251${orgMap['phone2']}
+
+Username: ${orgMap['userName']}
+
+Password: ${orgMap['password']}
+                    ''',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.justify,
+            ),
+            Divider(
+              color: Colors.deepPurpleAccent,
+              thickness: 1,
+            ),
+            Text(
+              "Generated By: Mount Digital Solution",
+              style: TextStyle(
+                  fontStyle: FontStyle.italic, fontWeight: FontWeight.w200),
+            ),
+            SizedBox(
+              height: 1,
+            ),
+            Text(
+              "Website: www.keteraraw.com\nEmail: meshu102@outlook.com",
+              style: TextStyle(
+                  fontStyle: FontStyle.italic, fontWeight: FontWeight.w200),
+            ),
+            SizedBox(
+              height: 1,
+            ),
+            SizedBox(
+              height: 1,
+            ),
+            Text(
+              "Phone Number: \n+251980631983\n+251925989771\n+251925197526",
+              style: TextStyle(
+                  fontStyle: FontStyle.italic, fontWeight: FontWeight.w200),
+            ),
+          ],
+        ),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepPurpleAccent, width: 1)),
+      ),
+    );
+  }
+
+  static void successMessage(BuildContext context, String message) {
+    SuccessAlertBoxCenter(
+        messageText: message,
+        buttonColor: Colors.deepPurpleAccent,
+        buttonText: 'Ok',
+        context: context);
+  }
+
+  static void infoMessage(BuildContext context, String message) {
+    InfoAlertBoxCenter(
+      context: context,
+      title: "Wifi / Mobile Data",
+      infoMessage: message,
+      buttonText: 'Ok',
+      buttonColor: Colors.deepPurpleAccent,
+      titleTextColor: Colors.deepPurple,
+    );
+  }
+
+  static BoxDecoration getBoxDecoration() {
+    return BoxDecoration(
+      color: Colors.grey[200],
+      shape: BoxShape.rectangle,
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: Colors.deepPurpleAccent, width: 1),
+    );
+  }
 }

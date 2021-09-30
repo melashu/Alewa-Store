@@ -10,12 +10,12 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 final isDailyProvider = StateProvider<bool>((ref) => false);
-final dailyCaseProvider = StateProvider<String>((ref) => "ለሰራተኛ");
+final dailyCaseProvider = StateProvider<String>((ref) => "Employee");
 final isVisibleProvider = StateProvider<bool>((ref) => false);
-final itemIDProvider = StateProvider<String>((ref) => "ለሰራተኛ");
-final payementDateProvider = StateProvider<String>((ref) => "ቀን");
-final payementMonthProvider = StateProvider<String>((ref) => "ወር");
-final payementYearProvider = StateProvider<String>((ref) => "ዓ.ም");
+final itemIDProvider = StateProvider<String>((ref) => "Employee");
+final payementDateProvider = StateProvider<String>((ref) => "Day");
+final payementMonthProvider = StateProvider<String>((ref) => "Month");
+final payementYearProvider = StateProvider<String>((ref) => "Year");
 final otherIDProvider = StateProvider<String>((ref) => "");
 
 var isVisible = false;
@@ -61,7 +61,7 @@ class Expeness extends ConsumerWidget {
                 return ExpenessList();
               }));
             },
-            child: Text('የወጭ ዝርዝሮች'))
+            child: Text('List of Registered Expeness'))
       ],
       body: ListView(
         padding: EdgeInsets.all(15),
@@ -86,7 +86,7 @@ class Expeness extends ConsumerWidget {
                       children: [
                         Center(
                           child: Text(
-                            "የእለታዊ ወጭዎች መመዝገቢያ ገጽ",
+                            "Daily Expeness Registration Form",
                             style: Style.style1,
                           ),
                         ),
@@ -97,7 +97,7 @@ class Expeness extends ConsumerWidget {
                         Row(
                           children: [
                             Text(
-                              "የወጭ አይነት",
+                              "Expeness Type",
                               style: Style.style1,
                             ),
                             SizedBox(
@@ -110,16 +110,16 @@ class Expeness extends ConsumerWidget {
                               style: Style.dropDouwnStyle,
                               items: [
                                 DropdownMenuItem(
-                                  child: Text('ለራተኛ'),
-                                  value: 'ለሰራተኛ',
+                                  child: Text('Employee'),
+                                  value: 'Employee',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('ለቤት ኪራይ'),
-                                  value: 'ለቤት ኪራይ',
+                                  child: Text('House Rent'),
+                                  value: 'House Rent',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('ለትራንስፖርት'),
-                                  value: 'ለትራንስፖርት',
+                                  child: Text('Transport'),
+                                  value: 'Transport',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('other'),
@@ -151,9 +151,9 @@ class Expeness extends ConsumerWidget {
                               autofocus: true,
                               validator: (value) {
                                 if (value.isEmpty)
-                                  return 'የወጭ አይነት ያስገቡ';
+                                  return 'Please Enter Expeness Type';
                                 else if (double.tryParse(value) != null) {
-                                  return 'የወጭ አይነት ያስገቡ';
+                                  return 'Please Enter Expeness Type';
                                 }
                                 return null;
                               },
@@ -162,8 +162,8 @@ class Expeness extends ConsumerWidget {
                               },
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: "የወጭ አይነት",
-                                hintText: 'ለሰራተኛ',
+                                labelText: "Expeness Type",
+                                hintText: 'Employee',
                               ),
                             ),
                           ),
@@ -177,17 +177,17 @@ class Expeness extends ConsumerWidget {
                             autocorrect: true,
                             validator: (val) {
                               if (val.isEmpty) {
-                                return "እባክወትን የክፍያ መጠኑን ያስገቡ";
+                                return "Enter in Birr";
                               } else if (int.tryParse(val) == null) {
-                                return "እባክወትን የክፍያ መጠኑን በብር ያስገቡ ";
+                                return "Enter in Birr ";
                               }
                               return null;
                             },
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 15),
                             decoration: InputDecoration(
-                                labelText: " የክፍያ መጠን በብር",
-                                hintText: ' የክፍያ መጠን በብር',
+                                labelText: " Payement in Birr",
+                                hintText: ' Payement in Birr',
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.always,
                                 border: OutlineInputBorder(
@@ -215,12 +215,12 @@ class Expeness extends ConsumerWidget {
                               };
                               await expenessBox.put('e-$eID', expenessMap);
                               if (expenessBox.containsKey('e-$eID')) {
-                                Utility.showSnakBar(context, "በትክክል ተመዝግቦል!",
+                                Utility.showSnakBar(context, "Done Succssfuly!",
                                     Colors.greenAccent);
                               } else {
                                 Utility.showSnakBar(
                                     context,
-                                    "አልተመዘገበም እባክወትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
+                                    "Something went wrong please call to 0980631983  ",
                                     Colors.redAccent);
                               }
                             }
@@ -258,7 +258,7 @@ class Expeness extends ConsumerWidget {
                 children: [
                   Center(
                     child: Text(
-                      "የወርሃዊ ወጭዎች መመዝገቢያ ገጽ",
+                      "Monthly Expeness Registration Form",
                       style: Style.style1,
                     ),
                   ),
@@ -270,7 +270,7 @@ class Expeness extends ConsumerWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 12.0),
-                        child: Text("ክፍያ የሚፈጸምበት"),
+                        child: Text("Payement"),
                       ),
                       DropdownButton(
                         items: Dates.getDay(),
@@ -304,7 +304,7 @@ class Expeness extends ConsumerWidget {
                   Row(
                     children: [
                       Text(
-                        "የወጭ አይነት",
+                        "Expeness Type",
                         style: Style.style1,
                       ),
                       SizedBox(
@@ -315,16 +315,16 @@ class Expeness extends ConsumerWidget {
                         style: Style.dropDouwnStyle,
                         items: [
                           DropdownMenuItem(
-                            child: Text('ለሰራተኛ'),
-                            value: 'ለሰራተኛ',
+                            child: Text('Employee'),
+                            value: 'Employee',
                           ),
                           DropdownMenuItem(
-                            child: Text('ለቤት ኪራይ'),
-                            value: 'ለቤት ኪራይ',
+                            child: Text('House Rent'),
+                            value: 'House Rent',
                           ),
                           DropdownMenuItem(
-                            child: Text('ለትራንስፖርት'),
-                            value: 'ለትራንስፖርት',
+                            child: Text('Transport'),
+                            value: 'Transport',
                           ),
                           DropdownMenuItem(
                             child: Text('other'),
@@ -367,8 +367,8 @@ class Expeness extends ConsumerWidget {
                         },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: "የወጭ አይነት",
-                          hintText: 'ለሰራተኛ',
+                          labelText: "Expenes Type",
+                          hintText: 'Employee',
                         ),
                       ),
                     ),
@@ -381,17 +381,17 @@ class Expeness extends ConsumerWidget {
                       autocorrect: true,
                       validator: (val) {
                         if (val.isEmpty) {
-                          return "እባክወትን የክፍያ መጠኑን ያስገቡ";
+                          return "Please Enter Amount You Pay ";
                         } else if (int.tryParse(val) == null) {
-                          return "እባክወትን የክፍያ መጠኑን በብር ያስገቡ ";
+                          return "Please Enter Amount You Pay ";
                         }
                         return null;
                       },
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 15),
                       decoration: InputDecoration(
-                          labelText: "የክፍያ መጠን በብር",
-                          hintText: 'የክፍያ መጠን በብር',
+                          labelText: "Expenes amount",
+                          hintText: 'Expenes amount',
                           floatingLabelBehavior: FloatingLabelBehavior.always,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -400,9 +400,9 @@ class Expeness extends ConsumerWidget {
                           errorStyle: TextStyle(color: Colors.red))),
                   OutlinedButton(
                     onPressed: () async {
-                      if (payementDate != 'ቀን' &&
-                          payementMonth != 'ወር' &&
-                          payementYear != 'ዓ.ም') {
+                      if (payementDate != 'Day' &&
+                          payementMonth != 'Month' &&
+                          payementYear != 'Year') {
                         var random = Random();
                         var eID = random.nextInt(1000000);
                         String other = otherController.text;
@@ -415,7 +415,7 @@ class Expeness extends ConsumerWidget {
                                   month: int.parse(payementMonth),
                                   day: int.parse(payementDate))
                               .toString(),
-                          'payementType': 'ወርሃዊ',
+                          'payementType': 'monthly',
                           'insertStatus': 'no',
                           'updateStatus': 'no',
                           'deleteStatus': 'no'
@@ -425,16 +425,18 @@ class Expeness extends ConsumerWidget {
                         await expenessBox.put('e-$eID', expenessMap);
                         if (expenessBox.containsKey('e-$eID')) {
                           Utility.showSnakBar(
-                              context, "በትክክል ተመዝግቧል!", Colors.greenAccent);
+                              context, "Done succssfuly!", Colors.greenAccent);
                         } else {
                           Utility.showSnakBar(
                               context,
-                              "አልተመዘገበም እባክወትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
+                              "Something Went Wrong Please call to 0980631983! ",
                               Colors.redAccent);
                         }
                       } else {
-                        Utility.showSnakBar(context,
-                            "እባክወትን ትክክለኛውን የክፍያ ቀን ይምረጡ", Colors.redAccent);
+                        Utility.showSnakBar(
+                            context,
+                            "Please Enter Valid Amount in Birr",
+                            Colors.redAccent);
                       }
                     },
                     child: Text(

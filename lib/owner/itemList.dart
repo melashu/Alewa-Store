@@ -3,19 +3,20 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/Transaction.dart';
+import 'package:boticshop/owner/editItem.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'editItem.dart';
 
-final itemListStateProvider = StateProvider<List>((ref) {
+final itemListStateProvider = StateProvider.autoDispose<List>((ref) {
   var item = Hive.box("item").values.toList();
   return item;
 });
 
-final selectedItemStateProvider = StateProvider<List>((ref) {
+final selectedItemStateProvider = StateProvider.autoDispose<List>((ref) {
   var selected = ref.watch(itemListStateProvider).state;
   return selected;
 });
@@ -47,7 +48,7 @@ class ItemList extends ConsumerWidget {
             color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
         unselectedLabelStyle: TextStyle(
             color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-        iconSize: 40,
+        iconSize: 25,
         elevation: 10,
         items: [
           BottomNavigationBarItem(
@@ -69,13 +70,19 @@ class ItemList extends ConsumerWidget {
 
             // title:
           ),
+          // BottomNavigationBarItem(
+          //   backgroundColor: Colors.deepPurpleAccent,
+          //   icon: Icon(Icons.notifications_active),
+          //   // label: 'ዕለታዊ የሽያጭ ሪፖርት',
+          //   label: 'Message',
+          //   // title:
+          // ),
         ],
-        
         currentIndex: 1,
         onTap: (index) {
           if (index == 0) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return Home();
+              return MainPage();
             }));
           } else if (index == 1) {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -95,7 +102,7 @@ class ItemList extends ConsumerWidget {
               padding: const EdgeInsets.all(12.0),
               child: Center(
                 child: Text(
-                  "እቃዎች ዝርዝር ",
+                  "List of available items ",
                   style: Style.style1,
                 ),
               ),
@@ -106,7 +113,7 @@ class ItemList extends ConsumerWidget {
             ),
             Padding(
               padding: const EdgeInsets.all(18.0),
-              child: TextField(
+              child: TextFormField(
                 onChanged: (val) {
                   List filtered = [];
                   if (val.isEmpty) {
@@ -133,41 +140,40 @@ class ItemList extends ConsumerWidget {
                     icon: Icon(Icons.search_outlined),
                     onPressed: () {},
                   ),
-                  labelText: "የእቃውን አይነት ያስገቡ",
+                  labelText: "Search here ",
                   labelStyle: Style.style1,
                   contentPadding: EdgeInsets.all(10),
                 ),
               ),
             ),
-            // ValueListenableBuilder(
-            //     valueListenable: itemBox.listenable(),
-            //     builder: (context, box, _) {
-            //       // List data = box.values.toList();
-            //       return
-
-            dataTable(context)
-            // }),
+            ValueListenableBuilder(
+                valueListenable: itemBox.listenable(),
+                builder: (context, box, _) {
+                  List data = box.values.toList();
+                  return dataTable(context,data);
+                }),
           ],
         ),
       ),
     );
   }
 
-  Widget dataTable(BuildContext context) {
-    var selectedItem = context.read(selectedItemStateProvider).state;
+  Widget dataTable(BuildContext context, selectedItem) {
+    // var selectedItem = context.read(selectedItemStateProvider).state;
+    // print("Result =$selectedItem");
+    // Hive.box('item').clear();
     return ListView.builder(
         itemCount: selectedItem.length,
         shrinkWrap: true,
         physics: ClampingScrollPhysics(),
         itemBuilder: (context, index) {
-          
           if (selectedItem[index]['deleteStatus'] == 'no' &&
               int.parse(selectedItem[index]['amount'].toString()) > 0) {
             return ExpansionTile(
               subtitle: Text(
-                "ሱቅ ላይ ያለው የ እቃ ብዛት: ${selectedItem[index]['amount']}",
+                "Number of Items: ${selectedItem[index]['amount']}",
               ),
-              title: Text("የእቃው አይነት ${selectedItem[index]['brandName']}",
+              title: Text("Item Name ${selectedItem[index]['brandName']}",
                   style: Style.style1),
               leading: PopupMenuButton(
                   color: Colors.deepPurple,
@@ -205,22 +211,23 @@ class ItemList extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("መለያ ቁጥር: ${selectedItem[index]['itemID']} ",
+                        Text("Item ID: ${selectedItem[index]['itemID']} ",
                             style: Style.style1),
-                        Text("የእቃው ምድብ: ${selectedItem[index]['catName']}",
+                        Text("Item Category: ${selectedItem[index]['catName']}",
                             style: Style.style1),
-                        Text("የእቃው አይነት: ${selectedItem[index]['brandName']}",
+                        Text("Item Name: ${selectedItem[index]['brandName']}",
                             style: Style.style1),
-                        Text("መጠን: ${selectedItem[index]['size']}",
+                        Text("Size: ${selectedItem[index]['size']}",
                             style: Style.style1),
-                        Text("ብዛት: ${selectedItem[index]['amount']}",
+                        Text("Qunatity: ${selectedItem[index]['amount']}",
                             style: Style.style1),
-                        Text("የተገዛበት ዋጋ: ${selectedItem[index]['buyPrices']} ",
-                            style: Style.style1),
-                        Text("መሽጫ ዋጋ: ${selectedItem[index]['soldPrices']} ",
+                        Text("Buy Price: ${selectedItem[index]['buyPrices']} ",
                             style: Style.style1),
                         Text(
-                            "የተመዘገበብት ቀን: ${selectedItem[index]['createDate']} ",
+                            "Retailer Prices : ${selectedItem[index]['soldPrices']} ",
+                            style: Style.style1),
+                        Text(
+                            "Registered Date: ${selectedItem[index]['createDate']} ",
                             style: Style.style1),
                         OutlinedButton(
                           onPressed: () async {
@@ -230,47 +237,49 @@ class ItemList extends ConsumerWidget {
                                   return AlertDialog(
                                       content: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: ListView(
-                                          shrinkWrap: true,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextField(
-                                                onChanged: (val) {
-                                                  var quantity = int.parse(
-                                                      val.isEmpty ? '0' : val);
-                                                  var prices = int.parse(
-                                                      selectedItem[index]
-                                                              ['soldPrices']
-                                                          .toString());
-                                                  var total = quantity * prices;
-                                                  pricesController
-                                                    ..text = total.toString();
-                                                },
-                                                controller: orderController
-                                                  ..text = '1',
-                                                decoration: InputDecoration(
-                                                    labelText: 'የእቃውን ብዛት ያስገቡ',
-                                                    border:
-                                                        OutlineInputBorder()),
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            // shrinkWrap: true,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: TextField(
+                                                  onChanged: (val) {
+                                                    var quantity = int.parse(
+                                                        val.isEmpty ? '0' : val);
+                                                    var prices = int.parse(
+                                                        selectedItem[index]
+                                                                ['soldPrices']
+                                                            .toString());
+                                                    var total = quantity * prices;
+                                                    pricesController
+                                                      ..text = total.toString();
+                                                  },
+                                                  controller: orderController
+                                                    ..text = '1',
+                                                  decoration: InputDecoration(
+                                                      labelText: 'Quantity',
+                                                      border:
+                                                          OutlineInputBorder()),
+                                                ),
                                               ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextField(
-                                                controller: pricesController
-                                                  ..text = selectedItem[index]
-                                                          ['soldPrices']
-                                                      .toString(),
-                                                decoration: InputDecoration(
-                                                    labelText: 'መሽጫ ዋጋ ያስገቡ',
-                                                    border:
-                                                        OutlineInputBorder()),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: TextField(
+                                                  controller: pricesController
+                                                    ..text = selectedItem[index]
+                                                            ['soldPrices']
+                                                        .toString(),
+                                                  decoration: InputDecoration(
+                                                      labelText: 'Prices',
+                                                      border:
+                                                          OutlineInputBorder()),
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                       // ),
@@ -294,12 +303,12 @@ class ItemList extends ConsumerWidget {
                                                 amountOrder == 0) {
                                               Utility.showSnakBar(
                                                   context,
-                                                  "እባክወትን ቁጥር ብቻ ያስገቡ፡፡",
+                                                  "Please Enter Number only ",
                                                   Colors.redAccent);
                                             } else if (amount < amountOrder) {
                                               Utility.showDialogBox(
                                                   context,
-                                                  "ያለወት እቃ ዝቅተኛ ነው፡፡",
+                                                  "You have limited item",
                                                   Colors.redAccent);
                                             } else {
                                               var itemList =
@@ -341,7 +350,9 @@ class ItemList extends ConsumerWidget {
                                                           padding:
                                                               EdgeInsets.all(8),
                                                           child: Text(
-                                                              " ${itemList['brandName']} ሽያጩ በትክክል ተካሂዶል::"),
+                                                            " ${itemList['brandName']} is sold::",
+                                                            style: Style.style1,
+                                                          ),
                                                         ),
                                                         actions: [
                                                           OutlinedButton(

@@ -101,29 +101,29 @@ class Useraccount extends ConsumerWidget {
                           floatingLabelBehavior: FloatingLabelBehavior.auto),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 12.0),
-                    child: TextFormField(
-                      controller: salaryController,
-                      onChanged: (val) {
-                        // if (formKey.currentState.validate()) {}
-                      },
-                      validator: (val) {
-                        if (val.isEmpty) {
-                          return "Please Enter Salary";
-                        } else if (int.tryParse(val) == null) {
-                          return "Please Enter Number Only";
-                        }
-                        return null;
-                      },
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                          labelText: "Enter Salary",
-                          hintText: 'Like. 2000 Birr',
-                          border: OutlineInputBorder(),
-                          floatingLabelBehavior: FloatingLabelBehavior.auto),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(bottom: 12.0),
+                  //   child: TextFormField(
+                  //     controller: salaryController,
+                  //     onChanged: (val) {
+                  //       // if (formKey.currentState.validate()) {}
+                  //     },
+                  //     validator: (val) {
+                  //       if (val.isEmpty) {
+                  //         return "Please Enter Salary";
+                  //       } else if (int.tryParse(val) == null) {
+                  //         return "Please Enter Number Only";
+                  //       }
+                  //       return null;
+                  //     },
+                  //     textInputAction: TextInputAction.next,
+                  //     decoration: InputDecoration(
+                  //         labelText: "Enter Salary",
+                  //         hintText: 'Like. 2000 Birr',
+                  //         border: OutlineInputBorder(),
+                  //         floatingLabelBehavior: FloatingLabelBehavior.auto),
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12.0),
                     child: TextFormField(
@@ -184,16 +184,16 @@ class Useraccount extends ConsumerWidget {
                         if (formKey.currentState.validate()) {
                           var role = initRole;
                           var fullName = fullNamrController.text;
-                          var salary = salaryController.text;
                           var userName = userNameController.text;
                           var password = passwordController.text;
                           var userList = {
+                            'orgId':'all',
                             "role": role,
                             "fullName": fullName,
-                            "salary": salary,
                             "usreName": userName,
-                            "password": password
-                          };
+                            "password": password,
+                            "loginStatus":'1'
+                                                      };
                           userBox.put(userName, userList);
                           if (userBox.containsKey(userName)) {
                             Utility.showSnakBar(context,

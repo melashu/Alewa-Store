@@ -134,4 +134,19 @@ class Report {
     }
     return totalExpeness;
   }
+
+  static Future<List> getTransaction() async {
+    var transactionBox = Hive.lazyBox("transaction");
+    var keyList = transactionBox.keys.toList();
+    var itemLists = [];
+    for (var key in keyList) {
+      var items = await transactionBox.get(key);
+      items['tID'] = key;
+      itemLists.add(items);
+    }
+
+    return itemLists;
+  }
+
+  
 }
