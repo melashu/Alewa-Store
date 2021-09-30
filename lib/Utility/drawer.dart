@@ -244,7 +244,7 @@ class Drawers {
                   "የሽያጭ ሪፖርት",
                   style: Style.style2,
                 ),
-                title: Text("Sales Report", style: Style.style1),
+                title: Text("Sales Reports", style: Style.style1),
                 leading: Icon(
                   Icons.album_rounded,
                   color: Colors.deepPurpleAccent,
