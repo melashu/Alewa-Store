@@ -15,10 +15,15 @@ import 'package:hive/hive.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
+
 // import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 // import 'package:geocoding/geocoding.dart';
+class OrgProf extends StatefulWidget {
+  @override
+  _OrgProfState createState() => _OrgProfState();
+}
 
-class OrgProf extends ConsumerWidget {
+class _OrgProfState extends State<OrgProf> {
   final setting = Hive.box("setting");
   final orgNameController = TextEditingController();
   final ownerController = TextEditingController();
@@ -32,7 +37,7 @@ class OrgProf extends ConsumerWidget {
   final FocusNode emailFocus = FocusNode();
   final formKey = GlobalKey<FormState>();
   @override
-  Widget build(BuildContext context, watch) {
+  Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
       slivers: [
@@ -145,10 +150,8 @@ class OrgProf extends ConsumerWidget {
                                 return "Number must start with 9";
                               else if (val.length < 9)
                                 return '${9 - val.length} digit left';
-                              else if (val.length > 9)
-                                return "Wrong Digit";
-                              else if (val.length == 9)
-                                phone2Focus.requestFocus();
+                              else if (val.length > 9) return "Wrong Digit";
+
                               return null;
                             },
                             textInputAction: TextInputAction.next,
@@ -172,8 +175,6 @@ class OrgProf extends ConsumerWidget {
                           ),
                           TextFormField(
                             style: Style.style1,
-                            focusNode: phone2Focus,
-                            autocorrect: true,
                             keyboardType: TextInputType.phone,
                             controller: phone2Controller,
                             enableSuggestions: true,
@@ -184,10 +185,7 @@ class OrgProf extends ConsumerWidget {
                                 return "Number must start with 9";
                               else if (val.length < 9)
                                 return '${9 - val.length} digit ይቀራል';
-                              else if (val.length > 9)
-                                return "Wrong Digit";
-                              else if (val.length == 9)
-                                emailFocus.requestFocus();
+                              else if (val.length > 9) return "Wrong Digit";
                               return null;
                             },
                             onChanged: (val) {
@@ -217,7 +215,9 @@ class OrgProf extends ConsumerWidget {
                             controller: emailController,
                             enableSuggestions: true,
                             validator: (val) {
-                              if (!val.contains('@'))
+                              if (val.isEmpty)
+                                return null;
+                              else if (!val.contains('@'))
                                 return '$val is not valid e-mail address';
                               else if (val.endsWith('@'))
                                 return '$val is not valid e-mail address';
@@ -233,7 +233,7 @@ class OrgProf extends ConsumerWidget {
                             decoration: InputDecoration(
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
-                                labelText: 'ኢሜል ',
+                                labelText: 'ኢሜል (አለማስገባት ይቻላል) ',
                                 hintText: 'ኢሜል ያስገቡ',
                                 // hintStyle: Style.style1,
                                 labelStyle: Style.style1,
@@ -248,6 +248,9 @@ class OrgProf extends ConsumerWidget {
                             style: Style.style1,
                             controller: userNameController,
                             enableSuggestions: true,
+                            onChanged: (val) {
+                              formKey.currentState.validate();
+                            },
                             validator: (val) {
                               if (val.isEmpty)
                                 return "Enter user name ";
@@ -276,6 +279,9 @@ class OrgProf extends ConsumerWidget {
                           TextFormField(
                             autocorrect: true,
                             style: Style.style1,
+                            onChanged: (val) {
+                              formKey.currentState.validate();
+                            },
                             controller: passwordController,
                             enableSuggestions: true,
                             obscureText: true,
@@ -315,7 +321,7 @@ class OrgProf extends ConsumerWidget {
                     await Connectivity().checkConnectivity();
                 if (formKey.currentState.validate()) {
                   if (connectivityResult != ConnectivityResult.none) {
-                    var orgBox = await Boxes.getOrgProfileBox();
+                    var orgBox = Hive.lazyBox("orgprofile");
                     var orgName = orgNameController.text;
                     var ownerName = ownerController.text;
                     var phone1 = phone1Controller.text;
@@ -374,6 +380,18 @@ class OrgProf extends ConsumerWidget {
                           progressType: ProgressType.valuable);
                       var result = await OrgProfHttp().insertOrgProf(orgMap);
                       if (result == "ok") {
+                        Hive.box("setting").put("isSubscribed",
+                            false); // to check weather the users are subscribed for fee or not
+                        Hive.box("setting").put("isWorkingLoc", false);
+                        var subInfo = {
+                          'regDate': Dates.today,
+                          "freeDay": 30,
+                          "exteraDay": 5,
+                          "isExtended": false,
+                          "message":
+                              "እናመሰናለን፣ የሙከራ ጊዜዎትን ጭርስዋል፡፡ እባክዎት ለ5 ቀን በነጽ ያራዝሙ ወይም በቋሚነት አባል ይሆኑ፡፡"
+                        };
+                        Hive.box("setting").put("subInfo", subInfo);
                         var message =
                             connectivityResult == ConnectivityResult.mobile
                                 ? " የሞባይል ዳታዎን ማጥፋት ይችላሉ፡፡"
@@ -393,7 +411,7 @@ class OrgProf extends ConsumerWidget {
                           "password": password,
                           "loginStatus": '1'
                         };
-                        orgBox.put(id, orgMap);
+                        await orgBox.put(id, orgMap);
                         if (orgBox.containsKey(id)) {
                           Hive.box("setting").put("isLocal", true);
                           Hive.box("setting").put("orgName", orgName);

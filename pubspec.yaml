@@ -31,12 +31,16 @@ dependencies:
   sn_progress_dialog: ^1.0.3
   # background_fetch: ^1.0.1
   flutter_riverpod: ^0.14.0+3
+  curved_navigation_bar: ^1.0.1
+  flutter_speed_dial: ^4.4.0+1
+  fluttertoast: ^8.0.8
+  # flutter_riverpod: ^1.0.0-dev.2
   flutter_awesome_alert_box: ^2.1.1
   screenshot: ^1.2.3
   connectivity_plus: ^1.0.6
   open_file: ^3.2.1
   geolocator: ^7.6.2
-  # geocoding: ^2.0.1
+  package_info_plus: ^1.2.0
   flutter_hide_show_password_input: ^0.0.1
   pdf: ^3.4.2
   qr_code_scanner: ^0.5.1
@@ -44,7 +48,7 @@ dependencies:
   http: ^0.13.3
   abushakir: ^0.1.4
   # barcode_scanner: ^1.2.0
-  image_gallery_saver: ^1.6.9
+  image_gallery_saver: ^1.7.0
   permission_handler: ^8.1.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

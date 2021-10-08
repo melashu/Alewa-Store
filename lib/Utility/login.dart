@@ -2,16 +2,23 @@ import 'dart:convert';
 
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/https/login.dart';
-import 'package:boticshop/owner/Home.dart' as owner;
+import 'package:boticshop/https/orgprof.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/OrgProf.dart';
 import 'package:boticshop/sales/Home.dart' as sales;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
-class Login extends ConsumerWidget {
+class Login extends StatefulWidget {
+  // const MainLogin({ Key? key }) : super(key: key);
+
+  @override
+  _MainLoginState createState() => _MainLoginState();
+}
+
+class _MainLoginState extends State<Login> {
   // const RequiredItem({ Key key }) : super(key: key);
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -20,8 +27,35 @@ class Login extends ConsumerWidget {
 
   final formKey = GlobalKey<FormState>();
   @override
-  Widget build(BuildContext context, watch) {
-    // watch.call()
+  void initState() {
+    super.initState();
+    Connectivity().onConnectivityChanged.listen((event) async {
+      if (event == ConnectivityResult.mobile ||
+          event == ConnectivityResult.wifi) {
+        var orgId = Hive.box("setting").get("orgId");
+        // print(orgId);
+        if (orgId != null) {
+      
+          OrgProfHttp().getSubStatus(orgId);
+          if (!Hive.box('setting').get("isWorkingLoc")) {
+            OrgProfHttp().updateLocation(orgId);
+            Hive.box('setting').put("isWorkingLoc", true);
+          }
+
+          // print("Updated");
+        }
+        print("Now you are connected with network");
+        // SyncItem().syncInsertItemList(context);
+        // SyncItem().syncUpdateItem(context);
+        // SyncItem().syncDeleteItem(context);
+        // SyncItem.getTotalItem();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // watch.call();
     var loginStatus = Hive.box("setting").get("isLocal") == null;
     return Scaffold(
       body: Container(
@@ -30,7 +64,7 @@ class Login extends ConsumerWidget {
           children: [
             Container(
               width: double.infinity,
-              height: 200,
+              height: 150,
               decoration: BoxDecoration(
                 // color: Colors.deepPurpleAccent,
                 // image: DecorationImage(image: AssetImage("images/login.jpg")),
@@ -39,7 +73,7 @@ class Login extends ConsumerWidget {
                 ),
               ),
               child: Center(
-                  child: Text("${Hive.box('setting').get('orgName')}",
+                  child: Text("Welcome to ${Hive.box('setting').get('orgName')}",
                       style: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontFamily: '',
@@ -48,6 +82,8 @@ class Login extends ConsumerWidget {
             ),
             Container(
               width: double.infinity,
+              // color: Colors.blueAccent
+
               height: MediaQuery.of(context).size.height * 0.8,
               child: Padding(
                 padding: const EdgeInsets.only(
@@ -101,7 +137,6 @@ class Login extends ConsumerWidget {
                                 if (val.isEmpty) {
                                   return "Please Enter Username";
                                 }
-
                                 return null;
                               },
                               textInputAction: TextInputAction.next,
@@ -173,7 +208,7 @@ class Login extends ConsumerWidget {
                                   Utility.showProgress(context);
                                   var result =
                                       await Logins().userLogin(userMap);
-                                  // print("Result==" + result);
+
                                   var dataList = result == 'notOk'
                                       ? null
                                       : jsonDecode(result) as List;
@@ -184,9 +219,7 @@ class Login extends ConsumerWidget {
                                     var isActive = data['isActive'];
                                     var orgName = data['orgName'];
                                     if (password == dbpassword) {
-
                                       if (isActive != 1) {
-
                                         if (role.toString().toLowerCase() ==
                                             'owner') {
                                           Hive.box("setting")
@@ -198,10 +231,12 @@ class Login extends ConsumerWidget {
                                           Hive.box("setting")
                                               .put("orgId", orgId);
                                           userBox.put(userName, data);
+                                          OrgProfHttp().getSubStatus(orgId);
+
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder: (context) {
-                                            return owner.Home();
+                                            return MainPage();
                                           }));
                                         } else if (role
                                                 .toString()
@@ -222,8 +257,6 @@ class Login extends ConsumerWidget {
                                             return sales.Home();
                                           }));
                                         }
-
-                                        
                                       } else {
                                         Utility.showSnakBar(
                                             context,
@@ -292,8 +325,11 @@ class Login extends ConsumerWidget {
                               if (password == selectedUser['password']) {
                                 Navigator.of(context)
                                     .push(MaterialPageRoute(builder: (context) {
-                                  return owner.Home();
+                                  return MainPage();
                                 }));
+                              } else {
+                                Utility.showSnakBar(context,
+                                    "Password ተሳስተዎል፡፡", Colors.redAccent);
                               }
                             }
                           },
@@ -306,26 +342,66 @@ class Login extends ConsumerWidget {
                         ),
                         Visibility(
                           visible: loginStatus,
-                          child: OutlinedButton(
+                          child: TextButton(
                             onPressed: () {
                               Navigator.of(context)
                                   .push(MaterialPageRoute(builder: (context) {
                                 return OrgProf();
                               }));
                             },
-                            child: Text("Register Your Business"),
-                            style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                padding: EdgeInsets.all(10),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20))),
+                            // child: Text("Register Your Business",
+                            child: Text("አዲስ ነዎት? እባክዎትን ንግድዎትን ይመዝግቡ !",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                    decorationStyle: TextDecorationStyle.solid,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Colors.yellow)),
+                            style: TextButton.styleFrom(
+                                // backgroundColor: Colors.white,
+                                // padding: EdgeInsets.all(10),
+                                // shape: RoundedRectangleBorder(
+                                //     borderRadius: BorderRadius.circular(20))
+                                ),
                           ),
-                        )
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            // Navigator.of(context)
+                            //     .push(MaterialPageRoute(builder: (context) {
+                            //   return OrgProf();
+                            // }));
+                          },
+                          // child: Text("Register Your Business",
+                          child: Text(" Alewa ለእኔ ሥራ ምን ይጠቅመኛል?",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  decorationStyle: TextDecorationStyle.solid,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.yellow)),
+                          style: TextButton.styleFrom(
+                              // backgroundColor: Colors.white,
+                              // padding: EdgeInsets.all(10),
+                              // shape: RoundedRectangleBorder(
+                              //     borderRadius: BorderRadius.circular(20))
+                              ),
+                        ),
+                        Divider(
+                          color: Colors.white,
+                          thickness: 1,
+                        ),
+                        Text(" Copywrite @ Mount Technology 2021 ",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontStyle: FontStyle.italic))
                       ],
                     )),
               ),
               decoration: BoxDecoration(
-                color: Colors.deepPurpleAccent,
+                color: Colors.blueAccent,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(150),
                 ),

@@ -64,12 +64,15 @@ class Dates {
   static List<DropdownMenuItem<String>> getDay() {
     List<DropdownMenuItem<String>> days = [];
     dayList.forEach((day) {
-      days.add(DropdownMenuItem(child: Text(day),value: day,));
+      days.add(DropdownMenuItem(
+        child: Text(day),
+        value: day,
+      ));
     });
     return days;
   }
-  
-    static List<DropdownMenuItem<String>> getMonth() {
+
+  static List<DropdownMenuItem<String>> getMonth() {
     List<DropdownMenuItem<String>> months = [];
     monthList.forEach((month) {
       months.add(DropdownMenuItem(
@@ -79,7 +82,8 @@ class Dates {
     });
     return months;
   }
- static List<DropdownMenuItem<String>> getYear() {
+
+  static List<DropdownMenuItem<String>> getYear() {
     List<DropdownMenuItem<String>> years = [];
     yearList.forEach((year) {
       years.add(DropdownMenuItem(
@@ -90,10 +94,19 @@ class Dates {
     return years;
   }
 
+  static String get today {
+    var mapDate = EtDatetime.now().date;
+    var today = EtDatetime(
+            year: mapDate['year'], month: mapDate['month'], day: mapDate['day'])
+        .toString();
+    return today;
+  }
 
-  static String get today{
-      var mapDate = EtDatetime.now().date;
-      var today = EtDatetime(year: mapDate['year'],month: mapDate['month'],day: mapDate['day']).toString();
-      return today;
+  static String get time {
+    var mapDate = EtDatetime.now();
+    var min = mapDate.minute <= 9 ? "0" + "${mapDate.minute}" : mapDate.minute;
+    var times = '${mapDate.hour}:$min';
+
+    return times;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -20,17 +21,17 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(Hive.box("setting").get("orgName")),
-        actions: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Icon(Icons.settings),
-              )
-            ],
-          )
-        ],
+        title: Utility.getTitle(),
+        // actions: [
+        //   Row(
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.only(right: 12.0),
+        //         child: Icon(Icons.settings),
+        //       )
+        //     ],
+        //   )
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -110,29 +111,28 @@ class _SettingState extends State<Setting> {
                         }),
               ),
             ),
-            Card(
-              child: ListTile(
-                // horizontalTitleGap: 5,
-                autofocus: true,
-                contentPadding: EdgeInsets.all(1),
-                title: Text(
-                  "Storge Management",
-                ),
-                subtitle: Text(""),
+            // Card(
+            //   child: ListTile(
+            //     // horizontalTitleGap: 5,
+            //     autofocus: true,
+            //     contentPadding: EdgeInsets.all(1),
+            //     title: Text(
+            //       "Storge Management",
+            //     ),
 
-                leading: Icon(
-                  Icons.file_present,
-                  size: 30,
-                  color: Colors.deepPurpleAccent,
-                ),
-                onTap: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) {
-                    return Storage();
-                  }));
-                },
-              ),
-            ),
+            //     leading: Icon(
+            //       Icons.file_present,
+            //       size: 30,
+            //       color: Colors.deepPurpleAccent,
+            //     ),
+            //     onTap: () {
+            //       Navigator.of(context)
+            //           .push(MaterialPageRoute(builder: (context) {
+            //         return Storage();
+            //       }));
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),

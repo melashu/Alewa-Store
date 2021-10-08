@@ -1,6 +1,6 @@
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/owner/Home.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/MonthlyReport.dart';
 import 'package:boticshop/owner/Qr-Pdf.dart';
 import 'package:boticshop/owner/RequiredItem.dart';
@@ -30,7 +30,8 @@ class Drawers {
                       radius: 20,
                       backgroundColor: Colors.white,
                       child: Icon(Icons.people_outlined)),
-                  accountName: Text("Welecome ${Hive.box("setting").get('deviceUser')}"),
+                  accountName:
+                      Text("Welecome ${Hive.box("setting").get('deviceUser')}"),
                   accountEmail: Text("working"))),
           Card(
             child: ListTile(
@@ -174,22 +175,26 @@ class Drawers {
                 ),
               ),
               Card(
-                    elevation: 10,
-                    child: ListTile(
-                      horizontalTitleGap: 12,
-                      autofocus: true,
-                      subtitle: Text("አጠቃላይ ንብረት", style: Style.style2),
-                      title: Text("Total Asset",style: Style.style1,),
-                      leading: Icon(Icons.assessment_outlined, color: Colors.deepPurpleAccent),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                      onTap: () {
-                        Navigator.of(context)
+                elevation: 10,
+                child: ListTile(
+                  horizontalTitleGap: 12,
+                  autofocus: true,
+                  subtitle: Text("አጠቃላይ ንብረት", style: Style.style2),
+                  title: Text(
+                    "Total Asset",
+                    style: Style.style1,
+                  ),
+                  leading: Icon(Icons.assessment_outlined,
+                      color: Colors.deepPurpleAccent),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                  onTap: () {
+                    Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return Asset();
                     }));
-                      },
-                    ),
-                  ),
+                  },
+                ),
+              ),
 
               // ExpansionTile(
               //   title: Text("ትርፍ እና ኪሳራ", style: Style.style1),
@@ -377,50 +382,51 @@ class Drawers {
     );
   }
 
-  static BottomNavigationBar getBottomNavigationBar(BuildContext context) {
+  static BottomNavigationBar getBottomNavigationBar(
+      BuildContext context, int index) {
     return BottomNavigationBar(
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: Colors.blue,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.white60,
       selectedLabelStyle: TextStyle(
           color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
       unselectedLabelStyle: TextStyle(
           color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-      iconSize: 40,
+      iconSize: 25,
       elevation: 10,
       items: [
         BottomNavigationBarItem(
           icon: Icon(Icons.home_outlined),
-          // label: 'ዋና',
-          label: 'Home',
+          label: 'ዋና',
+          // label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.list_alt_outlined),
-          // label: 'የእቃዎች ዝርዝር',
-          label: 'Product List',
+          label: 'የእቃዎች ዝርዝር',
+          // label: 'Product List',
           // title:
         ),
         BottomNavigationBarItem(
           backgroundColor: Colors.deepPurpleAccent,
           icon: Icon(Icons.report),
-          // label: 'ዕለታዊ የሽያጭ ሪፖርት',
-          label: 'Daily Sales',
+          label: 'ዕለታዊ የሽያጭ ሪፖርት',
+          // label: 'Daily Sales',
 
           // title:
         ),
-         BottomNavigationBarItem(
-          backgroundColor: Colors.deepPurpleAccent,
-          icon: Icon(Icons.report),
-          // label: 'ዕለታዊ የሽያጭ ሪፖርት',
-          label: 'Message',
-          // title:
-        ),
+        // BottomNavigationBarItem(
+        //   backgroundColor: Colors.deepPurpleAccent,
+        //   icon: Icon(Icons.report),
+        //   // label: 'ዕለታዊ የሽያጭ ሪፖርት',
+        //   label: 'Message',
+        //   // title:
+        // ),
       ],
-      currentIndex: 1,
+      currentIndex: index,
       onTap: (index) {
         if (index == 0) {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return Home();
+            return MainPage();
           }));
         } else if (index == 1) {
           Navigator.push(context, MaterialPageRoute(builder: (context) {

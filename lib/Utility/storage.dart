@@ -20,10 +20,7 @@ class _StorageState extends State<Storage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            Hive.box("setting").get("orgName"),
-            style: Style.style1,
-          ),
+          title: Utility.getTitle(),
         ),
         body: RefreshIndicator(
           onRefresh: () {

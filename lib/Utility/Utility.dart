@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
+import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Boxes.dart';
+import 'package:boticshop/Utility/date.dart';
+import 'package:boticshop/Utility/location.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
@@ -425,5 +428,81 @@ Password: ${orgMap['password']}
       borderRadius: BorderRadius.circular(10),
       border: Border.all(color: Colors.deepPurpleAccent, width: 1),
     );
+  }
+
+  static Text getTitle() {
+    return Text(
+      Hive.box('setting').get("orgName").toString().toUpperCase(),
+      style: TextStyle(fontSize: 18),
+    );
+  }
+
+  static bool isValid() {
+    var isSub = Hive.box("setting").get("isSubscribed");
+    Map subInfo = Hive.box("setting").get("subInfo");
+    bool isValid = (!isSub &&
+        (EtDatetime.parse(Dates.today)
+                .difference(EtDatetime.parse(subInfo['regDate']))
+                .inDays ==
+            subInfo['freeDay']));
+    return isValid;
+  }
+
+  static void getValidationBox(BuildContext context) {
+    Map subInfo = Hive.box("setting").get("subInfo");
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              "Warning Message",
+              style: Style.style1,
+            ),
+            content: subInfo['isExtended']
+                ? Text("እናመሰናለን፣ የሙከራ ጊዜዎትን ጭርስዋል፡፡ እባክዎት በቋሚነት አባል ይሆኑ፡፡")
+                : Text(
+                    "${subInfo['message']} ",
+                    style: Style.mainStyle1,
+                  ),
+            elevation: 10,
+            buttonPadding: EdgeInsets.all(5),
+            actions: [
+              ElevatedButton(onPressed: () {}, child: Text("ቋሚ አባል")),
+              subInfo['isExtended']
+                  ? SizedBox()
+                  : ElevatedButton(
+                      onPressed: () {
+                        subInfo['freeDay'] =
+                            subInfo['freeDay'] + subInfo['exteraDay'];
+                        subInfo['isExtended'] = true;
+                        Hive.box("setting").put("subInfo", subInfo);
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("ለ ${subInfo['exteraDay']} ቀን ይራዘምልኝ")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("አልፈልግም")),
+            ],
+          );
+        });
+  }
+
+  static Future<void> setCurrentWorkingLocation() async {
+    var position = await Locations.getCurrentLocation();
+    var latitude = position.latitude.toString();
+    var longtitude = position.longitude.toString();
+    var altitude = position.altitude.toString();
+    var location = Hive.box('location');
+    Map locationMap = {
+      "latitude": latitude,
+      "longtitude": longtitude,
+      "altitude": altitude,
+      "action": "locationUpdate",
+      "orgId": Hive.box("setting").get("orgId")
+    };
+    location.put("location", locationMap);
   }
 }

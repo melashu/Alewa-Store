@@ -39,7 +39,7 @@ class StoreLevel extends ConsumerWidget {
     var leverProvider = watch(levelFutureProvider);
     return Scaffold(
         appBar: AppBar(
-          title: Text(setting.get("orgName")),
+          title: Utility.getTitle(),
         ),
         // persistentFooterButtons: [
         //   OutlinedButton(

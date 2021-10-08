@@ -16,7 +16,8 @@ Future main() async {
   await Boxes.getTotalItem();
   await Boxes.getExpenesBox();
   await Boxes.getUserAccount();
-
+  await Boxes.getLocationBox();
+  await Boxes.getMessageBox();
   runApp(ProviderScope(child: MyApp()));
 }
 
@@ -48,7 +49,6 @@ class MyApp extends StatelessWidget {
         title: Hive.box("setting").get("orgName"),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          buttonColor: Colors.purple,
           buttonTheme: ButtonThemeData(
               textTheme: ButtonTextTheme.accent,
               shape: ContinuousRectangleBorder(
@@ -56,6 +56,6 @@ class MyApp extends StatelessWidget {
               )),
           primarySwatch: Colors.deepPurple,
         ),
-        home: MainPage());
+        home: Login());
   }
 }

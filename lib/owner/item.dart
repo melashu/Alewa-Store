@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
@@ -18,7 +19,7 @@ class _ItemState extends State<Item> {
   var buyPricesController = TextEditingController();
   var soldPricesController = TextEditingController();
   var amountController = TextEditingController();
-  var colorController=TextEditingController();
+  var colorController = TextEditingController();
   var screenshotController = ScreenshotController();
   var itemBox = Hive.box('item');
   var itemCata = Hive.box('categorie');
@@ -37,7 +38,6 @@ class _ItemState extends State<Item> {
   var qrData = '';
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,11 +52,15 @@ class _ItemState extends State<Item> {
           controller: screenshotController,
           child: ListView(
             children: [
-              Text(
-                "አዲስ የመጣን እቃ መመዝገቢያ ፎርም ",
-                style: Style.style1,
+              Center(
+                child: Text(
+                  "አዲስ የመጣን እቃ መመዝገቢያ ፎርም ",
+                  style: Style.style1,
+                ),
               ),
-              Divider(),
+              Divider(
+                color: Colors.blue,
+              ),
               Row(
                 children: [
                   Spacer(),
@@ -93,7 +97,7 @@ class _ItemState extends State<Item> {
                         child: Row(
                           children: [
                             Text(
-                              "Item Categorie",
+                              "የእቃው ምድብ",
                               style: Style.style1,
                             ),
                             Spacer(),
@@ -129,23 +133,8 @@ class _ItemState extends State<Item> {
                           },
                           textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
-                              labelText: "Item Name",
-                              hintText: 'Like. Nike and addidass',
-                              border: OutlineInputBorder(),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.auto),
-                        ),
-                      ),
-                          Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: TextFormField(
-                          controller: colorController,
-                          textInputAction: TextInputAction.next,
-                        
-                          // textCapitalization: TextCapitalization.characters,
-                          decoration: InputDecoration(
-                              labelText: "Color",
-                              hintText: 'Like. pink',
+                              labelText: "የእቃው አይነት",
+                              hintText: 'ምሳ. Nike',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -167,8 +156,32 @@ class _ItemState extends State<Item> {
                           },
                           textCapitalization: TextCapitalization.characters,
                           decoration: InputDecoration(
-                              labelText: "Size",
-                              hintText: 'Like. XL, XXL or 42 ,41',
+                              labelText: "የእቃው ቁጥር",
+                              hintText: 'ምሳ. XL, XXL / 42 ,41',
+                              border: OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.auto),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: TextFormField(
+                          controller: colorController..text = "no color",
+                          textInputAction: TextInputAction.next,
+                          validator: (val) {
+                            if (val.isEmpty) {
+                              return "እባክወትን ባዶ ቦታው ይሙሉ";
+                            }
+                            return null;
+                          },
+                          // initialValue:
+                          onChanged: (val) {
+                            if (formKey.currentState.validate()) {}
+                          },
+                          textCapitalization: TextCapitalization.characters,
+                          decoration: InputDecoration(
+                              labelText: "ቀለም",
+                              hintText: 'ምሳ. ቀይ',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -190,8 +203,8 @@ class _ItemState extends State<Item> {
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
-                              labelText: "Orginal Prices",
-                              hintText: 'Like. 2000',
+                              labelText: "የተገዛበት ዋጋ",
+                              hintText: 'ምሳ. 2000 ብር',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -216,8 +229,8 @@ class _ItemState extends State<Item> {
                           },
                           focusNode: _focusNode,
                           decoration: InputDecoration(
-                              labelText: "Retiler Prices",
-                              hintText: 'Like. 2000',
+                              labelText: "መሽጫ ዋጋ",
+                              hintText: 'ምሳ. 2500 ብር',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -241,8 +254,8 @@ class _ItemState extends State<Item> {
                             return null;
                           },
                           decoration: InputDecoration(
-                              labelText: "Quantity ",
-                              hintText: 'Like. 20',
+                              labelText: "የእቃው ብዛት ",
+                              hintText: 'ምሳ. 20',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
                                   FloatingLabelBehavior.auto),
@@ -255,7 +268,10 @@ class _ItemState extends State<Item> {
                   if (formKey.currentState.validate()) {
                     var bPrices = int.parse(buyPricesController.text);
                     var sPrices = int.parse(soldPricesController.text);
-                    if (sPrices <= bPrices) {
+
+                    if (Utility.isValid()) {
+                      Utility.getValidationBox(context);
+                    } else if (sPrices <= bPrices) {
                       Utility.showSnakBar(
                           context,
                           "የመሽጫ ዋጋው ከተገዛበት በ ${bPrices - sPrices} ብር ያነስ ነው እባክወትን ማስተካከያ ያድርጉ",
@@ -274,8 +290,8 @@ class _ItemState extends State<Item> {
                         'brandName': brandController.text,
                         'catName': initVal,
                         'orgId': Hive.box("setting").get("orgId"),
-                        'branch':'1',
-                        'color':colorController.text,
+                        'branch': '1',
+                        'color': colorController.text,
                         'createDate': Dates.today,
                         'size': sizeController.text,
                         'buyPrices': buyPricesController.text,
@@ -319,7 +335,7 @@ class _ItemState extends State<Item> {
                       } else {
                         Utility.showSnakBar(
                             context,
-                            "አልተመዘገበም እባክወትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
+                            "አልተመዘገበም እባክዎትን ለእርዳታ ወደ 0980631983 ይደወሉ ",
                             Colors.redAccent);
                       }
                     }
@@ -345,7 +361,6 @@ class _ItemState extends State<Item> {
         ),
       ),
     );
-  
   }
 
   void getItemMenu() {

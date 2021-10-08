@@ -41,6 +41,17 @@ class Boxes {
     var box = await Hive.openBox("orgprofile");
     return box;
   }
+
+  static Future<LazyBox> getMessageBox() async {
+    var box = await Hive.openLazyBox("orgprofile");
+    return box;
+  }
+
+  static Future<Box> getLocationBox() async {
+    var box = await Hive.openBox("location");
+    return box;
+  }
+
   // static Future<List<Map>> getItemValue() async {
   //   var values = <Map>[];
   //   var box = await getItemBox();

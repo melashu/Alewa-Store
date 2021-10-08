@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
+import 'package:boticshop/Utility/drawer.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
@@ -35,10 +36,7 @@ class _TransactionState extends State<Transaction> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          Hive.box("setting").get("orgName"),
-          style: Style.style1,
-        ),
+        title: Utility.getTitle(),
       ),
       persistentFooterButtons: [
         OutlinedButton(
@@ -70,65 +68,15 @@ class _TransactionState extends State<Transaction> {
           },
         )
       ],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.deepPurple,
-        // selectedFontSize: 12,
-        selectedItemColor: Colors.white,
-        // unselectedFontSize: 12,
-        unselectedItemColor: Colors.white60,
-        selectedLabelStyle: TextStyle(
-            color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-        unselectedLabelStyle: TextStyle(
-            color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-        iconSize: 40,
-        elevation: 10,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            // label: 'ዋና',
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt_outlined),
-            // label: 'የእቃዎች ዝርዝር',
-            label: 'Item List',
-            // title:
-          ),
-          BottomNavigationBarItem(
-            backgroundColor: Colors.deepPurpleAccent,
-            icon: Icon(Icons.report),
-            // label: 'ዕለታዊ የሽያጭ ሪፖርት',
-            label: 'Daily Sales',
-
-            // title:
-          ),
-        ],
-
-        currentIndex: 2,
-        onTap: (index) {
-          if (index == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return MainPage();
-            }));
-          } else if (index == 1) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ItemList();
-            }));
-          } else if (index == 2) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return Transaction();
-            }));
-          }
-        },
-      ),
+      bottomNavigationBar: Drawers.getBottomNavigationBar(context, 2),
       body: ListView(
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                // "የቀን ${Dates.today}  የሽያጭ ሪፖርት",
-                "Daily Sales Report",
+                "የቀን ${Dates.today}  የሽያጭ ሪፖርት",
+                // "Daily Sales Report",
                 style: Style.style1,
               ),
             ),
@@ -163,7 +111,7 @@ class _TransactionState extends State<Transaction> {
                           itemBuilder: (context, index) {
                             return ExpansionTile(
                               title: Text(
-                                  "Item Name ${snapshot.data[index]['brandName']}",
+                                  "የእቃው አይነት ${snapshot.data[index]['brandName']}",
                                   style: Style.style1),
                               // subtitle: Text("የእቃው አይነት ${snapshot.data[index]['brandName']}"),
                               leading: Icon(
@@ -180,24 +128,24 @@ class _TransactionState extends State<Transaction> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          "Item Name፡ ${snapshot.data[index]['brandName']} Size ${snapshot.data[index]['size']}",
+                                          "የእቃው አይነት ፡ ${snapshot.data[index]['brandName']} ቁጥር ${snapshot.data[index]['size']}",
                                           style: Style.style1,
                                         ),
                                         Text(
-                                          "Orginal Prices፡ ${snapshot.data[index]['buyPrices']} Birr",
+                                          "የተገዛበት ዋጋ ፡ ${snapshot.data[index]['buyPrices']} ብር",
                                           style: Style.style1,
                                         ),
                                         Text(
-                                            "Retailer Prices፡ ${snapshot.data[index]['soldPrices']} Birr",
+                                            "የተሸጠበት ዋጋ ፡ ${snapshot.data[index]['soldPrices']} ብር",
                                             style: Style.style1),
                                         Text(
-                                            "Qunatity ፡ ${snapshot.data[index]['amount']}",
+                                            "የተሸጠው እቃ ብዛት ፡ ${snapshot.data[index]['amount']}",
                                             style: Style.style1),
                                         Text(
-                                            "Sales Person ፡ ${snapshot.data[index]['salesPerson']}",
+                                            "የሽያጭ ባለሙያው ስም ፡ ${snapshot.data[index]['salesPerson']}",
                                             style: Style.style1),
                                         Text(
-                                            "Difference ፡ ${int.parse(snapshot.data[index]['soldPrices']) - (int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount'].toString()))} Birr",
+                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
                                             style: Style.style1),
                                         OutlinedButton(
                                           onPressed: () async {
