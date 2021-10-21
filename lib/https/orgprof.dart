@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:boticshop/Utility/location.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 
 class OrgProfHttp {
   var client = http.Client();
@@ -37,9 +36,66 @@ class OrgProfHttp {
     }
   }
 
-  Future checkVersion(String orgId) async {
+  Future<String> checkVersion() async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var response = await client.post(url, body: {'action': "versionUpdate"});
+    return response.body;
+  }
+
+  static void showVersionUpdate(
+      String message, String title, String link, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text(message),
+            title: Text(title),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("አልፈልግም")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Update Now")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Update Later")),
+            ],
+          );
+        });
+  }
+
+  Future<Map> getAgreement() async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {'action': "agreement"});
+    var mapResult = {};
+    if (response.body != 'notOk') {
+      var result = jsonDecode(response.body) as List;
+      mapResult = result[0];
+    }
+    return mapResult;
+  }
+
+  Future<bool> inserPaymentInfo(String orgId, String date) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url,
+        body: {'action': "paymentInfo", 'orgId': orgId, 'date': date});
+    var result = false;
+    if (response.body == 'ok') {
+      result = true;
+    }
+    return result;
+  }
+
+  Future<String> insertUserAccount(Map users) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: users);
     return response.body;
   }
 }

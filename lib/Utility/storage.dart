@@ -228,7 +228,9 @@ class _StorageState extends State<Storage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              SyncItem.getTotalItem();
+                            },
                             child: Text("Referesh Local Storage"),
                             style: Style.outlinedButtonStyle,
                           ),

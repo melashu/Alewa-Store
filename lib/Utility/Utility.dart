@@ -7,6 +7,7 @@ import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/location.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +16,9 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 // final monthlyFutureProvider = FutureProvider<double>((ref) {});
 
 final monthlyStateProvider = StateProvider<double>((ref) {
@@ -410,6 +414,14 @@ Password: ${orgMap['password']}
         context: context);
   }
 
+  static void showDangerMessage(BuildContext context, String message) {
+    DangerAlertBoxCenter(
+        messageText: message,
+        buttonColor: Colors.deepPurpleAccent,
+        buttonText: 'Ok',
+        context: context);
+  }
+
   static void infoMessage(BuildContext context, String message) {
     InfoAlertBoxCenter(
       context: context,
@@ -445,6 +457,8 @@ Password: ${orgMap['password']}
                 .difference(EtDatetime.parse(subInfo['regDate']))
                 .inDays ==
             subInfo['freeDay']));
+    print('isSub=$isValid');
+
     return isValid;
   }
 
@@ -468,7 +482,14 @@ Password: ${orgMap['password']}
             elevation: 10,
             buttonPadding: EdgeInsets.all(5),
             actions: [
-              ElevatedButton(onPressed: () {}, child: Text("ቋሚ አባል")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return Agre();
+                    }));
+                  },
+                  child: Text("ቋሚ አባል ልሁን")),
               subInfo['isExtended']
                   ? SizedBox()
                   : ElevatedButton(
@@ -480,6 +501,18 @@ Password: ${orgMap['password']}
                         Navigator.of(context).pop();
                       },
                       child: Text("ለ ${subInfo['exteraDay']} ቀን ይራዘምልኝ")),
+              ElevatedButton(
+                  onPressed: () async {
+                    var phone = '+251986806930';
+                    var url = 'tel:$phone';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      showDangerMessage(
+                          context, "ይቅርታ ወደ $phone መደውል አልቻልኩም፡፡");
+                    }
+                  },
+                  child: Text("እርዳታ እፈልጋለሁ")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -504,5 +537,12 @@ Password: ${orgMap['password']}
       "orgId": Hive.box("setting").get("orgId")
     };
     location.put("location", locationMap);
+  }
+
+  static Future<bool> isConnection() async {
+    ConnectivityResult connectivityResult =
+        await Connectivity().checkConnectivity();
+    var isCon = connectivityResult != ConnectivityResult.none;
+    return isCon;
   }
 }

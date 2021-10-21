@@ -1,5 +1,6 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/https/Item.dart';
 import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -22,13 +23,13 @@ Future<List> getStoreLevel() async {
   return store;
 }
 
-final selectedLevelFutureProvider = FutureProvider<List>((ref) {
-  var se = [];
-  ref.watch(levelFutureProvider).whenData((value) {
-    se = value;
-  });
-  // return se;
-});
+// final selectedLevelFutureProvider = FutureProvider<List>((ref) {
+//   var se = [];
+//   ref.watch(levelFutureProvider).whenData((value) {
+//     se = value;
+//   });
+//   // return se;
+// });
 
 class StoreLevel extends ConsumerWidget {
   final setting = Hive.box("setting");
@@ -55,8 +56,9 @@ class StoreLevel extends ConsumerWidget {
             padding: const EdgeInsets.all(12.0),
             child: Center(
               child: Text(
-                "የተሸጡ እና ያልተሸጡ እቃዏች ዝርዝር ",
+                " በቀለም ፤ በመጠን ፤ በዋጋ ተመሳሳይ የሆኑ እቃዎች ብዛት ",
                 style: Style.style1,
+                textAlign: TextAlign.center,
               ),
             ),
           ),
@@ -84,16 +86,23 @@ class StoreLevel extends ConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: leverProvider.when(
                   data: (dataList) {
-                    if (dataList.length == 0)
-                      return TextButton(onPressed: () {}, child: Text('እባክዎትን ይህን ይጫነኑ'),style: TextButton.styleFrom(
-                        padding: EdgeInsets.all(10),
-                        animationDuration: Duration(seconds: 20),
-                        backgroundColor: Colors.deepPurpleAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)
-                        )
-                      ),);
-                    else
+                    if (dataList.length == 0) {
+                      return ElevatedButton(
+                          onPressed: () async {
+                            if (await Utility.isConnection()) {
+                              SyncItem.getTotalItem().then((value) =>
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return StoreLevel();
+                                  })));
+                            } else {
+                              Utility.showDangerMessage(context,
+                                  "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                            }
+                          },
+                          child: Text('እባክዎትን ይህን ይጫኑ'),
+                          style: Style.elevatedButtonStyle);
+                    } else
                       return ListView.builder(
                           shrinkWrap: true,
                           physics: ClampingScrollPhysics(),

@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
@@ -21,6 +20,7 @@ class _ItemState extends State<Item> {
   var amountController = TextEditingController();
   var colorController = TextEditingController();
   var screenshotController = ScreenshotController();
+  var levelController = TextEditingController();
   var itemBox = Hive.box('item');
   var itemCata = Hive.box('categorie');
   var brandFocus = FocusNode();
@@ -40,11 +40,7 @@ class _ItemState extends State<Item> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          Hive.box("setting").get("orgName"),
-          style: Style.style1,
-        ),
-        actions: [],
+        title: Utility.getTitle()
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -239,6 +235,29 @@ class _ItemState extends State<Item> {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: TextFormField(
+                          controller: levelController..text = '5',
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+               
+                          validator: (val) {
+                            if (val.isEmpty) {
+                              return "እባክወትን ባዶ ቦታው ይሙሉ";
+                            } else if (double.tryParse(val) == null) {
+                              return 'እባክወትን ቁጥር ብቻ ያስገቡ';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              labelText: "የእቃው ብዛት ከስንት በታች ሲሆን የማስጠንቀቂያ ምልክት ይፈልጋሉ?",
+                              hintText: 'ምሳ. 5',
+                              border: OutlineInputBorder(),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.auto),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: TextFormField(
                           controller: amountController,
                           textInputAction: TextInputAction.done,
                           keyboardType: TextInputType.number,
@@ -291,6 +310,7 @@ class _ItemState extends State<Item> {
                         'catName': initVal,
                         'orgId': Hive.box("setting").get("orgId"),
                         'branch': '1',
+                        'level':levelController.text,
                         'color': colorController.text,
                         'createDate': Dates.today,
                         'size': sizeController.text,

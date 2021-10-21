@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:screenshot/screenshot.dart';
 
 class EditItem extends StatefulWidget {
- final Map itemList;
+  final Map itemList;
   EditItem(this.itemList);
   @override
   _EditItemState createState() => _EditItemState(itemList);
@@ -24,7 +24,9 @@ class _EditItemState extends State<EditItem> {
   var sizeController = TextEditingController();
   var buyPricesController = TextEditingController();
   var soldPricesController = TextEditingController();
+  var levelController = TextEditingController();
   var amountController = TextEditingController();
+  var colorController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   var itemBox = Hive.box("item");
   var screenshotController = ScreenshotController();
@@ -53,9 +55,7 @@ class _EditItemState extends State<EditItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(Hive.box("setting").get("orgName")),
-      ),
+      appBar: AppBar(title: Utility.getTitle()),
       body: Padding(
         padding: const EdgeInsets.all(15),
         child: Form(
@@ -73,28 +73,17 @@ class _EditItemState extends State<EditItem> {
                 Row(
                   children: [
                     Spacer(),
-                    Text('Qr Mode'),
-                    isQR
-                        ? IconButton(
-                            icon: Icon(Icons.toggle_off),
-                            iconSize: 50,
-                            color: Colors.red,
-                            onPressed: () {
-                              setState(() {
-                                isQR = false;
-                                qrStatus = "Off";
-                              });
-                            })
-                        : IconButton(
-                            icon: Icon(Icons.toggle_on),
-                            iconSize: 50,
-                            onPressed: () {
-                              setState(() {
-                                isQR = true;
-                                qrStatus = "On";
-                              });
-                            }),
-                    Text(qrStatus)
+                    Text('Qr Mode',style: Style.style1,),
+                    Switch(
+                        value: isQR,
+                        onChanged: (val) {
+                          setState(() {
+                            isQR = !isQR;
+
+                            isQR ? qrStatus = "On" : qrStatus = "off";
+                          });
+                        }),
+                    Text(qrStatus,style: Style.style1,)
                   ],
                 ),
                 Divider(
@@ -169,6 +158,29 @@ class _EditItemState extends State<EditItem> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: TextFormField(
+                    controller: colorController..text = data['color'],
+                    textInputAction: TextInputAction.next,
+                    validator: (val) {
+                      if (val.isEmpty) {
+                        return "እባክወትን ባዶ ቦታው ይሙሉ";
+                      }
+                      return null;
+                    },
+                    // initialValue:
+                    onChanged: (val) {
+                      if (formKey.currentState.validate()) {}
+                    },
+                    textCapitalization: TextCapitalization.characters,
+                    decoration: InputDecoration(
+                        labelText: "ቀለም",
+                        hintText: 'ምሳ. ቀይ',
+                        border: OutlineInputBorder(),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: TextFormField(
                     controller: buyPricesController..text = data['buyPrices'],
                     textInputAction: TextInputAction.next,
                     onChanged: (val) {
@@ -216,7 +228,29 @@ class _EditItemState extends State<EditItem> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
                   child: TextFormField(
-                    controller: amountController..text = data['amount'].toString(),
+                    controller: levelController..text = data['level'],
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.number,
+                    validator: (val) {
+                      if (val.isEmpty) {
+                        return "እባክወትን ባዶ ቦታው ይሙሉ";
+                      } else if (double.tryParse(val) == null) {
+                        return 'እባክወትን ቁጥር ብቻ ያስገቡ';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                        labelText: "የእቃው ብዛት ከስንት በታች ሲሆን የማስጠንቀቂያ ምልክት ይፈልጋሉ?",
+                        hintText: 'ምሳ. 5',
+                        border: OutlineInputBorder(),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: TextFormField(
+                    controller: amountController
+                      ..text = data['amount'].toString(),
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.number,
                     onChanged: (val) {
@@ -259,8 +293,10 @@ class _EditItemState extends State<EditItem> {
                           'brandName': brandController.text,
                           'catName': initValue,
                           'size': sizeController.text,
-                          'userName': 'meshu',
-                          'amountSold': "0",
+                          'color': colorController.text,
+                          'level': levelController.text,
+                          'userName': Hive.box("setting").get("deviceUser"),
+                          'amountSold': data['amountSold'],
                           'createDate': date,
                           'buyPrices': buyPricesController.text,
                           'soldPrices': soldPricesController.text,

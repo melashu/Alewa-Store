@@ -13,9 +13,9 @@ final isDailyProvider = StateProvider<bool>((ref) => false);
 final dailyCaseProvider = StateProvider<String>((ref) => "Employee");
 final isVisibleProvider = StateProvider<bool>((ref) => false);
 final itemIDProvider = StateProvider<String>((ref) => "Employee");
-final payementDateProvider = StateProvider<String>((ref) => "Day");
-final payementMonthProvider = StateProvider<String>((ref) => "Month");
-final payementYearProvider = StateProvider<String>((ref) => "Year");
+final payementDateProvider = StateProvider<String>((ref) => "ቀን");
+final payementMonthProvider = StateProvider<String>((ref) => "ወር");
+final payementYearProvider = StateProvider<String>((ref) => "ዓ.ም");
 final otherIDProvider = StateProvider<String>((ref) => "");
 
 var isVisible = false;
@@ -400,9 +400,9 @@ class Expeness extends ConsumerWidget {
                           errorStyle: TextStyle(color: Colors.red))),
                   OutlinedButton(
                     onPressed: () async {
-                      if (payementDate != 'Day' &&
-                          payementMonth != 'Month' &&
-                          payementYear != 'Year') {
+                      if (payementDate != 'ቀን' &&
+                          payementMonth != 'ወር' &&
+                          payementYear != 'ዓ.ም') {
                         var random = Random();
                         var eID = random.nextInt(1000000);
                         String other = otherController.text;

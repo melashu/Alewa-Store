@@ -102,7 +102,7 @@ class SyncItem {
   static Future<void> getTotalItem() async {
     var totalItemBox = Hive.lazyBox("totalitem");
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
-    var response = await client.post(url, body: {"action": "GET_ITEM_LEVLE"});
+    var response = await client.post(url, body: {"action": "GET_ITEM_LEVLE",'orgId':Hive.box("setting").get("orgId")});
     List itemLevel = json.decode(response.body) as List;
     // print(itemLevel);
     itemLevel.forEach((item) async {

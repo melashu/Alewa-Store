@@ -57,11 +57,19 @@ class Style {
     );
   }
 
+  static TextStyle get agree1 {
+    return TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+    );
+  }
+
   static TextStyle get dropDouwnStyle {
     return TextStyle(
       fontSize: 14,
       color: Colors.grey,
       fontWeight: FontWeight.bold,
+      
     );
   }
 }

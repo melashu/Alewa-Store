@@ -10,16 +10,22 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Login extends StatefulWidget {
-  // const MainLogin({ Key? key }) : super(key: key);
-
   @override
   _MainLoginState createState() => _MainLoginState();
 }
 
 class _MainLoginState extends State<Login> {
-  // const RequiredItem({ Key key }) : super(key: key);
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+  );
+
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final companyIDController = TextEditingController();
@@ -32,24 +38,47 @@ class _MainLoginState extends State<Login> {
     Connectivity().onConnectivityChanged.listen((event) async {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
+        _initPackageInfo();
+
         var orgId = Hive.box("setting").get("orgId");
         // print(orgId);
         if (orgId != null) {
-      
           OrgProfHttp().getSubStatus(orgId);
           if (!Hive.box('setting').get("isWorkingLoc")) {
             OrgProfHttp().updateLocation(orgId);
             Hive.box('setting').put("isWorkingLoc", true);
           }
-
-          // print("Updated");
+          // var versionResult =
+          //     jsonDecode(await OrgProfHttp().checkVersion()) as List;
+          // var currentVersion = _packageInfo.version;
+          // var newVersion = versionResult[0]['currentVerssion'];
+          // if (currentVersion == newVersion) {
+          //   OrgProfHttp.showVersionUpdate(versionResult[0]['message'],
+          //       'Vession Update', versionResult[0]['link'], context);
+          // }
         }
-        print("Now you are connected with network");
+        // print("Now you are connected with network");
         // SyncItem().syncInsertItemList(context);
         // SyncItem().syncUpdateItem(context);
         // SyncItem().syncDeleteItem(context);
         // SyncItem.getTotalItem();
       }
+    });
+    /**
+                                           * Hive.box("setting").put("isWorkingLoc", false);
+                                           * **this put to check weather the user location is taken or 
+                                           * not thr user loged in with internet location sync status is 
+                                           * seted to false   
+                                           */
+    Hive.box("setting").get('isWorkingLoc') == null
+        ? Hive.box("setting").put("isWorkingLoc", false)
+        : Hive.box("setting").get('isWorkingLoc');
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
     });
   }
 
@@ -73,7 +102,8 @@ class _MainLoginState extends State<Login> {
                 ),
               ),
               child: Center(
-                  child: Text("Welcome to ${Hive.box('setting').get('orgName')}",
+                  child: Text(
+                      "Welcome to ${Hive.box('setting').get('orgName')}",
                       style: TextStyle(
                           fontStyle: FontStyle.normal,
                           fontFamily: '',

@@ -2,6 +2,20 @@
 xmlns:tools="http://schemas.android.com/tools"
     package="com.example.boticshop">
 
+<queries>
+  <!-- If your app opens https URLs -->
+  <intent>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="https" />
+  </intent>
+  <!-- If your app makes calls -->
+  <intent>
+    <action android:name="android.intent.action.DIAL" />
+    <data android:scheme="tel" />
+  </intent>
+  <!-- If your app emails -->
+</queries>
+
     <!-- <use-permission android:name ="android.permission.READ_EXTERNAL_STORAGE"/>
     <use-permission android:name ="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -14,6 +28,7 @@ xmlns:tools="http://schemas.android.com/tools"
         android:label="Alewa"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

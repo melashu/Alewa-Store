@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
-import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/location.dart';
@@ -10,7 +8,6 @@ import 'package:boticshop/https/orgprof.dart';
 import 'package:boticshop/owner/success.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
@@ -24,6 +21,7 @@ class OrgProf extends StatefulWidget {
 }
 
 class _OrgProfState extends State<OrgProf> {
+  
   final setting = Hive.box("setting");
   final orgNameController = TextEditingController();
   final ownerController = TextEditingController();
@@ -320,7 +318,7 @@ class _OrgProfState extends State<OrgProf> {
                 ConnectivityResult connectivityResult =
                     await Connectivity().checkConnectivity();
                 if (formKey.currentState.validate()) {
-                  if (connectivityResult != ConnectivityResult.none) {
+                  if (await Utility.isConnection()) {
                     var orgBox = Hive.lazyBox("orgprofile");
                     var orgName = orgNameController.text;
                     var ownerName = ownerController.text;

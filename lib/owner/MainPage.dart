@@ -1,25 +1,24 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/drawer.dart';
-import 'package:boticshop/Utility/login.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/storage.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/Home.dart';
 import 'package:boticshop/owner/MonthlyReport.dart';
-import 'package:boticshop/owner/RequiredItem.dart';
-import 'package:boticshop/owner/Transaction.dart';
 import 'package:boticshop/owner/WeeklyReport.dart';
 import 'package:boticshop/owner/asset.dart';
 import 'package:boticshop/owner/categorie.dart';
+import 'package:boticshop/owner/debt.dart';
 import 'package:boticshop/owner/expenes.dart';
 import 'package:boticshop/owner/item.dart';
 import 'package:boticshop/owner/itemList.dart';
+import 'package:boticshop/owner/loweritem.dart';
+import 'package:boticshop/owner/payment.dart';
 import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/owner/useraccont.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -54,32 +53,34 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_close,
-        child: Icon(Icons.message_outlined),
-        overlayOpacity: 0.6,
-        animationSpeed: 100,
-        closeManually: true,
-        children: [
-          SpeedDialChild(
-              backgroundColor: Colors.blue,
-              labelBackgroundColor: Colors.redAccent,
-              labelStyle:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              child: Icon(Icons.mail_outline_outlined),
-              label: "New Message",
-              foregroundColor: Colors.white,
-              onTap: () {}),
-          SpeedDialChild(
-              backgroundColor: Colors.blue,
-              labelBackgroundColor: Colors.blueAccent,
-              labelStyle:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              child: Icon(Icons.inbox_outlined),
-              label: "Inbox Message",
-              foregroundColor: Colors.white)
-        ],
-      ),
+
+      // floatingActionButton: SpeedDial(
+      //   switchLabelPosition: true,
+      //   animatedIcon: AnimatedIcons.menu_close,
+      //   label: Text("Message"),
+      //   child: Icon(Icons.message_outlined),
+      //   overlayOpacity: 0.6,
+      //   animationSpeed: 100,
+      //   children: [
+      //     SpeedDialChild(
+      //         backgroundColor: Colors.blue,
+      //         labelBackgroundColor: Colors.redAccent,
+      //         labelStyle:
+      //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      //         child: Icon(Icons.mail_outline_outlined),
+      //         label: "New Message",
+      //         foregroundColor: Colors.white,
+      //         onTap: () {}),
+      //     SpeedDialChild(
+      //         backgroundColor: Colors.blue,
+      //         labelBackgroundColor: Colors.blueAccent,
+      //         labelStyle:
+      //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      //         child: Icon(Icons.inbox_outlined),
+      //         label: "Inbox Message",
+      //         foregroundColor: Colors.white)
+      //   ],
+      // ),
 
       // FloatingActionButton(
       //   backgroundColor: Colors.blueAccent,
@@ -262,6 +263,25 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     ),
+                    Card(
+                      elevation: 10,
+                      child: ListTile(
+                        tileColor: Colors.white,
+                        horizontalTitleGap: 10,
+                        autofocus: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        title: Text("ዝቅተኛ እቃዎች", style: Style.mainStyle1),
+                        subtitle:
+                            Text("Lower Product", style: Style.mainStyle2),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Lower();
+                          }));
+                        },
+                      ),
+                    ),
+                    
                     // Card(
                     //   elevation: 10,
                     //   child: ListTile(
@@ -378,6 +398,24 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     ),
+                    Card(
+                      elevation: 10,
+                      child: ListTile(
+                        tileColor: Colors.white,
+                        horizontalTitleGap: 10,
+                        autofocus: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        title: Text("ብድር እና ዱቤ", style: Style.mainStyle1),
+                        subtitle:
+                            Text("Debt Management", style: Style.mainStyle2),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Debt();
+                          }));
+                        },
+                      ),
+                    ),
                   ],
                 )
               ],
@@ -453,14 +491,14 @@ class _MainPageState extends State<MainPage> {
                         trailing: Icon(Icons.people_alt_outlined,
                             color: Colors.blue[400]),
                         onTap: () async {
-                          String appName = _packageInfo.appName;
-                          String packageName = _packageInfo.packageName;
-                          String version = _packageInfo.version;
-                          String buildNumber = _packageInfo.buildNumber;
-                          print(" version " + version);
-                          print(" packageName " + packageName);
-                          print(" appName " + appName);
-                          print(" buildNumber " + buildNumber);
+                          // String appName = _packageInfo.appName;
+                          // String packageName = _packageInfo.packageName;
+                          // String version = _packageInfo.version;
+                          // String buildNumber = _packageInfo.buildNumber;
+                          // print(" version " + version);
+                          // print(" packageName " + packageName);
+                          // print(" appName " + appName);
+                          // print(" buildNumber " + buildNumber);
                         },
                       ),
                     ),
@@ -490,6 +528,21 @@ class _MainPageState extends State<MainPage> {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (contex) {
                             return Storage();
+                          }));
+                        },
+                      ),
+                    ),
+                    Card(
+                      elevation: 10,
+                      child: ListTile(
+                        horizontalTitleGap: 10,
+                        autofocus: true,
+                        title: Text("Payment", style: Style.mainStyle1),
+                        trailing: Icon(Icons.storage, color: Colors.blue[400]),
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (contex) {
+                            return Payment();
                           }));
                         },
                       ),

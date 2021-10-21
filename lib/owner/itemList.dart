@@ -4,8 +4,10 @@ import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/drawer.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/editItem.dart';
+import 'package:boticshop/owner/item.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -31,6 +33,14 @@ class ItemList extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Utility.getTitle(),
+      ),
+      floatingActionButton: SpeedDial(
+        label: Text("Add New Product"),
+        onPress: () {
+          Navigator.push(context, MaterialPageRoute(builder: (contex) {
+            return Item();
+          }));
+        },
       ),
       bottomNavigationBar: Drawers.getBottomNavigationBar(context, 1),
       body: Container(
@@ -174,8 +184,7 @@ class ItemList extends ConsumerWidget {
                             if (Utility.isValid()) {
                               Utility.getValidationBox(context);
                             } else {
-
-                            showDialog(
+                              showDialog(
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
@@ -235,7 +244,7 @@ class ItemList extends ConsumerWidget {
                                         actions: [
                                           OutlinedButton(
                                             onPressed: () async {
-                                               if (!Hive.box('setting')
+                                              if (!Hive.box('setting')
                                                   .get("isWorkingLoc")) {
                                                 Utility
                                                     .setCurrentWorkingLocation();
@@ -363,9 +372,7 @@ class ItemList extends ConsumerWidget {
                                           )
                                         ]);
                                   });
-
                             }
-
                           },
                           child: Text(
                             "Order",

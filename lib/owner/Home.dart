@@ -4,12 +4,7 @@ import 'dart:math';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/drawer.dart';
-import 'package:boticshop/Utility/location.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/https/Item.dart';
-import 'package:boticshop/owner/MainPage.dart';
-import 'package:boticshop/owner/Transaction.dart';
-import 'package:boticshop/owner/item.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
@@ -58,15 +53,14 @@ class _HomeState extends State<Home> {
     Connectivity().onConnectivityChanged.listen((event) {
       if (event == ConnectivityResult.mobile &&
           Hive.box("setting").get("mobSync")) {
-        SyncItem().syncInsertItemList(context);
-        SyncItem().syncUpdateItem(context);
-        SyncItem().syncDeleteItem(context);
-        // SyncItem.getTotalItem();
+        // SyncItem().syncInsertItemList(context);
+        // SyncItem().syncUpdateItem(context);
+        // SyncItem().syncDeleteItem(context);
       } else if (event == ConnectivityResult.wifi &&
           Hive.box("setting").get("wifiSync")) {
-        SyncItem().syncInsertItemList(context);
-        SyncItem().syncUpdateItem(context);
-        SyncItem().syncDeleteItem(context);
+        // SyncItem().syncInsertItemList(context);
+        // SyncItem().syncUpdateItem(context);
+        // SyncItem().syncDeleteItem(context);
       } else {}
     });
     // startPlatform();
@@ -75,17 +69,17 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            TextButton(onPressed: () {}, child: Text("Logout")),
-          ],
-          title: Text(
-            Hive.box("setting").get("orgName"),
-            style: Style.style1,
-          ),
-          elevation: 10,
-        ),
-        drawer: Drawers.getMainMenu(context),
+        // appBar: AppBar(
+        //   actions: [
+        //     TextButton(onPressed: () {}, child: Text("Logout")),
+        //   ],
+        //   title: Text(
+        //     Hive.box("setting").get("orgName"),
+        //     style: Style.style1,
+        //   ),
+        //   elevation: 10,
+        // ),
+        // drawer: Drawers.getMainMenu(context),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -272,10 +266,9 @@ class _HomeState extends State<Home> {
                     if (Utility.isValid()) {
                       Utility.getValidationBox(context);
                     } else {
-                       if (!Hive.box('setting').get("isWorkingLoc")) {
+                      if (!Hive.box('setting').get("isWorkingLoc")) {
                         Utility.setCurrentWorkingLocation();
                       }
-                      
                       var filtered = [];
                       if (val.isEmpty) {
                         filtered = [];
@@ -314,8 +307,6 @@ class _HomeState extends State<Home> {
                     physics: ClampingScrollPhysics(),
                     itemCount: selectedItem.length,
                     itemBuilder: (context, index) {
-                      // if (selectedItem.length == 0)
-                      //   return Text("Sorry item is not found");
                       if (selectedItem[index]['deleteStatus'] == 'no' &&
                           int.parse(selectedItem[index]['amount'].toString()) >
                               0) {

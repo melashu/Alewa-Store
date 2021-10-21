@@ -1,5 +1,7 @@
 import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/https/orgprof.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -21,11 +23,7 @@ class Useraccount extends ConsumerWidget {
     var initRole = watch(roleStateProvider).state;
     return Scaffold(
         appBar: AppBar(
-          title: Text(
-            Hive.box("setting").get("orgName"),
-            style: Style.style1,
-          ),
-          actions: [],
+          title: Utility.getTitle(),
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -181,27 +179,45 @@ class Useraccount extends ConsumerWidget {
                   ElevatedButton(
                       child: Text("Create User Account"),
                       onPressed: () async {
-                        if (formKey.currentState.validate()) {
-                          var role = initRole;
-                          var fullName = fullNamrController.text;
-                          var userName = userNameController.text;
-                          var password = passwordController.text;
-                          var userList = {
-                            'orgId':'all',
-                            "role": role,
-                            "fullName": fullName,
-                            "usreName": userName,
-                            "password": password,
-                            "loginStatus":'1'
-                                                      };
-                          userBox.put(userName, userList);
-                          if (userBox.containsKey(userName)) {
-                            Utility.showSnakBar(context,
-                                "Successfuly Registred!", Colors.greenAccent);
-                          } else {
-                            Utility.showSnakBar(context,
-                                "Something went wrong!", Colors.redAccent);
+                        if (await Utility.isConnection()) {
+                          if (formKey.currentState.validate()) {
+                            var role = initRole;
+                            var fullName = fullNamrController.text;
+                            var userName = userNameController.text;
+                            var password = passwordController.text;
+                            var userList = {
+                              'orgId': Hive.box("setting").get("orgId"),
+                              "role": role,
+                              "fullName": fullName,
+                              "usreName": userName,
+                              "password": password,
+                              "loginStatus": '1',
+                              "isActive": '1',
+                              "lastLogin": Dates.today,
+                              "orgName": Hive.box('setting').get("orgName"),
+                              "action": 'userReg'
+                            };
+                            var result =
+                                await OrgProfHttp().insertUserAccount(userList);
+                            if (result == 'ok') {
+                              userBox.put(userName, userList);
+                              if (userBox.containsKey(userName)) {
+                                Utility.successMessage(
+                                    context, "Successfuly Created");
+                                // Utility.showSnakBar(context,
+                                //     "Successfuly Registred!", Colors.greenAccent);
+                              }
+                            } else if (result == "error") {
+                              Utility.showDangerMessage(context,
+                                  "Please Change your user name and try again");
+                            } else {
+                              Utility.showDangerMessage(
+                                  context, "Please try again!");
+                            }
                           }
+                        } else {
+                          Utility.showDangerMessage(context,
+                              "User Account በሚፈጥሩበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
                         }
                       },
                       style: Style.elevatedButtonStyle),
@@ -242,19 +258,19 @@ class Useraccount extends ConsumerWidget {
                                     color: Colors.deepPurple,
                                     initialValue: 0,
                                     onSelected: (i) {
-                                      // if (i == 0) {
-                                      //   // Utility.editItem(itemMap, context);
-                                      //   Navigator.push(context,
-                                      //       MaterialPageRoute(
-                                      //           builder: (context) {
-                                      //     // return EditItem(data[index]);
-                                      //   }));
-                                      // } else if (i == 1) {
-                                      //   // _EditItemState().editItem( itemMap,context);
-                                      //   Utility.showConfirmDialog(
-                                      //       context: context,
-                                      //       // itemMap: data[index]);
-                                      // }
+                                      if (i == 0) {
+                                        // Utility.editItem(itemMap, context);
+                                        // Navigator.push(context,
+                                        //     MaterialPageRoute(
+                                        //         builder: (context) {
+                                        //   return EditItem(data[index]);
+                                        // }));
+                                      } else if (i == 1) {
+                                        // _EditItemState().editItem( itemMap,context);
+                                        // Utility.showConfirmDialog(
+                                        //     context: context,
+                                        // itemMap: data[index]);
+                                      }
                                     },
                                     itemBuilder: (context) {
                                       return [
@@ -288,7 +304,7 @@ class Useraccount extends ConsumerWidget {
                                             style: Style.style1,
                                           ),
                                           Text(
-                                            "Salary ${userList[index]['salary']}",
+                                            "Password ${userList[index]['password']}",
                                             style: Style.style1,
                                           ),
                                           Text(

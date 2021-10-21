@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:boticshop/owner/MainPage.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +17,7 @@ Future main() async {
   await Boxes.getUserAccount();
   await Boxes.getLocationBox();
   await Boxes.getMessageBox();
+  await Boxes.getDebtBox();
   runApp(ProviderScope(child: MyApp()));
 }
 

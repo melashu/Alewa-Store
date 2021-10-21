@@ -35,7 +35,6 @@ class Asset extends ConsumerWidget {
   final filltered = [];
   @override
   Widget build(BuildContext context, watch) {
-    var leverProvider = watch(levelFutureProvider);
     return Scaffold(
         appBar: AppBar(
           title: Text(setting.get("orgName")),
