@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/owner/agreement.dart';
 import 'package:flutter/material.dart';
 
@@ -47,8 +48,9 @@ class _PaymentState extends State<Payment> {
                 ),
                 horizontalTitleGap: 5,
                 contentPadding: EdgeInsets.all(1),
+                subtitle: Text('Information About the service Charge',style: Style.style2,),
                 title: Text(
-                  "ስለ ክፍያ መረጃ ",
+                  "ስለ አገልግሎት ክፍያ መረጃ ",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
@@ -59,7 +61,7 @@ class _PaymentState extends State<Payment> {
                 },
               ),
             ),
-          Card(
+            Card(
               elevation: 10,
               child: ListTile(
                 selectedTileColor: Colors.grey,
@@ -70,8 +72,39 @@ class _PaymentState extends State<Payment> {
                 ),
                 horizontalTitleGap: 5,
                 contentPadding: EdgeInsets.all(1),
+                subtitle: Text(
+                  'Your Service Charge',
+                  style: Style.style2,
+                ),
                 title: Text(
-                  " ሒሳብዎትን ለማይት",
+                  " ያለብዎትን የአገልግሎት ክፍያ ለማይት",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  // Navigator.of(context)
+                  //     .push(MaterialPageRoute(builder: (context) {
+                  //   return Agre(isForInfo: true);
+                  // }));
+                },
+              ),
+            ),
+                Card(
+              elevation: 10,
+              child: ListTile(
+                selectedTileColor: Colors.grey,
+                leading: Icon(
+                  Icons.keyboard_arrow_right_outlined,
+                  color: Colors.blueAccent,
+                  size: 35,
+                ),
+                horizontalTitleGap: 5,
+                contentPadding: EdgeInsets.all(1),
+                subtitle: Text(
+                  'Your Payment History',
+                  style: Style.style2,
+                ),
+                title: Text(
+                  "የክፍያ ታሪኳች",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {

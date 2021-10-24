@@ -33,6 +33,7 @@ class OrgProfHttp {
     var loc = Hive.box("location").get("location");
     if (loc != null) {
       var response = await client.post(url, body: loc);
+      
     }
   }
 
@@ -97,5 +98,15 @@ class OrgProfHttp {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var response = await client.post(url, body: users);
     return response.body;
+  }
+
+  Future<void> getOrgBlockStatus(String orgId) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response =
+        await client.post(url, body: {'orgId': orgId, "action": "orgblock"});
+    var result = jsonDecode(response.body) as List;
+    var status = result[0]['isActive'] as String;
+    print("status=$status");
+    Hive.box('setting').put('isActive', status);
   }
 }

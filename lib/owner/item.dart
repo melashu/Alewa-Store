@@ -3,6 +3,7 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:hive/hive.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -39,9 +40,7 @@ class _ItemState extends State<Item> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Utility.getTitle()
-      ),
+      appBar: AppBar(title: Utility.getTitle()),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Screenshot(
@@ -61,26 +60,14 @@ class _ItemState extends State<Item> {
                 children: [
                   Spacer(),
                   Text('Qr Mode'),
-                  isQR
-                      ? IconButton(
-                          icon: Icon(Icons.toggle_off),
-                          iconSize: 50,
-                          color: Colors.red,
-                          onPressed: () {
-                            setState(() {
-                              isQR = false;
-                              qrStatus = "Off";
-                            });
-                          })
-                      : IconButton(
-                          icon: Icon(Icons.toggle_on),
-                          iconSize: 50,
-                          onPressed: () {
-                            setState(() {
-                              isQR = true;
-                              qrStatus = "On";
-                            });
-                          }),
+                  Switch(
+                      value: isQR,
+                      onChanged: (val) {
+                        setState(() {
+                          isQR = !isQR;
+                        });
+                        isQR ? qrStatus = "on" : qrStatus = "off";
+                      }),
                   Text(qrStatus)
                 ],
               ),
@@ -238,7 +225,6 @@ class _ItemState extends State<Item> {
                           controller: levelController..text = '5',
                           textInputAction: TextInputAction.next,
                           keyboardType: TextInputType.number,
-               
                           validator: (val) {
                             if (val.isEmpty) {
                               return "እባክወትን ባዶ ቦታው ይሙሉ";
@@ -248,7 +234,8 @@ class _ItemState extends State<Item> {
                             return null;
                           },
                           decoration: InputDecoration(
-                              labelText: "የእቃው ብዛት ከስንት በታች ሲሆን የማስጠንቀቂያ ምልክት ይፈልጋሉ?",
+                              labelText:
+                                  "የእቃው ብዛት ከስንት በታች ሲሆን የማስጠንቀቂያ ምልክት ይፈልጋሉ?",
                               hintText: 'ምሳ. 5',
                               border: OutlineInputBorder(),
                               floatingLabelBehavior:
@@ -310,7 +297,7 @@ class _ItemState extends State<Item> {
                         'catName': initVal,
                         'orgId': Hive.box("setting").get("orgId"),
                         'branch': '1',
-                        'level':levelController.text,
+                        'level': levelController.text,
                         'color': colorController.text,
                         'createDate': Dates.today,
                         'size': sizeController.text,

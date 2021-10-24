@@ -1,16 +1,21 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/https/orgprof.dart';
-import 'package:boticshop/owner/useredit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-final roleStateProvider = StateProvider((ref) => "Owner");
+// final roleStateProvider = StateProvider((ref) => "Owner");
+class UserEdit extends StatefulWidget {
+  final Map user;
+  UserEdit(this.user);
+  @override
+  _UserEditState createState() => _UserEditState(this.user);
+}
 
-class Useraccount extends ConsumerWidget {
+class _UserEditState extends State<UserEdit> {
+  Map user;
+  _UserEditState(this.user);
   final formKey = GlobalKey<FormState>();
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -18,10 +23,20 @@ class Useraccount extends ConsumerWidget {
   final salaryController = TextEditingController();
   final userNameFocus = FocusNode();
   final userBox = Hive.box('useraccount');
+  var initRole;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initRole = user['role'];
+    fullNamrController.text = user['fullName'];
+    userNameController.text = user['userName'];
+    passwordController.text = user['password'];
+  }
 
   @override
-  Widget build(BuildContext context, watch) {
-    var initRole = watch(roleStateProvider).state;
+  Widget build(BuildContext context) {
+    // var initRole = watch(roleStateProvider).state;
     return Scaffold(
         appBar: AppBar(
           title: Utility.getTitle(),
@@ -72,7 +87,7 @@ class Useraccount extends ConsumerWidget {
                             ],
                             value: initRole,
                             onChanged: (val) {
-                              watch(roleStateProvider).state = val;
+                              // watch(roleStateProvider).state = val;
                             })
                       ],
                     ),
@@ -178,7 +193,7 @@ class Useraccount extends ConsumerWidget {
                     thickness: 1,
                   ),
                   ElevatedButton(
-                      child: Text("Create User Account"),
+                      child: Text("Update Account"),
                       onPressed: () async {
                         if (await Utility.isConnection()) {
                           if (formKey.currentState.validate()) {
@@ -196,24 +211,16 @@ class Useraccount extends ConsumerWidget {
                               "isActive": '1',
                               "lastLogin": Dates.today,
                               "orgName": Hive.box('setting').get("orgName"),
-                              "action": 'userReg'
+                              "action": 'userUpdate'
                             };
-                            var result =
-                                await OrgProfHttp().insertUserAccount(userList);
-                            if (result == 'ok') {
-                              userBox.put(userName, userList);
-                              if (userBox.containsKey(userName)) {
-                                Utility.successMessage(
-                                    context, "Successfuly Created");
-                                // Utility.showSnakBar(context,
-                                //     "Successfuly Registred!", Colors.greenAccent);
-                              }
-                            } else if (result == "error") {
-                              Utility.showDangerMessage(context,
-                                  "Please Change your user name and try again");
-                            } else {
-                              Utility.showDangerMessage(
-                                  context, "Please try again!");
+
+                            // if (result == 'ok') {
+                            userBox.put(userName, userList);
+                            if (userBox.containsKey(userName)) {
+                              Utility.successMessage(
+                                  context, "Successfuly Updated");
+                              // Utility.showSnakBar(context,
+                              //     "Successfuly Registred!", Colors.greenAccent);
                             }
                           }
                         } else {
@@ -226,100 +233,6 @@ class Useraccount extends ConsumerWidget {
                     color: Colors.deepPurpleAccent,
                     thickness: 1,
                   ),
-                  Container(
-                      padding: EdgeInsets.all(10),
-                      margin: EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 1, color: Colors.deepPurpleAccent)),
-                      child: Text(
-                        "List of registered Employee",
-                        style: Style.style1,
-                        textAlign: TextAlign.center,
-                      )),
-                  Divider(
-                    color: Colors.deepPurpleAccent,
-                    thickness: 1,
-                  ),
-                  ValueListenableBuilder(
-                      valueListenable: userBox.listenable(),
-                      builder: (context, box, _) {
-                        var userList = box.values.toList();
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            itemCount: userList.length,
-                            itemBuilder: (context, index) {
-                              return ExpansionTile(
-                                title: Text(
-                                    "Name: ${userList[index]['fullName']}",
-                                    style: Style.style1),
-                                // subtitle: Text("የእቃው አይነት ${snapshot.data[index]['brandName']}"),
-                                leading: PopupMenuButton(
-                                    color: Colors.deepPurple,
-                                    initialValue: 0,
-                                    onSelected: (i) {
-                                      if (i == 0) {
-                                        // Utility.editItem(itemMap, context);
-                                        Navigator.push(context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                          return UserEdit(userList[index]);
-                                        }));
-                                      } else if (i == 1) {
-                                        // _EditItemState().editItem( itemMap,context);
-                                        // Utility.showConfirmDialog(
-                                        //     context: context,
-                                        // itemMap: data[index]);
-                                      }
-                                    },
-                                    itemBuilder: (context) {
-                                      return [
-                                        PopupMenuItem(
-                                            value: 0,
-                                            child: Text("Edit",
-                                                style: TextStyle(
-                                                    color: Colors.white))),
-                                        PopupMenuItem(
-                                            value: 1,
-                                            child: Text("Delete",
-                                                style: TextStyle(
-                                                    color: Colors.white))),
-                                      ];
-                                    }),
-                                tilePadding: EdgeInsets.only(left: 20),
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Container(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "Full Name: ${userList[index]['fullName']}",
-                                            style: Style.style1,
-                                          ),
-                                          Text(
-                                            "Role: ${userList[index]['role']}",
-                                            style: Style.style1,
-                                          ),
-                                          Text(
-                                            "Password ${userList[index]['password']}",
-                                            style: Style.style1,
-                                          ),
-                                          Text(
-                                            "Username: ${userList[index]['userName']}",
-                                            style: Style.style1,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            });
-                      })
                 ],
               )),
         ));

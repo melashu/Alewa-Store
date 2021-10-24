@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/debtedit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Debt extends StatefulWidget {
@@ -79,7 +81,13 @@ class DebtState extends State<Debt> {
                             cat = value;
                           });
                         },
-                      )
+                      ),
+                      Spacer(),
+                      ElevatedButton(
+                          onPressed: () {
+                            debtReport('show');
+                          },
+                          child: Text('የብድር ሪፖርቶች'))
                     ],
                   ),
                   Padding(
@@ -151,7 +159,6 @@ class DebtState extends State<Debt> {
                             'orgId': Hive.box("setting").get("orgId"),
                             'date': Dates.today,
                             'totalreturn': 0,
-                            // 'totalreminder': 0,
                             'action': 'ADD_DEBT',
                             'insertStatus': 'no',
                             'updateStatus': 'no',
@@ -171,7 +178,7 @@ class DebtState extends State<Debt> {
                       Expanded(
                         child: Center(
                           child: Text(
-                            '''List of Debt Record''',
+                            '''የእዳ ዝርዝሮች''',
                             style: Style.style1,
                           ),
                         ),
@@ -205,12 +212,13 @@ class DebtState extends State<Debt> {
                             headingTextStyle:
                                 TextStyle(fontSize: 16, color: Colors.white),
                             columns: [
-                              DataColumn(label: Text('Del')),
+                              DataColumn(label: Icon(Icons.edit)),
                               DataColumn(label: Text('ስም')),
                               DataColumn(label: Text('አጠቃላይ ብድር')),
                               DataColumn(label: Text('የተመለሰ')),
                               DataColumn(label: Text('ቀሪ')),
                               DataColumn(label: Text('ክፍያ')),
+                              DataColumn(label: Text('ቀን')),
                             ],
                             rows: dataTable(data),
                             // rows: getListOfCell()
@@ -244,7 +252,39 @@ class DebtState extends State<Debt> {
       _listRow.add(DataRow(
           // selected: true,
           cells: [
-            DataCell(Icon(Icons.delete)),
+            DataCell(PopupMenuButton(
+                color: Colors.deepPurple,
+                initialValue: 0,
+                onSelected: (i) {
+                  if (i == 0) {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return DebtEdit(row);
+                    }));
+                  } else if (i == 1) {
+                    ConfirmAlertBox(
+                        context: context,
+                        title: 'Delete',
+                        infoMessage: 'ይህን ማጥፋት ይፈልጋሉ?',
+                        onPressedYes: () {
+                          var debtID = row['debtID'];
+                          debtBox.delete(debtID);
+                          Navigator.of(context).pop();
+                        });
+                  }
+                },
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                        value: 0,
+                        child: Text("Edit",
+                            style: TextStyle(color: Colors.white))),
+                    PopupMenuItem(
+                        value: 1,
+                        child: Text("Delete",
+                            style: TextStyle(color: Colors.white))),
+                  ];
+                })),
             DataCell(Text(row['fullName'])),
             DataCell(Text(row['birr'])),
             DataCell(Text('${double.parse(row['totalreturn'].toString())}')),
@@ -260,10 +300,12 @@ class DebtState extends State<Debt> {
                   Utility.successMessage(context, 'ይቅርታ ከዚህ በፊት ከፍያው ተጠናቆል!"');
                 } else {
                   payDebt(row['debtID'], '$reminder');
+                  debtController.text = '$reminder';
                 }
               },
               child: Text('pay'),
             )),
+            DataCell(Text(row['date'])),
           ]));
     }
     listRow = _listRow;
@@ -289,8 +331,6 @@ class DebtState extends State<Debt> {
                     children: [
                       TextFormField(
                         controller: debtController,
-                        // initialValue: left,
-                        onChanged: (val) {},
                         decoration: InputDecoration(
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(0.5)),
@@ -299,18 +339,7 @@ class DebtState extends State<Debt> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                               var debtList = debtBox.get(id);
-                                var debtInput =
-                                    double.parse(debtController.text);
-                                var totalreturn = double.parse(
-                                    debtList["totalreturn"].toString());
-                                    // var lefts=
-                                var totalDebt =
-                                    double.parse(debtList["birr"].toString());
-                                var totalLeft =
-                                     totalDebt-totalreturn;  
-var total=debtInput+totalreturn;
-                            if (debtController.text == null) {
+                            if (debtController.text.isEmpty) {
                               Utility.showDangerMessage(
                                   context, 'Please Enter the amount');
                             } else if (double.tryParse(debtController.text) ==
@@ -318,17 +347,24 @@ var total=debtInput+totalreturn;
                               Utility.showDangerMessage(
                                   context, 'Please Enter number only');
                             } else {
+                              var debtList = debtBox.get(id);
+                              var debtInput = double.parse(debtController.text);
+                              var totalreturn = double.parse(
+                                  debtList["totalreturn"].toString());
+                              var totalDebt =
+                                  double.parse(debtList["birr"].toString());
+                              var totalLeft = totalDebt - totalreturn;
+                              var total = debtInput + totalreturn;
                               if (totalLeft <
                                   double.parse(debtController.text)) {
                                 // Navigator.of(context).pop();
                                 Utility.showDangerMessage(context,
                                     "Your debt $totalLeft less than your input ${debtController.text}");
                               } else {
-                             //to set total debt
+                                //to set total debt
                                 debtList["totalreturn"] = total;
                                 debtBox.put(id, debtList);
-                          Utility.successMessage(context, 'በትክክል ተመዝግቧል');
-
+                                Utility.successMessage(context, 'በትክክል ተመዝግቧል');
                               }
                             }
                           },
@@ -341,5 +377,111 @@ var total=debtInput+totalreturn;
                 );
               });
         });
+  }
+
+  void debtReport(String key) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        context: context,
+        elevation: 10,
+        builder: (context) {
+          return DraggableScrollableSheet(
+              minChildSize: 0.5,
+              initialChildSize: 0.9,
+              maxChildSize: 0.9,
+              builder: (_, controller) {
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  child: ListView(
+                    children: [
+                      Center(
+                        child: Text(
+                          'የብድር ሪፖርቶች',
+                          style: Style.mainStyle1,
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.blueAccent,
+                        thickness: 1,
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'ያልተመለሰ በዱቤ የተሸጠ እቃ ድምር፡ ',
+                            style: Style.style1,
+                          ),
+                          Text(
+                            ' ${getTotalReport("በዱቤ የተሸጠ")} ብር',
+                            style: Style.mainStyle2,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'ያልተመለሰ በዱቤ የተገዛ እቃ ድምር፡',
+                            style: Style.style1,
+                          ),
+                          Text(
+                            ' ${getTotalReport("በዱቤ የተገዛ")} ብር',
+                            style: Style.mainStyle2,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'ያልተመለሰ ከሌላ ሰው ላይ ያለዎት ብር:',
+                            style: Style.style1,
+                          ),
+                          Text(
+                            ' ${getTotalReport("አበዳሪ")} ብር',
+                            style: Style.mainStyle2,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'ያልተመለሰ ከሌላ ሰው ላይ ያለብዎት ብር: ',
+                            style: Style.style1,
+                          ),
+                          Text(
+                            '${getTotalReport("ተበዳሪ")} ብር',
+                            style: Style.mainStyle2,
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                  // ),
+                );
+              });
+        });
+  }
+
+  double getTotalReport(String key) {
+    var result = debtBox.values.toList();
+    var total = 0.0;
+    for (var row in result) {
+      if (row['cat'] == key) {
+        total = total + (double.parse(row['birr']) - row['totalreturn']);
+      }
+    }
+    return total;
   }
 }

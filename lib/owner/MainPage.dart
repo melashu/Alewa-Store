@@ -23,6 +23,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -53,34 +54,96 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      // floatingActionButton: SpeedDial(
-      //   switchLabelPosition: true,
-      //   animatedIcon: AnimatedIcons.menu_close,
-      //   label: Text("Message"),
-      //   child: Icon(Icons.message_outlined),
-      //   overlayOpacity: 0.6,
-      //   animationSpeed: 100,
-      //   children: [
-      //     SpeedDialChild(
-      //         backgroundColor: Colors.blue,
-      //         labelBackgroundColor: Colors.redAccent,
-      //         labelStyle:
-      //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      //         child: Icon(Icons.mail_outline_outlined),
-      //         label: "New Message",
-      //         foregroundColor: Colors.white,
-      //         onTap: () {}),
-      //     SpeedDialChild(
-      //         backgroundColor: Colors.blue,
-      //         labelBackgroundColor: Colors.blueAccent,
-      //         labelStyle:
-      //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-      //         child: Icon(Icons.inbox_outlined),
-      //         label: "Inbox Message",
-      //         foregroundColor: Colors.white)
-      //   ],
-      // ),
+      floatingActionButton: SpeedDial(
+        switchLabelPosition: true,
+        animatedIcon: AnimatedIcons.menu_close,
+        label: Text("Contact Us"),
+        child: Icon(Icons.message_outlined),
+        overlayOpacity: 0.6,
+        animationSpeed: 100,
+        children: [
+          SpeedDialChild(
+              backgroundColor: Colors.blue,
+              labelBackgroundColor: Colors.redAccent,
+              labelStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: Icon(Icons.facebook_outlined),
+              label: "Facebook",
+              foregroundColor: Colors.white,
+              onTap: () async {
+                // https://t.me/mounttechnology
+                var url =
+                    'https://www.facebook.com/Mount-Technology-106144511830363';
+                if (await canLaunch(url)) {
+                  await launch(url,
+                      forceSafariVC: false,
+                      statusBarBrightness: Brightness.dark,
+                      forceWebView: true);
+                } else {
+                  Utility.showDangerMessage(
+                      context, "ይቅርታ Facebookን መክፈት አልተቻለም");
+                }
+              }),
+          SpeedDialChild(
+              backgroundColor: Colors.blue,
+              // labelBackgroundColor: Colors.blueAccent,
+              labelBackgroundColor: Colors.redAccent,
+              labelStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: Icon(Icons.youtube_searched_for_outlined),
+              label: "YouTube",
+              onTap: () async {
+                //
+                var url =
+                    'https://www.youtube.com/channel/UCovij6lsj-lZp2AbTEtKHDQ';
+                // var url = 'tel:$phone';
+                if (await canLaunch(url)) {
+                  await launch(url, forceSafariVC: false);
+                } else {
+                  Utility.showDangerMessage(
+                      context, "ይቅርታ YouTubeን መክፈት አልተቻለም");
+                }
+              },
+              foregroundColor: Colors.white),
+          SpeedDialChild(
+              backgroundColor: Colors.blue,
+              labelBackgroundColor: Colors.redAccent,
+              labelStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: Icon(Icons.table_chart),
+              onTap: () async {
+                //
+                var url = 'https://t.me/mounttechnology';
+                // var url = 'tel:$phone';
+                if (await canLaunch(url)) {
+                  await launch(url, forceSafariVC: false);
+                } else {
+                  Utility.showDangerMessage(
+                      context, "ይቅርታ Telegramnን መክፈት አልተቻለም");
+                }
+              },
+              label: "Telegram",
+              foregroundColor: Colors.white),
+          SpeedDialChild(
+              backgroundColor: Colors.blue,
+              labelBackgroundColor: Colors.redAccent,
+              labelStyle:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              child: Icon(Icons.phone),
+              label: "Phone",
+              foregroundColor: Colors.white,
+              onTap: () async {
+                var phone = '+251986806930';
+                var url = 'tel:$phone';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  Utility.showDangerMessage(
+                      context, "ይቅርታ ወደ $phone መደውል አልቻልኩም፡፡");
+                }
+              })
+        ],
+      ),
 
       // FloatingActionButton(
       //   backgroundColor: Colors.blueAccent,
@@ -281,7 +344,7 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     ),
-                    
+
                     // Card(
                     //   elevation: 10,
                     //   child: ListTile(
@@ -546,12 +609,15 @@ class _MainPageState extends State<MainPage> {
                           }));
                         },
                       ),
-                    )
+                    ),
                   ],
                 )
               ],
             ),
           ),
+        ),
+        SizedBox(
+          height: 80,
         )
       ]),
     );

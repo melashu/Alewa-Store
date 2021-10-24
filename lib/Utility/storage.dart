@@ -2,6 +2,7 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/https/Item.dart';
+import 'package:boticshop/https/debt.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
@@ -228,8 +229,13 @@ class _StorageState extends State<Storage> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
-                            onPressed: () {
-                              SyncItem.getTotalItem();
+                            onPressed: () async {
+                              if (await Utility.isConnection()) {
+                                SyncItem.getTotalItem();
+                              } else {
+                                Utility.showDangerMessage(context,
+                                    "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                              }
                             },
                             child: Text("Referesh Local Storage"),
                             style: Style.outlinedButtonStyle,
@@ -240,7 +246,77 @@ class _StorageState extends State<Storage> {
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.redAccent, width: 1)),
                   ),
-                )
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Text("Debt Box",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple)),
+                        Divider(
+                          color: Colors.redAccent,
+                          thickness: 1,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              if (await Utility.isConnection()) {
+                                var result1 = await Debt().syncInsertItemList();
+                                var result2 = await Debt().syncUpdateItem();
+                                if (result1 || result2) {
+                                  Utility.successMessage(context, "Saved");
+                                } else {
+                                  Utility.showDangerMessage(
+                                      context, "Not Saved!");
+                                }
+                              } else {
+                                Utility.showDangerMessage(context,
+                                    "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                              }
+                            },
+                            child: Text("Sync"),
+                            style: Style.outlinedButtonStyle,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: OutlinedButton(
+                            onPressed: () {
+                              MaterialPageRoute(builder: (context) {
+                                return Storage();
+                              });
+                            },
+                            child: Text("Clean Local Storage"),
+                            style: Style.outlinedButtonStyle,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              if (await Utility.isConnection()) {
+                                // SyncItem.getTotalItem();
+                              } else {
+                                Utility.showDangerMessage(context,
+                                    "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                              }
+                            },
+                            child: Text("Referesh Local Storage"),
+                            style: Style.outlinedButtonStyle,
+                          ),
+                        )
+                      ],
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.redAccent, width: 1)),
+                  ),
+                ),
               ],
             ),
           ),

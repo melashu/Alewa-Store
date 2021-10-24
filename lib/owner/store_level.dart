@@ -1,6 +1,7 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/https/Item.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import "package:flutter/material.dart";
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -14,7 +15,6 @@ final levelFutureProvider = FutureProvider<List>((ref) {
 Future<List> getStoreLevel() async {
   var store = [];
   final storeLevel = Hive.lazyBox("totalitem");
-
   var keys = storeLevel.keys.toList();
   for (var key in keys) {
     var item = await storeLevel.get(key);
@@ -93,7 +93,7 @@ class StoreLevel extends ConsumerWidget {
                               SyncItem.getTotalItem().then((value) =>
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return StoreLevel();
+                                    return MainPage();
                                   })));
                             } else {
                               Utility.showDangerMessage(context,

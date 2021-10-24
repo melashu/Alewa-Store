@@ -12,7 +12,6 @@ class SyncItem {
 
   void syncInsertItemList(BuildContext context) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
-
     var selectedList = [];
     var itemList = itemBox.values.toList();
     itemList.forEach((item) {
@@ -29,19 +28,13 @@ class SyncItem {
     if (selectedList.length > 0) {
       var response = await client.post(url,
           body: {"data": json.encode(selectedList), "action": "asyncinsert"});
-      // print("Data => " + response.body);
       if (response.body == "ok") {
-        // print("Done");
         selectedList.forEach((select) async {
           var itemID = select['itemID'];
           select['insertStatus'] = "yes";
           await itemBox.put(itemID, select);
         });
-      } else {
-        Utility.showSnakBar(context, response.body, Colors.redAccent);
-      }
-    } else {
-      // print("Nothing to sync");
+      } 
     }
   }
 
@@ -55,16 +48,17 @@ class SyncItem {
       }
     });
     if (selectedList.length > 0) {
-      var response = await client.post(url,
-          body: {"data": json.encode(selectedList), "action": "asyncupdate"});
+      var response = await client.post(url, body: {
+        "data": json.encode(selectedList),
+        "action": "asyncupdate",
+        'orgId': Hive.box('setting').get('orgId')
+      });
       if (response.body == "ok") {
         selectedList.forEach((select) {
           var itemID = select['itemID'];
           select['updateStatus'] = "no";
           itemBox.put(itemID, select);
         });
-      } else {
-        Utility.showSnakBar(context, response.body, Colors.redAccent);
       }
     }
   }
@@ -85,12 +79,13 @@ class SyncItem {
     });
 
     if (selectedList.length > 0) {
-      var response = await client.post(url,
-          body: {"data": json.encode(selectedList), "action": "syncdelete"});
+      var response = await client.post(url, body: {
+        "data": json.encode(selectedList),
+        "action": "syncdelete",
+        "orgId": Hive.box("setting").get('orgId')
+      });
       if (response.body == "ok") {
         selectedList.forEach((itemID) {
-          print("Deleted <==>" + itemID);
-
           itemBox.delete(itemID);
         });
       } else {
@@ -102,13 +97,14 @@ class SyncItem {
   static Future<void> getTotalItem() async {
     var totalItemBox = Hive.lazyBox("totalitem");
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
-    var response = await client.post(url, body: {"action": "GET_ITEM_LEVLE",'orgId':Hive.box("setting").get("orgId")});
+    var response = await client.post(url, body: {
+      "action": "GET_ITEM_LEVLE",
+      'orgId': Hive.box("setting").get("orgId")
+    });
     List itemLevel = json.decode(response.body) as List;
-    // print(itemLevel);
     itemLevel.forEach((item) async {
       await totalItemBox.put(item['itemID'], item);
     });
-    // print("Length=${totalItemBox.length}");
   }
 
   int itemSyncStatus(String status, String result) {

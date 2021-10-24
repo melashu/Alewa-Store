@@ -13,6 +13,7 @@ import 'package:boticshop/owner/item.dart';
 import 'package:boticshop/owner/itemList.dart';
 import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/owner/useraccont.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -439,5 +440,21 @@ class Drawers {
         }
       },
     );
+  }
+
+  static CurvedNavigationBar getNaviagtedBar() {
+    return CurvedNavigationBar(
+        items: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.home)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.list)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.facebook))
+
+
+          
+          ],
+        onTap: (index){
+
+        },
+        );
   }
 }

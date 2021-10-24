@@ -94,20 +94,23 @@ class ItemList extends ConsumerWidget {
                 ),
               ),
             ),
-            ValueListenableBuilder(
-                valueListenable: itemBox.listenable(),
-                builder: (context, box, _) {
-                  List data = box.values.toList();
-                  return dataTable(context, data);
-                }),
+            dataTable(context)
+            // ValueListenableBuilder(
+            //     valueListenable: itemBox.listenable(),
+            //     builder: (context, box, _) {
+            //       List data = box.values.toList();
+            //       return dataTable(context, data);
+            //     }),
           ],
         ),
       ),
     );
   }
 
-  Widget dataTable(BuildContext context, selectedItem) {
-    // var selectedItem = context.read(selectedItemStateProvider).state;
+  Widget dataTable(BuildContext context) {
+  // Widget dataTable(BuildContext context, selectedItem) {
+
+    var selectedItem = context.read(selectedItemStateProvider).state;
     // print("Result =$selectedItem");
     // Hive.box('item').clear();
 
@@ -130,13 +133,11 @@ class ItemList extends ConsumerWidget {
                   initialValue: 0,
                   onSelected: (i) {
                     if (i == 0) {
-                      // Utility.editItem(itemMap, context);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) {
                         return EditItem(selectedItem[index]);
                       }));
                     } else if (i == 1) {
-                      // _EditItemState().editItem( itemMap,context);
                       Utility.showConfirmDialog(
                           context: context, itemMap: selectedItem[index]);
                     }
@@ -259,7 +260,6 @@ class ItemList extends ConsumerWidget {
                                                   selectedItem[index]
                                                           ['soldPrices']
                                                       .toString();
-
                                               if (int.tryParse(orderController
                                                           .text) ==
                                                       null ||
