@@ -79,11 +79,11 @@ class PdfInvoice {
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,
                   ),
-                  Text(
-                    // '${data.length}',
-                    content,
-                    style: style1,
-                  ),
+                  // Text(
+                  //   // '${data.length}',
+                  //   content,
+                  //   style: style1,
+                  // ),
                   Divider(
                     thickness: 1,
                     color: PdfColors.deepPurpleAccent,

@@ -57,6 +57,11 @@ class Boxes {
     return box;
   }
 
+  static Future<Box> getPaymentBox() async {
+    var box = await Hive.openBox("payment");
+    return box;
+  }
+
   // static Future<List<Map>> getItemValue() async {
   //   var values = <Map>[];
   //   var box = await getItemBox();

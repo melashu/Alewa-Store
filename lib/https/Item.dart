@@ -124,7 +124,6 @@ class SyncItem {
       "action": "update_item",
       'orgId': Hive.box('setting').get("orgId")
     });
-    // print(response.body);
     var val = 0;
     if (response.body == 'notOk') {
       val = -1;
@@ -134,17 +133,11 @@ class SyncItem {
         String itemCode = item['itemID'];
         if (!itemBox.containsKey(itemCode)) {
           val = val + 1;
-          // item[]
-          // item['insertStatus'] = 'no';
-          // item['updateStatus'] = 'no';
           item['deleteStatus'] = 'no';
           itemBox.put(itemCode, item);
-
-          // print(itemBox.get(itemCode));
         }
       }
     }
-    // itemBox.put("Item_$itemID", itemMap);
     return val;
   }
 

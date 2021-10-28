@@ -277,6 +277,8 @@ class _ItemState extends State<Item> {
 
                     if (Utility.isValid()) {
                       Utility.getValidationBox(context);
+                    } else if (Utility.isPaymentDone()) {
+                      Utility.setServicePayment(context);
                     } else if (sPrices <= bPrices) {
                       Utility.showSnakBar(
                           context,

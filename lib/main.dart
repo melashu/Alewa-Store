@@ -19,6 +19,7 @@ Future main() async {
   await Boxes.getLocationBox();
   await Boxes.getMessageBox();
   await Boxes.getDebtBox();
+  await Boxes.getPaymentBox();
   runApp(ProviderScope(child: MyApp()));
 }
 

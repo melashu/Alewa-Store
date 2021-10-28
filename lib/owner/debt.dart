@@ -146,7 +146,7 @@ class DebtState extends State<Debt> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        // debtBox.clear();
+                        // print("Category=$cat");
                         if (_forKey.currentState.validate()) {
                           var random = Random();
                           var deptID = random.nextInt(1000000).toString();

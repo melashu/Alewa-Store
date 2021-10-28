@@ -56,7 +56,7 @@ class Debt {
         // 'orgId': Hive.box('setting').get('orgId')
       });
       if (response.body == "ok") {
-        isDone=true;
+        isDone = true;
         selectedList.forEach((select) {
           var debtID = select['debtID'];
           select['updateStatus'] = "no";
@@ -65,5 +65,29 @@ class Debt {
       }
     }
     return isDone;
+  }
+
+  Future<int> syncSelect() async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {
+      "action": "update_debt",
+      'orgId': Hive.box('setting').get("orgId")
+    });
+    var val = 0;
+    if (response.body == 'notOk') {
+      val = -1;
+    } else {
+      var debtList = jsonDecode(response.body) as List;
+      for (Map debt in debtList) {
+        String itemCode = debt['debtID'];
+        if (!debtBox.containsKey(itemCode)) {
+          val = val + 1;
+          debt['deleteStatus'] = 'no';
+          debtBox.put(itemCode, debt);
+        }
+      }
+    }
+    // itemBox.put("Item_$itemID", itemMap);
+    return val;
   }
 }

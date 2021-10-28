@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:boticshop/Utility/date.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -33,7 +34,6 @@ class OrgProfHttp {
     var loc = Hive.box("location").get("location");
     if (loc != null) {
       var response = await client.post(url, body: loc);
-      
     }
   }
 
@@ -83,10 +83,16 @@ class OrgProfHttp {
     return mapResult;
   }
 
-  Future<bool> inserPaymentInfo(String orgId, String date) async {
+  Future<bool> inserPaymentInfo(
+      String orgId, String date, String amount, String monthID) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
-    var response = await client.post(url,
-        body: {'action': "paymentInfo", 'orgId': orgId, 'date': date});
+    var response = await client.post(url, body: {
+      'action': "paymentInfo",
+      'orgId': orgId,
+      'date': date,
+      'amount': amount,
+      'monthID': monthID
+    });
     var result = false;
     if (response.body == 'ok') {
       result = true;
@@ -106,7 +112,44 @@ class OrgProfHttp {
         await client.post(url, body: {'orgId': orgId, "action": "orgblock"});
     var result = jsonDecode(response.body) as List;
     var status = result[0]['isActive'] as String;
-    print("status=$status");
     Hive.box('setting').put('isActive', status);
+  }
+
+  Future<bool> request4PaymentConfirmation(String orgId, String monthID) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {
+      "orgId": orgId,
+      "monthID": monthID,
+      "action": "payment_request"
+    });
+    bool val;
+    if (response.body == 'ok') {
+      val = true;
+    } else {
+      val = false;
+    }
+    return val;
+  }
+
+  Future<String> isConfirmation(String orgId, String monthID) async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url,
+        body: {"orgId": orgId, "monthID": monthID, "action": "isConfirmed"});
+    String val;
+    // var paymentBox = Hive.box('payment');
+    if (response.body != 'notOk') {
+      var result = jsonDecode(response.body) as List;
+      val = result[0]['renewStatus'];
+      print(val);
+      // paymentBox.put('month', {
+      //   "date": Dates.today,
+      //   "isRequest": false,
+      //   "paidStatus": 'no',
+      //   "monthID": monthID,
+      //   "renewStatus": 'no',
+      //   // "amount": amount
+      // });
+    }
+    return val;
   }
 }

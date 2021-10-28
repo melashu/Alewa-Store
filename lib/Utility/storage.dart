@@ -44,7 +44,17 @@ class _StorageState extends State<Storage> {
                               fontWeight: FontWeight.bold,
                               color: Colors.deepPurple)),
                       Divider(
-                        color: Colors.redAccent,
+                        color: Colors.blueAccent,
+                        thickness: 1,
+                      ),
+                      Center(
+                        child: Text(
+                          'ስልክ ላይ የተቀመጡ እቃዎችን ከ Database ማስቀመጫ Form',
+                          style: Style.mainStyle2,
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.blueAccent,
                         thickness: 1,
                       ),
                       Padding(
@@ -166,7 +176,7 @@ class _StorageState extends State<Storage> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.deepPurple)),
                         Divider(
-                          color: Colors.redAccent,
+                          color: Colors.blueAccent,
                           thickness: 1,
                         ),
                         Padding(
@@ -199,54 +209,54 @@ class _StorageState extends State<Storage> {
                         border: Border.all(color: Colors.redAccent, width: 1)),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        Text("Levle Box",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple)),
-                        Divider(
-                          color: Colors.redAccent,
-                          thickness: 1,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              MaterialPageRoute(builder: (context) {
-                                return Storage();
-                              });
-                            },
-                            child: Text("Clean Local Storage"),
-                            style: Style.outlinedButtonStyle,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton(
-                            onPressed: () async {
-                              if (await Utility.isConnection()) {
-                                SyncItem.getTotalItem();
-                              } else {
-                                Utility.showDangerMessage(context,
-                                    "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
-                              }
-                            },
-                            child: Text("Referesh Local Storage"),
-                            style: Style.outlinedButtonStyle,
-                          ),
-                        )
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.redAccent, width: 1)),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0),
+                //   child: Container(
+                //     width: double.infinity,
+                //     child: Column(
+                //       children: [
+                //         Text("Levle Box",
+                //             style: TextStyle(
+                //                 fontSize: 16,
+                //                 fontWeight: FontWeight.bold,
+                //                 color: Colors.deepPurple)),
+                //         Divider(
+                //           color: Colors.redAccent,
+                //           thickness: 1,
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: OutlinedButton(
+                //             onPressed: () {
+                //               MaterialPageRoute(builder: (context) {
+                //                 return Storage();
+                //               });
+                //             },
+                //             child: Text("Clean Local Storage"),
+                //             style: Style.outlinedButtonStyle,
+                //           ),
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: OutlinedButton(
+                //             onPressed: () async {
+                //               if (await Utility.isConnection()) {
+                //                 SyncItem.getTotalItem();
+                //               } else {
+                //                 Utility.showDangerMessage(context,
+                //                     "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                //               }
+                //             },
+                //             child: Text("Referesh Local Storage"),
+                //             style: Style.outlinedButtonStyle,
+                //           ),
+                //         )
+                //       ],
+                //     ),
+                //     decoration: BoxDecoration(
+                //         border: Border.all(color: Colors.redAccent, width: 1)),
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0),
                   child: Container(
@@ -262,16 +272,32 @@ class _StorageState extends State<Storage> {
                           color: Colors.redAccent,
                           thickness: 1,
                         ),
+                        Center(
+                          child: Text(
+                            'የእዳ መዝገቦችን ከ Database ማስቀመጫ Form',
+                            style: Style.mainStyle2,
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.blueAccent,
+                          thickness: 1,
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
                             onPressed: () async {
                               if (await Utility.isConnection()) {
+                                Utility.showProgress(context);
                                 var result1 = await Debt().syncInsertItemList();
                                 var result2 = await Debt().syncUpdateItem();
                                 if (result1 || result2) {
-                                  Utility.successMessage(context, "Saved");
+                                  Navigator.of(context).pop();
+
+                                  Utility.successMessage(
+                                      context, "በትክክል ተመዝግቦል");
                                 } else {
+                                  Navigator.of(context).pop();
+
                                   Utility.showDangerMessage(
                                       context, "Not Saved!");
                                 }
@@ -288,9 +314,17 @@ class _StorageState extends State<Storage> {
                           padding: const EdgeInsets.all(8.0),
                           child: OutlinedButton(
                             onPressed: () {
-                              MaterialPageRoute(builder: (context) {
-                                return Storage();
-                              });
+                              ConfirmAlertBox(
+                                  title: 'Delete',
+                                  context: context,
+                                  infoMessage: 'ሁሉንም የእዳ መዝገብ መሰርዝ ይፈልጋሉ? ',
+                                  // onPressedNo: () {},
+                                  onPressedYes: () async {
+                                    await Hive.box('debt').clear();
+                                    Navigator.of(context).pop();
+                                    Utility.successMessage(
+                                        context, 'በትክክል ተሰርዞል፡፡');
+                                  });
                             },
                             child: Text("Clean Local Storage"),
                             style: Style.outlinedButtonStyle,
@@ -301,7 +335,12 @@ class _StorageState extends State<Storage> {
                           child: OutlinedButton(
                             onPressed: () async {
                               if (await Utility.isConnection()) {
-                                // SyncItem.getTotalItem();
+                                Utility.showProgress(context);
+                                var result = await Debt().syncSelect();
+                                Navigator.of(context).pop();
+
+                                Utility.successMessage(
+                                    context, '$result Saved');
                               } else {
                                 Utility.showDangerMessage(context,
                                     "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");

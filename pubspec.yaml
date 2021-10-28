@@ -34,6 +34,7 @@ dependencies:
   fluttertoast: ^8.0.8
   flutter_awesome_alert_box: ^2.1.1
   url_launcher: ^6.0.12
+  multi_image_picker2: ^5.0.2
   screenshot: ^1.2.3
   connectivity_plus: ^1.0.6
   open_file: ^3.2.1

@@ -265,7 +265,11 @@ class _HomeState extends State<Home> {
                   onChanged: (val) {
                     if (Utility.isValid()) {
                       Utility.getValidationBox(context);
-                    } else {
+                    } else if (Utility.isPaymentDone()) {
+                                          Utility.setServicePayment(context);
+
+                    }                     
+                    else {
                       if (!Hive.box('setting').get("isWorkingLoc")) {
                         Utility.setCurrentWorkingLocation();
                       }
@@ -615,6 +619,8 @@ class _HomeState extends State<Home> {
     controller.scannedDataStream.listen((scanData) async {
       if (Utility.isValid()) {
         Utility.getValidationBox(context);
+      } else if (Utility.isPaymentDone()) {
+        print("Payment");
       } else {
         /**
          * This is to get the worring co-ordinates of the customer 

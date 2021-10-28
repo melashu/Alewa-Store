@@ -35,14 +35,17 @@ class _MainLoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
+    // Hive.box("payment").clear();
+    print("Done===${Utility.isPaymentDone()}");
     super.initState();
     Connectivity().onConnectivityChanged.listen((event) async {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
         _initPackageInfo();
         var orgId = Hive.box("setting").get("orgId");
+        // print('Org ID=$orgId');
         if (orgId != null) {
-          print(Hive.box('setting').get("isWorkingLoc"));
+          // print(Hive.box('setting').get("isWorkingLoc"));
           OrgProfHttp().getSubStatus(orgId);
           if (!Hive.box('setting').get("isWorkingLoc")) {
             OrgProfHttp().updateLocation(orgId);

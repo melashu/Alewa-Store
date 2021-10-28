@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:abushakir/abushakir.dart';
@@ -7,6 +9,8 @@ import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/location.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/https/orgprof.dart';
+import 'package:boticshop/owner/MainPage.dart';
 import 'package:boticshop/owner/agreement.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
@@ -449,16 +453,28 @@ Password: ${orgMap['password']}
     );
   }
 
+/**
+ * 
+ */
+  static bool isPaymentDone() {
+    var paymentBox = Hive.box('payment');
+    var month = paymentBox.get("month");
+    var isDate = (EtDatetime.parse(Dates.today)
+            .difference(EtDatetime.parse(month['date']))
+            .inDays >=
+        30);
+    return isDate;
+  }
+
   static bool isValid() {
     var isSub = Hive.box("setting").get("isSubscribed");
     Map subInfo = Hive.box("setting").get("subInfo");
+    // print("Date=${subInfo['regDate']}");
     bool isValid = (!isSub &&
         (EtDatetime.parse(Dates.today)
                 .difference(EtDatetime.parse(subInfo['regDate']))
                 .inDays ==
             subInfo['freeDay']));
-    print('isSub=$isValid');
-
     return isValid;
   }
 
@@ -486,7 +502,9 @@ Password: ${orgMap['password']}
                   onPressed: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
-                      return Agre();
+                      return Agre(
+                        isForInfo: false,
+                      );
                     }));
                   },
                   child: Text("ቋሚ አባል ልሁን")),
@@ -513,6 +531,132 @@ Password: ${orgMap['password']}
                     }
                   },
                   child: Text("እርዳታ እፈልጋለሁ")),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("አልፈልግም")),
+            ],
+          );
+        });
+  }
+
+// ignore: slash_for_doc_comments
+/***
+ * this is for checking wether 
+ * service renewal is done or not 
+ * and asking for renewal 
+ */
+  static void setServicePayment(BuildContext context) {
+    Map subInfo = Hive.box("payment").get("month");
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              " ወርሃዊ ክፍያ",
+              style: Style.style1,
+            ),
+            content: !subInfo['isRequest']
+                ? Text(
+                    "እባክዎትን ወርሃዊ ክፍያዎትን በመክፈል አገልግልዎትን ያድሱ",
+                    style: Style.mainStyle1,
+                  )
+                : Text(
+                    "የክፍያ ማመልከቻዎ እየታየ ነው፡፡ እባክዎትን ለ1 ስዓት ያክል በትግስት ይጠብቁ፡፡",
+                    style: Style.mainStyle1,
+                  ),
+            elevation: 10,
+            buttonPadding: EdgeInsets.all(5),
+            actions: [
+              subInfo['isRequest']
+                  ? ElevatedButton(
+                      onPressed: () async {
+                        if (await Utility.isConnection()) {
+                          Utility.showProgress(context);
+                          var val = await OrgProfHttp().isConfirmation(
+                              Hive.box("setting").get("orgId"),
+                              subInfo['monthID']);
+                          if (val == 'yes') {
+                            var orgId = Hive.box('setting').get("orgId");
+                            var today = Dates.today;
+                            Navigator.of(context).pop();
+                            var random = Random();
+                            var monthID = random.nextInt(1000000).toString();
+                            var newAmount = await OrgProfHttp().getAgreement();
+                            var result = await OrgProfHttp().inserPaymentInfo(
+                                orgId, today, newAmount['amount'], monthID);
+                            Utility.showProgress(context);
+                            if (result) {
+                              /**
+                                       * Register the payment record on local 
+                                       * device with paymentBox 
+                                       */
+                              var paymentBox = Hive.box('payment');
+                              paymentBox.put('month', {
+                                "date": today,
+                                "isRequest": false,
+                                "paidStatus": 'no',
+                                "monthID": monthID,
+                                "renewStatus": 'no',
+                                "amount": newAmount['amount']
+                              });
+                              Utility.infoMessage(context,
+                                  "እናመሰናለን ከ ቀን $today ጀምሮ እስከ ሚቀጥለው ወር ድርስ ታድሶለዎታል::");
+                              Timer(Duration(seconds: 2), () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return MainPage();
+                                }));
+                              });
+                            }
+                          } else {
+                            Navigator.of(context).pop();
+                            Utility.successMessage(context,
+                                'የክፍያ  ማመልከቻዎ እየታየ ነው፡፡ እባክዎትን ለ1 ስዓት ያክል በትዕግስት ይጠብቁ፡፡');
+                          }
+                        } else {
+                          Utility.showDangerMessage(context,
+                              "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                        }
+                      },
+                      child: Text("ድጋሜ ያረጋግጡ"))
+                  : ElevatedButton(
+                      onPressed: () async {
+                        if (await Utility.isConnection()) {
+                          Utility.showProgress(context);
+                          var val = await OrgProfHttp()
+                              .request4PaymentConfirmation(
+                                  Hive.box("setting").get("orgId"),
+                                  subInfo['monthID']);
+                          if (val) {
+                            Navigator.of(context).pop();
+                            subInfo['isRequest'] = true;
+                            Hive.box("payment").put("month", subInfo);
+                            successMessage(context,
+                                'የክፍያ ማመልከቻዎ እየታየ ነው፡፡ እባክዎትን ለ1 ስዓት ያክል በትዕግስት ይጠብቁ፡፡');
+                          } else {
+                            showDangerMessage(context, "እባክዎትን ድጋሜ ይሞክሩ::");
+                          }
+                        } else {
+                          Utility.showDangerMessage(context,
+                              "ይህን አገልግሎት በሚፈልጉበት ጊዜ wifi or Data ያስፈልገዉታል፡፡");
+                        }
+                      },
+                      child: Text("ለእድሳት ይጠይቁ")),
+              ElevatedButton(
+                  onPressed: () async {
+                    var phone = '+251986806930';
+                    var url = 'tel:$phone';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      showDangerMessage(
+                          context, "ይቅርታ ወደ $phone መደውል አልቻልኩም፡፡");
+                    }
+                  },
+                  child: Text("እባክዎትን ይህን ተጭነው ይደውሉ")),
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();

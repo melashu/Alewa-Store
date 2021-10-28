@@ -26,7 +26,6 @@ class _UserEditState extends State<UserEdit> {
   var initRole;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initRole = user['role'];
     fullNamrController.text = user['fullName'];

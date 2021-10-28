@@ -108,7 +108,7 @@ class ItemList extends ConsumerWidget {
   }
 
   Widget dataTable(BuildContext context) {
-  // Widget dataTable(BuildContext context, selectedItem) {
+    // Widget dataTable(BuildContext context, selectedItem) {
 
     var selectedItem = context.read(selectedItemStateProvider).state;
     // print("Result =$selectedItem");
@@ -184,6 +184,9 @@ class ItemList extends ConsumerWidget {
                           onPressed: () async {
                             if (Utility.isValid()) {
                               Utility.getValidationBox(context);
+                            } else if (Utility.isPaymentDone()) {
+                                     Utility.setServicePayment(context);
+
                             } else {
                               showDialog(
                                   context: context,
@@ -317,7 +320,7 @@ class ItemList extends ConsumerWidget {
                                                                 EdgeInsets.all(
                                                                     8),
                                                             child: Text(
-                                                              " ${itemList['brandName']} is sold::",
+                                                              " ${itemList['brandName']} ሽያጭ ተካሄዶል፡፡",
                                                               style:
                                                                   Style.style1,
                                                             ),
@@ -327,11 +330,7 @@ class ItemList extends ConsumerWidget {
                                                                 onPressed: () {
                                                                   Navigator.of(
                                                                           context)
-                                                                      .push(MaterialPageRoute(
-                                                                          builder:
-                                                                              (context) {
-                                                                    return ItemList();
-                                                                  }));
+                                                                      .pop();
                                                                 },
                                                                 style: Style
                                                                     .smallButton,

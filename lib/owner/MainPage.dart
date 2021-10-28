@@ -600,13 +600,29 @@ class _MainPageState extends State<MainPage> {
                       child: ListTile(
                         horizontalTitleGap: 10,
                         autofocus: true,
-                        title: Text("Payment", style: Style.mainStyle1),
-                        trailing: Icon(Icons.storage, color: Colors.blue[400]),
+                        title: Text("አባልነት ", style: Style.mainStyle1),
+                        subtitle: Text("Membership ", style: Style.mainStyle2),
+                        trailing: Icon(Icons.card_membership, color: Colors.blue[400]),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (contex) {
                             return Payment();
                           }));
+                        },
+                      ),
+                    ),
+                    Card(
+                      elevation: 10,
+                      child: ListTile(
+                        horizontalTitleGap: 10,
+                        autofocus: true,
+                        title: Text("QR-Pdf Preparation", style: Style.mainStyle1),
+                        trailing: Icon(Icons.document_scanner, color: Colors.blue[400]),
+                        onTap: () {
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (contex) {
+                          //   return Storage();
+                          // }));
                         },
                       ),
                     ),

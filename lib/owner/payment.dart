@@ -19,6 +19,7 @@ class _PaymentState extends State<Payment> {
 
   @override
   Widget build(BuildContext context) {
+    Utility.isValid();
     return Scaffold(
       appBar: AppBar(
         title: Utility.getTitle(),
@@ -48,7 +49,10 @@ class _PaymentState extends State<Payment> {
                 ),
                 horizontalTitleGap: 5,
                 contentPadding: EdgeInsets.all(1),
-                subtitle: Text('Information About the service Charge',style: Style.style2,),
+                subtitle: Text(
+                  'Information About the service Charge',
+                  style: Style.style2,
+                ),
                 title: Text(
                   "ስለ አገልግሎት ክፍያ መረጃ ",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -88,7 +92,7 @@ class _PaymentState extends State<Payment> {
                 },
               ),
             ),
-                Card(
+            Card(
               elevation: 10,
               child: ListTile(
                 selectedTileColor: Colors.grey,
