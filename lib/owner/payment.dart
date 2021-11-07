@@ -1,8 +1,9 @@
-import 'dart:ui';
 
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/PaymentHistory.dart';
 import 'package:boticshop/owner/agreement.dart';
+import 'package:boticshop/owner/servicecharge.dart';
 import 'package:flutter/material.dart';
 
 class Payment extends StatefulWidget {
@@ -81,14 +82,14 @@ class _PaymentState extends State<Payment> {
                   style: Style.style2,
                 ),
                 title: Text(
-                  " ያለብዎትን የአገልግሎት ክፍያ ለማይት",
+                  " ያለብዎትን የአገልግሎት ክፍያ ለማየት",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  // Navigator.of(context)
-                  //     .push(MaterialPageRoute(builder: (context) {
-                  //   return Agre(isForInfo: true);
-                  // }));
+                Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return ServiceCharge();
+                  }));
                 },
               ),
             ),
@@ -108,14 +109,14 @@ class _PaymentState extends State<Payment> {
                   style: Style.style2,
                 ),
                 title: Text(
-                  "የክፍያ ታሪኳች",
+                  "የክፍያ ታሪኮች",
                   style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
-                  // Navigator.of(context)
-                  //     .push(MaterialPageRoute(builder: (context) {
-                  //   return Agre(isForInfo: true);
-                  // }));
+                 Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return PaymentHistory();
+                  }));
                 },
               ),
             ),

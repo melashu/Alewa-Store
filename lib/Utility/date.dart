@@ -109,4 +109,9 @@ class Dates {
 
     return times;
   }
+
+   static String upToDate(String date) {
+    var dates = EtDatetime.parse(date).add(Duration(days: 30));
+    return "${dates.year}-${dates.month}-${dates.day}";
+  }
 }

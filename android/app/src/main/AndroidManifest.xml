@@ -18,6 +18,7 @@ xmlns:tools="http://schemas.android.com/tools"
 
     <!-- <use-permission android:name ="android.permission.READ_EXTERNAL_STORAGE"/>
     <use-permission android:name ="android.permission.WRITE_EXTERNAL_STORAGE"/> -->
+<uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -25,10 +26,12 @@ xmlns:tools="http://schemas.android.com/tools"
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
    <application
         tools:replace="android:label"
-        android:label="Alewa"
+        android:label="Alewa-Botic"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
-
+ <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

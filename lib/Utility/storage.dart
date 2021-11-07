@@ -1,5 +1,4 @@
 import 'package:boticshop/Utility/Utility.dart';
-import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/https/Item.dart';
 import 'package:boticshop/https/debt.dart';
@@ -82,11 +81,19 @@ class _StorageState extends State<Storage> {
                             ConnectivityResult connectivityResult =
                                 await Connectivity().checkConnectivity();
                             if (connectivityResult != ConnectivityResult.none) {
-                              SyncItem().syncInsertItemList(context);
-                              SyncItem().syncUpdateItem(context);
-                              SyncItem().syncDeleteItem(context);
-                              Utility.successMessage(
-                                  context, "ዳታዎት በትክክል ሴብ ተደርጎል፡፡");
+                               var res1 =
+                                  await SyncItem().syncInsertItemList(context);
+                              var res2 =
+                                  await SyncItem().syncUpdateItem(context);
+                              var res3 =
+                                  await SyncItem().syncDeleteItem(context);
+                              if (res1 || res2 || res3) {
+                                Utility.successMessage(
+                                    context, "ዳታዎት በትክክል ሴብ ተደርጎል፡፡");
+                              } else {
+                                Utility.successMessage(
+                                    context, "እባክዎትን ድጋሜ ይሞክሩ፡፡");
+                              }
                               MaterialPageRoute(builder: (context) {
                                 return Storage();
                               });
@@ -164,51 +171,51 @@ class _StorageState extends State<Storage> {
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.redAccent, width: 1)),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Container(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        Text("Trasaction Box",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple)),
-                        Divider(
-                          color: Colors.blueAccent,
-                          thickness: 1,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton(
-                            onPressed: () async {
-                              var listT = await Report.getTransaction();
-                              print(listT);
-                            },
-                            child: Text("Sync"),
-                            style: Style.outlinedButtonStyle,
-                          ),
-                        ),
-                        OutlinedButton(
-                          onPressed: () {},
-                          child: Text("Clean Local Storage"),
-                          style: Style.outlinedButtonStyle,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            child: Text("Refresh Local Storage"),
-                            style: Style.outlinedButtonStyle,
-                          ),
-                        ),
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.redAccent, width: 1)),
-                  ),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 15.0),
+                //   child: Container(
+                //     width: double.infinity,
+                //     child: Column(
+                //       children: [
+                //         Text("Trasaction Box",
+                //             style: TextStyle(
+                //                 fontSize: 16,
+                //                 fontWeight: FontWeight.bold,
+                //                 color: Colors.deepPurple)),
+                //         Divider(
+                //           color: Colors.blueAccent,
+                //           thickness: 1,
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: OutlinedButton(
+                //             onPressed: () async {
+                //               var listT = await Report.getTransaction();
+                //               // print(listT);
+                //             },
+                //             child: Text("Sync"),
+                //             style: Style.outlinedButtonStyle,
+                //           ),
+                //         ),
+                //         OutlinedButton(
+                //           onPressed: () {},
+                //           child: Text("Clean Local Storage"),
+                //           style: Style.outlinedButtonStyle,
+                //         ),
+                //         Padding(
+                //           padding: const EdgeInsets.all(8.0),
+                //           child: OutlinedButton(
+                //             onPressed: () {},
+                //             child: Text("Refresh Local Storage"),
+                //             style: Style.outlinedButtonStyle,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     decoration: BoxDecoration(
+                //         border: Border.all(color: Colors.redAccent, width: 1)),
+                //   ),
+                // ),
                 // Padding(
                 //   padding: const EdgeInsets.only(top: 15.0),
                 //   child: Container(

@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
 class Setting extends StatefulWidget {
   @override
   _SettingState createState() => _SettingState();

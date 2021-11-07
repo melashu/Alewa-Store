@@ -21,7 +21,6 @@ class OrgProf extends StatefulWidget {
 }
 
 class _OrgProfState extends State<OrgProf> {
-  
   final setting = Hive.box("setting");
   final orgNameController = TextEditingController();
   final ownerController = TextEditingController();
@@ -58,11 +57,6 @@ class _OrgProfState extends State<OrgProf> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                        color: Colors.deepPurpleAccent,
-                        width: 1,
-                      )),
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
@@ -258,15 +252,11 @@ class _OrgProfState extends State<OrgProf> {
                                 return null;
                             },
                             textInputAction: TextInputAction.next,
-                            //  onChanged: (val) {
-                            //   formKey.currentState.validate();
-                            // },
                             decoration: InputDecoration(
                                 labelText: 'Username',
                                 floatingLabelBehavior:
                                     FloatingLabelBehavior.never,
                                 hintText: 'Like Meshu',
-                                // hintStyle: Style.style1,
                                 labelStyle: Style.style1,
                                 border: OutlineInputBorder(),
                                 contentPadding: EdgeInsets.all(5)),
@@ -365,17 +355,7 @@ class _OrgProfState extends State<OrgProf> {
                         'isActive': '1'
                       };
                       ProgressDialog pd = ProgressDialog(context: context);
-                      pd.show(
-                          max: 100,
-                          msg: "Wait...",
-                          backgroundColor: Colors.deepPurpleAccent,
-                          barrierDismissible: true,
-                          borderRadius: 20,
-                          msgColor: Colors.white,
-                          msgFontSize: 14,
-                          progressBgColor: Colors.white,
-                          valuePosition: ValuePosition.center,
-                          progressType: ProgressType.valuable);
+                      Utility.showProgress(context);
                       var result = await OrgProfHttp().insertOrgProf(orgMap);
                       if (result == "ok") {
                         Hive.box("setting").put("isSubscribed",

@@ -1,6 +1,7 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/drawer.dart';
+import 'package:boticshop/Utility/login.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/storage.dart';
 import 'package:boticshop/Utility/style.dart';
@@ -17,7 +18,6 @@ import 'package:boticshop/owner/loweritem.dart';
 import 'package:boticshop/owner/payment.dart';
 import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/owner/useraccont.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive/hive.dart';
@@ -611,18 +611,35 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     ),
-                    Card(
+                    // Card(
+                    //   elevation: 10,
+                    //   child: ListTile(
+                    //     horizontalTitleGap: 10,
+                    //     autofocus: true,
+                    //     title: Text("QR-Pdf Preparation", style: Style.mainStyle1),
+                    //     trailing: Icon(Icons.document_scanner, color: Colors.blue[400]),
+                    //     onTap: () {
+                    //       // Navigator.push(context,
+                    //       //     MaterialPageRoute(builder: (contex) {
+                    //       //   return Storage();
+                    //       // }));
+                    //     },
+                    //   ),
+                    // ),
+                      Card(
                       elevation: 10,
                       child: ListTile(
                         horizontalTitleGap: 10,
                         autofocus: true,
-                        title: Text("QR-Pdf Preparation", style: Style.mainStyle1),
-                        trailing: Icon(Icons.document_scanner, color: Colors.blue[400]),
+                        title:
+                            Text("Logout", style: Style.mainStyle1),
+                        trailing: Icon(Icons.logout_outlined,
+                            color: Colors.blue[400]),
                         onTap: () {
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (contex) {
-                          //   return Storage();
-                          // }));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (contex) {
+                            return Login();
+                          }));
                         },
                       ),
                     ),

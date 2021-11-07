@@ -186,7 +186,6 @@ class ItemList extends ConsumerWidget {
                               Utility.getValidationBox(context);
                             } else if (Utility.isPaymentDone()) {
                                      Utility.setServicePayment(context);
-
                             } else {
                               showDialog(
                                   context: context,
@@ -250,8 +249,8 @@ class ItemList extends ConsumerWidget {
                                             onPressed: () async {
                                               if (!Hive.box('setting')
                                                   .get("isWorkingLoc")) {
-                                                Utility
-                                                    .setCurrentWorkingLocation();
+                                                Utility.setCurrentWorkingLocation();
+                                                
                                               }
                                               var amountOrder = int.parse(
                                                   orderController.text);

@@ -32,6 +32,10 @@ dependencies:
   curved_navigation_bar: ^1.0.1
   flutter_speed_dial: ^4.4.0+1
   fluttertoast: ^8.0.8
+  animated_splash_screen: ^1.1.0
+  google_mobile_ads: ^0.13.6
+
+  image_picker: ^0.8.4+4
   flutter_awesome_alert_box: ^2.1.1
   url_launcher: ^6.0.12
   multi_image_picker2: ^5.0.2

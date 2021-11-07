@@ -30,10 +30,14 @@ class Agre extends ConsumerWidget {
             height: 20,
           ),
           futureAgreement.when(data: (result) {
-            return ListView(shrinkWrap: true, children: [
+            return ListView(shrinkWrap: true, 
+            physics: ClampingScrollPhysics(),
+            children: [
               Center(
                 child: Text(
-                  result['maintitle'],
+                  result['maintitle'] == null
+                      ? "ይቅርታ ለጊዜው የስምምነት ሰነዱ አልተዘጋጀም"
+                      : result['maintitle'],
                   style: Style.agree1,
                 ),
               ),
@@ -45,7 +49,9 @@ class Agre extends ConsumerWidget {
                 padding: EdgeInsets.all(15),
                 margin: EdgeInsets.all(10),
                 child: Text(
-                  result['mainmessage'],
+                  result['mainmessage'] == null
+                      ? "ይቅርታ ለጊዜው የስምምነት ሰነዱ አልተዘጋጀም"
+                      : result['mainmessage'],
                   style: Style.agree1,
                   textAlign: TextAlign.justify,
                 ),
@@ -55,7 +61,10 @@ class Agre extends ConsumerWidget {
               ),
               Center(
                   child: Text(
-                result['paymenttitle'],
+                result['paymenttitle'] == null
+                    ? "ይቅርታ ለጊዜው የስምምነት ሰነዱ አልተዘጋጀም"
+                    : result['paymenttitle'],
+                // result['paymenttitle'],
                 style: Style.agree1,
               )),
               Divider(
@@ -66,7 +75,10 @@ class Agre extends ConsumerWidget {
                 padding: EdgeInsets.all(15),
                 margin: EdgeInsets.all(10),
                 child: Text(
-                  result['paymentmessage'],
+                  result['paymentmessage'] == null
+                      ? "ይቅርታ ለጊዜው የስምምነት ሰነዱ አልተዘጋጀም"
+                      : result['paymentmessage'],
+                  // result['paymentmessage'],
                   style: Style.agree1,
                   textAlign: TextAlign.justify,
                 ),
@@ -88,12 +100,12 @@ class Agre extends ConsumerWidget {
                             context, "ይቅርታ ወደ $phone መደውል አልቻልኩም፡፡");
                       }
                     },
-                    child: Text("ያልገባኝ ነገር አለ")),
+                    child: Text("ያልገባኝ ነገር አለ 1")),
               ),
               isForInfo
                   ? SizedBox()
                   : Padding(
-                      padding: const EdgeInsets.only(left: 18.0, right: 18),
+                      padding: const EdgeInsets.all(18.0),
                       child: ElevatedButton(
                           onPressed: () async {
                             var amount = result['amount'];
@@ -139,7 +151,7 @@ class Agre extends ConsumerWidget {
                                       Hive.box("setting")
                                           .put("isSubscribed", true);
                                       Utility.infoMessage(context,
-                                          "እናመሰናለን ከ ቀን $today ጀምሮ በቋሚነት የ Mount Technology አባል ሁነዎል፡፡ ");
+                                          "እናመሰናለን ከ ቀን $today ጀምሮ በቋሚነት የ Mount Technology Group አባል ሁነዎል፡፡ ");
                                       Timer(Duration(seconds: 2), () {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(

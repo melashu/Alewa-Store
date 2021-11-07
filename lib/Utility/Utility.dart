@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
-import 'dart:ui';
 import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/date.dart';
@@ -322,7 +321,7 @@ class Utility {
     ProgressDialog pd = ProgressDialog(context: context);
     pd.show(
         max: 100,
-        msg: "Wait",
+        msg: "እባክዎትን ትንሽ ይጠብቁ",
         backgroundColor: Colors.white,
         barrierDismissible: true,
         borderRadius: 20,
@@ -459,17 +458,22 @@ Password: ${orgMap['password']}
   static bool isPaymentDone() {
     var paymentBox = Hive.box('payment');
     var month = paymentBox.get("month");
-    var isDate = (EtDatetime.parse(Dates.today)
-            .difference(EtDatetime.parse(month['date']))
-            .inDays >=
-        30);
+
+    var isDate;
+    if (month == null) {
+      isDate = false;
+    } else {
+      isDate = (EtDatetime.parse(Dates.today)
+              .difference(EtDatetime.parse(month['date']))
+              .inDays >=
+          30);
+    }
     return isDate;
   }
 
   static bool isValid() {
     var isSub = Hive.box("setting").get("isSubscribed");
     Map subInfo = Hive.box("setting").get("subInfo");
-    // print("Date=${subInfo['regDate']}");
     bool isValid = (!isSub &&
         (EtDatetime.parse(Dates.today)
                 .difference(EtDatetime.parse(subInfo['regDate']))
@@ -671,7 +675,9 @@ Password: ${orgMap['password']}
     var position = await Locations.getCurrentLocation();
     var latitude = position.latitude.toString();
     var longtitude = position.longitude.toString();
+
     var altitude = position.altitude.toString();
+    print("Long==$longtitude and Latitude == $latitude and Alt == $altitude");
     var location = Hive.box('location');
     Map locationMap = {
       "latitude": latitude,

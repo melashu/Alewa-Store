@@ -35,17 +35,14 @@ class _MainLoginState extends State<Login> {
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    // Hive.box("payment").clear();
-    print("Done===${Utility.isPaymentDone()}");
     super.initState();
     Connectivity().onConnectivityChanged.listen((event) async {
       if (event == ConnectivityResult.mobile ||
           event == ConnectivityResult.wifi) {
         _initPackageInfo();
         var orgId = Hive.box("setting").get("orgId");
-        // print('Org ID=$orgId');
+        print(Hive.box('setting').get("isWorkingLoc"));
         if (orgId != null) {
-          // print(Hive.box('setting').get("isWorkingLoc"));
           OrgProfHttp().getSubStatus(orgId);
           if (!Hive.box('setting').get("isWorkingLoc")) {
             OrgProfHttp().updateLocation(orgId);
@@ -78,6 +75,7 @@ class _MainLoginState extends State<Login> {
     // watch.call();
     var loginStatus = Hive.box("setting").get("isLocal") == null;
     var isActive = Hive.box('setting').get('isActive');
+    // print("is Active ==== $isActive");
     return Scaffold(
         body: Container(
       color: Colors.amberAccent,
@@ -414,7 +412,7 @@ class _MainLoginState extends State<Login> {
                                         context, "ይቅርታ ወደ  መደውል አልቻልኩም፡፡");
                                   }
                                 },
-                                child: Text(" Alewa ለእኔ ሥራ ምን ይጠቅመኛል?",
+                                child: Text(" Alewa-Botic ለእኔ ሥራ ምን ይጠቅመኛል?",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
@@ -434,7 +432,7 @@ class _MainLoginState extends State<Login> {
                               color: Colors.white,
                               thickness: 1,
                             ),
-                            Text(" Copywrite @ Mount Technology 2021 ",
+                            Text(" Copywrite @Mount Technology Group 2021 ",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -465,7 +463,7 @@ class _MainLoginState extends State<Login> {
                         height: 200,
                       ),
                       Text(
-                        "ይቅርታ፣ በጊዜዊነት Alewa ን ከመጠቀም ታገደዋል:: ለበለጠ መረጃ እባክዎትን የሚከተለውን ስልክ ተጭነው ይደውሉ፡፡ ",
+                        "ይቅርታ፣ በጊዜዊነት Alewa-Botic ን ከመጠቀም ታገደዋል:: ለበለጠ መረጃ እባክዎትን የሚከተለውን ስልክ ተጭነው ይደውሉ፡፡ ",
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,

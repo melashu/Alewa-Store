@@ -266,7 +266,7 @@ class _HomeState extends State<Home> {
                     if (Utility.isValid()) {
                       Utility.getValidationBox(context);
                     } else if (Utility.isPaymentDone()) {
-                                          Utility.setServicePayment(context);
+                     Utility.setServicePayment(context);
 
                     }                     
                     else {

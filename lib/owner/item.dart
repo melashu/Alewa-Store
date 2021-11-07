@@ -3,6 +3,7 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 // import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:hive/hive.dart';
 import 'package:screenshot/screenshot.dart';
@@ -267,6 +268,12 @@ class _ItemState extends State<Item> {
                                   FloatingLabelBehavior.auto),
                         ),
                       ),
+                      // OutlinedButton.icon(
+                      //     onPressed: () {
+                      
+                      //     },
+                      //     icon: Icon(Icons.camera),
+                      //     label: Text("የእቃዎ ፎቶ"))
                     ],
                   )),
               ElevatedButton(

@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/report.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/owner/PdfInvoice.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:open_file/open_file.dart';
 
 class MonthlyTransaction extends StatefulWidget {
   @override
@@ -38,8 +42,17 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
         OutlinedButton(
           child: Text("Generate as PDF"),
           style: Style.outlinedButtonStyle,
-          onPressed: () {
-            print("Pdf Generated");
+          onPressed: () async {
+            var soldItemList =
+                await Report.getDailyTransaction(userName: 'owner');
+            File lastPdf = await PdfInvoice.generatePDF(
+                soldItemList,
+                // "የቀን ${Dates.today} እላታዊ የሽያጭ ሪፖርት"
+                "Daily Sales Report",
+                Report.getDailyExpenes(),
+                Dates.today);
+            await OpenFile.open(lastPdf.path);
+            // print("Pdf Generated");
           },
         ),
         OutlinedButton(

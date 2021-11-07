@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:boticshop/Utility/date.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class OrgProfHttp {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var response =
         await client.post(url, body: {"action": 'getsub', "orgId": orgId});
+    // print("response.body " + response.body);
     if (response.body != 'notOk') {
       var info = jsonDecode(response.body) as List;
       var subInfo = info[0];
@@ -34,6 +34,11 @@ class OrgProfHttp {
     var loc = Hive.box("location").get("location");
     if (loc != null) {
       var response = await client.post(url, body: loc);
+      print("response.body====="+response.body);
+      if(response.body=='ok'){
+            Hive.box('setting').put("isWorkingLoc", true);
+        
+      }
     }
   }
 
@@ -113,6 +118,7 @@ class OrgProfHttp {
     var result = jsonDecode(response.body) as List;
     var status = result[0]['isActive'] as String;
     Hive.box('setting').put('isActive', status);
+    // print("Newtoekr is");
   }
 
   Future<bool> request4PaymentConfirmation(String orgId, String monthID) async {
@@ -151,5 +157,33 @@ class OrgProfHttp {
       // });
     }
     return val;
+  }
+
+  Future<List> getServiceCharge() async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {
+      'action': "serviceCharge",
+      'orgId': Hive.box('setting').get('orgId')
+    });
+    var mapResult = [];
+    if (response.body != 'notOk') {
+      var result = jsonDecode(response.body) as List;
+      mapResult = result;
+    }
+    return mapResult;
+  }
+
+  Future<List> getPaymentHistory() async {
+    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var response = await client.post(url, body: {
+      'action': "paymentHistory",
+      'orgId': Hive.box('setting').get('orgId')
+    });
+    var mapResult = [];
+    if (response.body != 'notOk') {
+      var result = jsonDecode(response.body) as List;
+      mapResult = result;
+    }
+    return mapResult;
   }
 }

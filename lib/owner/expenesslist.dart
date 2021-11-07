@@ -2,7 +2,6 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 // ignore: top_level_function_literal_block

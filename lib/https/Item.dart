@@ -1,7 +1,6 @@
 import 'dart:convert';
-
 import 'package:boticshop/Utility/Utility.dart';
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -9,9 +8,9 @@ import 'package:http/http.dart' as http;
 class SyncItem {
   static var client = http.Client();
   var itemBox = Hive.box('item');
-
-  void syncInsertItemList(BuildContext context) async {
+  Future<bool> syncInsertItemList(BuildContext context) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+    var val = false;
     var selectedList = [];
     var itemList = itemBox.values.toList();
     itemList.forEach((item) {
@@ -29,17 +28,20 @@ class SyncItem {
       var response = await client.post(url,
           body: {"data": json.encode(selectedList), "action": "asyncinsert"});
       if (response.body == "ok") {
+        val = true;
         selectedList.forEach((select) async {
           var itemID = select['itemID'];
           select['insertStatus'] = "yes";
           await itemBox.put(itemID, select);
         });
-      } 
+      }
     }
+    return val;
   }
 
-  void syncUpdateItem(BuildContext context) async {
+  Future<bool> syncUpdateItem(BuildContext context) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/item_update.php");
+    var val = false;
     var selectedList = [];
     var itemList = itemBox.values.toList();
     itemList.forEach((item) {
@@ -54,6 +56,7 @@ class SyncItem {
         'orgId': Hive.box('setting').get('orgId')
       });
       if (response.body == "ok") {
+        val = true;
         selectedList.forEach((select) {
           var itemID = select['itemID'];
           select['updateStatus'] = "no";
@@ -61,11 +64,12 @@ class SyncItem {
         });
       }
     }
+    return true;
   }
 
-  void syncDeleteItem(BuildContext context) async {
+  Future<bool> syncDeleteItem(BuildContext context) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/item_delete.php");
-
+    var val = false;
     var selectedList = [];
     var itemList = itemBox.values.toList();
     itemList.forEach((item) async {
@@ -85,6 +89,7 @@ class SyncItem {
         "orgId": Hive.box("setting").get('orgId')
       });
       if (response.body == "ok") {
+        val = true;
         selectedList.forEach((itemID) {
           itemBox.delete(itemID);
         });
@@ -92,6 +97,7 @@ class SyncItem {
         Utility.showSnakBar(context, response.body, Colors.redAccent);
       }
     }
+    return val;
   }
 
   static Future<void> getTotalItem() async {

@@ -2,9 +2,7 @@ import 'dart:math';
 // import 'dart:ui';
 // import 'package:boticshop/Utility/Boxes.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 class Addcategorie extends StatefulWidget {
   @override
   _AddcategorieState createState() => _AddcategorieState();

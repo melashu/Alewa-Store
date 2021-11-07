@@ -5,7 +5,6 @@ import 'package:boticshop/https/orgprof.dart';
 import 'package:boticshop/owner/useredit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 final roleStateProvider = StateProvider((ref) => "Owner");
