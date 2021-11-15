@@ -81,532 +81,507 @@ class _HomeState extends State<Home> {
         // ),
         // drawer: Drawers.getMainMenu(context),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: QRView(
-                  key: key,
-                  onQRViewCreated: onQRViewCreated,
-                  overlayMargin: EdgeInsets.all(2),
-                  overlay: QrScannerOverlayShape(
-                    borderColor: Colors.red,
-                    borderRadius: 10,
-                    borderLength: 30,
-                    borderWidth: 10,
-                    cutOutSize: 250,
-                  ),
-                ),
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: QRView(
+              key: key,
+              onQRViewCreated: onQRViewCreated,
+              overlayMargin: EdgeInsets.all(2),
+              overlay: QrScannerOverlayShape(
+                borderColor: Colors.red,
+                borderRadius: 10,
+                borderLength: 30,
+                borderWidth: 10,
+                cutOutSize: 250,
               ),
-              Visibility(
-                visible: isSuccess,
-                child: Container(
-                    margin: EdgeInsets.only(top: 5),
-                    width: 350,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        // border: Border.all(),
-                        color: Colors.lightGreenAccent,
-                        borderRadius: BorderRadius.circular(5)),
-                    child: ListTile(
-                        title: Center(
-                            child: Text(
-                          'በትክክል 1 $qrText ሽጠዎል',
-                          style: Style.style1,
-                        )),
-                        trailing: CircleAvatar(
-                          child: IconButton(
-                            icon: Icon(Icons.done),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return Home();
-                              }));
-                            },
-                          ),
-                        )
+            ),
+          ),
+          Visibility(
+            visible: isSuccess,
+            child: Container(
+                margin: EdgeInsets.only(top: 5),
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    // border: Border.all(),
+                    color: Colors.lightGreenAccent,
+                    borderRadius: BorderRadius.circular(5)),
+                child: ListTile(
+                    title: Center(
+                        child: Text(
+                      'በትክክል 1 $qrText ሽጠዎል',
+                      style: Style.style1,
+                    )),
+                    trailing: CircleAvatar(
+                      child: IconButton(
+                        icon: Icon(Icons.done),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Home();
+                          }));
+                        },
+                      ),
+                    )
 
-                        // Icon(Icons.done),
+                    // Icon(Icons.done),
 
-                        )),
-              ),
-              Visibility(
-                visible: isFinished,
-                child: Container(
-                    margin: EdgeInsets.only(top: 5),
-                    width: 350,
-                    height: 70,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        // border: Border.all(),
-                        color: Colors.redAccent,
-                        borderRadius: BorderRadius.circular(5)),
-                    child: ListTile(
-                        title: Center(
-                            child: Text(
-                          '$finalMessage',
-                          style: TextStyle(color: Colors.white),
-                        )),
-                        trailing: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.close_outlined,
-                              color: Colors.redAccent,
-                            ),
-                            onPressed: () {
-                              Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return Home();
-                              }));
-                            },
-                          ),
-                        )
+                    )),
+          ),
+          Visibility(
+            visible: isFinished,
+            child: Container(
+                margin: EdgeInsets.only(top: 5),
+                width: 350,
+                height: 70,
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    // border: Border.all(),
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(5)),
+                child: ListTile(
+                    title: Center(
+                        child: Text(
+                      '$finalMessage',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                    trailing: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.close_outlined,
+                          color: Colors.redAccent,
+                        ),
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return Home();
+                          }));
+                        },
+                      ),
+                    )
 
-                        // Icon(Icons.done),
+                    // Icon(Icons.done),
 
-                        )),
-              ),
-              // Divider(
-              //   thickness: 4,
-              // ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        QRcontroler.toggleFlash();
-                        if (isFlash(flash)) {
-                          setState(() {
-                            flash = "Flash Off";
-                          });
-                        } else {
-                          setState(() {
-                            flash = "Flash On";
-                          });
-                        }
-                      },
-                      child: Text(flash),
-                      style: ElevatedButton.styleFrom(
-                          elevation: 8,
-                          textStyle: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                          primary: Colors.deepPurple,
-                          onPrimary: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )),
-                    ),
-                    Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        QRcontroler.flipCamera();
-
-                        if (isBack(back)) {
-                          setState(() {
-                            back = "Front Camera";
-                          });
-                        } else {
-                          setState(() {
-                            back = "Back Camera";
-                          });
-                        }
-                      },
-                      child: Text(back),
-                      style: ElevatedButton.styleFrom(
-                          // elevation: 10,
-                          elevation: 8,
-                          textStyle: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                          primary: Colors.deepPurple,
-                          onPrimary: Colors.white,
-                          // side:  BorderSide(color: Colors.redAccent),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )),
-                    ),
-                    Spacer(),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (isPause(pause)) {
-                          QRcontroler.pauseCamera();
-                          setState(() {
-                            pause = "Keep Scanning";
-                          });
-                        } else {
-                          QRcontroler.resumeCamera();
-                          setState(() {
-                            pause = "Pause Scanning";
-                          });
-                        }
-                      },
-                      child: Text(pause),
-                      style: ElevatedButton.styleFrom(
-                          // elevation: 10,
-                          elevation: 8,
-                          textStyle: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                          primary: Colors.deepPurple,
-                          onPrimary: Colors.white,
-                          // side:  BorderSide(color: Colors.redAccent),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          )),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  onChanged: (val) {
-                    if (Utility.isValid()) {
-                      Utility.getValidationBox(context);
-                    } else if (Utility.isPaymentDone()) {
-                     Utility.setServicePayment(context);
-
-                    }                     
-                    else {
-                      if (!Hive.box('setting').get("isWorkingLoc")) {
-                        Utility.setCurrentWorkingLocation();
-                      }
-                      var filtered = [];
-                      if (val.isEmpty) {
-                        filtered = [];
-                      } else {
-                        filtered = listOfData
-                            .where((row) =>
-                                (row['brandName']
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(val.toLowerCase())) ||
-                                (row['catName']
-                                    .toString()
-                                    .toLowerCase()
-                                    .contains(val.toLowerCase())))
-                            .toList();
-                      }
+                    )),
+          ),
+          // Divider(
+          //   thickness: 4,
+          // ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    QRcontroler.toggleFlash();
+                    if (isFlash(flash)) {
                       setState(() {
-                        selectedItem = filtered;
+                        flash = "Flash Off";
+                      });
+                    } else {
+                      setState(() {
+                        flash = "Flash On";
                       });
                     }
                   },
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                        icon: Icon(Icons.search_outlined), onPressed: () {}),
-                    labelText: "የሚሸጡትን እቃ ከዚህ ላይ ይፈልጉ ",
-                    labelStyle: Style.style1,
-                    contentPadding: EdgeInsets.all(10),
-                  ),
+                  child: Text(flash),
+                  style: ElevatedButton.styleFrom(
+                      elevation: 8,
+                      textStyle:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      primary: Colors.deepPurple,
+                      onPrimary: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      )),
                 ),
-              ),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    QRcontroler.flipCamera();
 
-              Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: selectedItem.length,
-                    itemBuilder: (context, index) {
-                      if (selectedItem[index]['deleteStatus'] == 'no' &&
-                          int.parse(selectedItem[index]['amount'].toString()) >
-                              0) {
-                        return ExpansionTile(
-                          subtitle: Text(
-                            "Number of Items: ${selectedItem[index]['amount']}",
-                          ),
-                          title: Text(
-                              "Item Name ${selectedItem[index]['brandName']}",
-                              style: Style.style1),
-                          tilePadding: EdgeInsets.only(left: 20),
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        "Item ID: ${selectedItem[index]['itemID']} ",
-                                        style: Style.style1),
-                                    Text(
-                                        "Item Category: ${selectedItem[index]['catName']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "Item Name: ${selectedItem[index]['brandName']}",
-                                        style: Style.style1),
-                                    Text("Size: ${selectedItem[index]['size']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "Qunatity: ${selectedItem[index]['amount']}",
-                                        style: Style.style1),
-                                    Text(
-                                        "Buy Price: ${selectedItem[index]['buyPrices']} ",
-                                        style: Style.style1),
-                                    Text(
-                                        "Retailer Prices : ${selectedItem[index]['soldPrices']} ",
-                                        style: Style.style1),
-                                    Text(
-                                        "Registered Date: ${selectedItem[index]['createDate']} ",
-                                        style: Style.style1),
-                                    OutlinedButton(
-                                      onPressed: () async {
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                  content: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: ListView(
-                                                      shrinkWrap: true,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: TextField(
-                                                            onChanged: (val) {
-                                                              var quantity =
-                                                                  int.parse(
-                                                                      val.isEmpty
-                                                                          ? '0'
-                                                                          : val);
-                                                              var prices = int.parse(
-                                                                  selectedItem[
-                                                                              index]
-                                                                          [
-                                                                          'soldPrices']
-                                                                      .toString());
-                                                              var total =
-                                                                  quantity *
-                                                                      prices;
-                                                              pricesController
-                                                                ..text = total
-                                                                    .toString();
-                                                            },
-                                                            controller:
-                                                                orderController
-                                                                  ..text = '1',
-                                                            decoration:
-                                                                InputDecoration(
-                                                                    labelText:
-                                                                        'Quantity',
-                                                                    border:
-                                                                        OutlineInputBorder()),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: TextField(
-                                                            controller: pricesController
-                                                              ..text = selectedItem[
+                    if (isBack(back)) {
+                      setState(() {
+                        back = "Front Camera";
+                      });
+                    } else {
+                      setState(() {
+                        back = "Back Camera";
+                      });
+                    }
+                  },
+                  child: Text(back),
+                  style: ElevatedButton.styleFrom(
+                      // elevation: 10,
+                      elevation: 8,
+                      textStyle:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      primary: Colors.deepPurple,
+                      onPrimary: Colors.white,
+                      // side:  BorderSide(color: Colors.redAccent),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                ),
+                Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    if (isPause(pause)) {
+                      QRcontroler.pauseCamera();
+                      setState(() {
+                        pause = "Keep Scanning";
+                      });
+                    } else {
+                      QRcontroler.resumeCamera();
+                      setState(() {
+                        pause = "Pause Scanning";
+                      });
+                    }
+                  },
+                  child: Text(pause),
+                  style: ElevatedButton.styleFrom(
+                      // elevation: 10,
+                      elevation: 8,
+                      textStyle:
+                          TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      primary: Colors.deepPurple,
+                      onPrimary: Colors.white,
+                      // side:  BorderSide(color: Colors.redAccent),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (val) {
+                if (Utility.isValid()) {
+                  Utility.getValidationBox(context);
+                } else if (Utility.isPaymentDone()) {
+                  Utility.setServicePayment(context);
+                } else {
+                  if (!Hive.box('setting').get("isWorkingLoc")) {
+                    Utility.setCurrentWorkingLocation();
+                  }
+                  var filtered = [];
+                  if (val.isEmpty) {
+                    filtered = [];
+                  } else {
+                    filtered = listOfData
+                        .where((row) =>
+                            (row['brandName']
+                                .toString()
+                                .toLowerCase()
+                                .contains(val.toLowerCase())) ||
+                            (row['catName']
+                                .toString()
+                                .toLowerCase()
+                                .contains(val.toLowerCase())))
+                        .toList();
+                  }
+                  setState(() {
+                    selectedItem = filtered;
+                  });
+                }
+              },
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                suffixIcon: IconButton(
+                    icon: Icon(Icons.search_outlined), onPressed: () {}),
+                labelText: "የሚሸጡትን እቃ ከዚህ ላይ ይፈልጉ ",
+                labelStyle: Style.style1,
+                contentPadding: EdgeInsets.all(10),
+              ),
+            ),
+          ),
+
+          Expanded(
+            child: ListView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: selectedItem.length,
+                itemBuilder: (context, index) {
+                  if (selectedItem[index]['deleteStatus'] == 'no' &&
+                      int.parse(selectedItem[index]['amount'].toString()) > 0) {
+                    return ExpansionTile(
+                      subtitle: Text(
+                        "Number of Items: ${selectedItem[index]['amount']}",
+                      ),
+                      title: Text(
+                          "Item Name ${selectedItem[index]['brandName']}",
+                          style: Style.style1),
+                      tilePadding: EdgeInsets.only(left: 20),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                    "Item ID: ${selectedItem[index]['itemID']} ",
+                                    style: Style.style1),
+                                Text(
+                                    "Item Category: ${selectedItem[index]['catName']}",
+                                    style: Style.style1),
+                                Text(
+                                    "Item Name: ${selectedItem[index]['brandName']}",
+                                    style: Style.style1),
+                                Text("Size: ${selectedItem[index]['size']}",
+                                    style: Style.style1),
+                                Text(
+                                    "Qunatity: ${selectedItem[index]['amount']}",
+                                    style: Style.style1),
+                                Text(
+                                    "Buy Price: ${selectedItem[index]['buyPrices']} ",
+                                    style: Style.style1),
+                                Text(
+                                    "Retailer Prices : ${selectedItem[index]['soldPrices']} ",
+                                    style: Style.style1),
+                                Text(
+                                    "Registered Date: ${selectedItem[index]['createDate']} ",
+                                    style: Style.style1),
+                                OutlinedButton(
+                                  onPressed: () async {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              content: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: ListView(
+                                                  shrinkWrap: true,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: TextField(
+                                                        onChanged: (val) {
+                                                          var quantity =
+                                                              int.parse(
+                                                                  val.isEmpty
+                                                                      ? '0'
+                                                                      : val);
+                                                          var prices = int.parse(
+                                                              selectedItem[
                                                                           index]
                                                                       [
                                                                       'soldPrices']
-                                                                  .toString(),
-                                                            decoration:
-                                                                InputDecoration(
-                                                                    labelText:
-                                                                        'Prices',
-                                                                    border:
-                                                                        OutlineInputBorder()),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  // ),
-                                                  actions: [
-                                                    OutlinedButton(
-                                                      onPressed: () async {
-                                                        var amountOrder =
-                                                            int.parse(
-                                                                orderController
-                                                                    .text);
-
-                                                        var amount = int.parse(
-                                                            selectedItem[index]
-                                                                    ['amount']
-                                                                .toString());
-                                                        var selectedItemSoldPrices =
-                                                            selectedItem[index][
-                                                                    'soldPrices']
+                                                                  .toString());
+                                                          var total =
+                                                              quantity * prices;
+                                                          pricesController
+                                                            ..text = total
                                                                 .toString();
+                                                        },
+                                                        controller:
+                                                            orderController
+                                                              ..text = '1',
+                                                        decoration: InputDecoration(
+                                                            labelText:
+                                                                'Quantity',
+                                                            border:
+                                                                OutlineInputBorder()),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: TextField(
+                                                        controller: pricesController
+                                                          ..text = selectedItem[
+                                                                      index]
+                                                                  ['soldPrices']
+                                                              .toString(),
+                                                        decoration: InputDecoration(
+                                                            labelText: 'Prices',
+                                                            border:
+                                                                OutlineInputBorder()),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // ),
+                                              actions: [
+                                                OutlinedButton(
+                                                  onPressed: () async {
+                                                    var amountOrder = int.parse(
+                                                        orderController.text);
 
-                                                        if (int.tryParse(
-                                                                    orderController
-                                                                        .text) ==
-                                                                null ||
-                                                            amountOrder == 0) {
-                                                          Utility.showSnakBar(
-                                                              context,
-                                                              "Please Enter Number only ",
-                                                              Colors.redAccent);
-                                                        } else if (amount <
-                                                            amountOrder) {
-                                                          Utility.showDialogBox(
-                                                              context,
-                                                              "You have limited item",
-                                                              Colors.redAccent);
-                                                        } else {
-                                                          var itemList =
-                                                              selectedItem[
-                                                                  index];
-                                                          var random = Random();
-                                                          var tID = random
-                                                              .nextInt(1000000);
-                                                          var today =
-                                                              Dates.today;
-                                                          // var salesPerson =
-                                                          //     'Meshu';
-                                                          var itemID = itemList[
-                                                              'itemID'];
-                                                          var order =
-                                                              orderController
-                                                                  .text;
-                                                          itemList[
-                                                              'salesPerson'] = Hive
-                                                                  .box(
-                                                                      "setting")
+                                                    var amount = int.parse(
+                                                        selectedItem[index]
+                                                                ['amount']
+                                                            .toString());
+                                                    var selectedItemSoldPrices =
+                                                        selectedItem[index]
+                                                                ['soldPrices']
+                                                            .toString();
+
+                                                    if (int.tryParse(
+                                                                orderController
+                                                                    .text) ==
+                                                            null ||
+                                                        amountOrder == 0) {
+                                                      Utility.showSnakBar(
+                                                          context,
+                                                          "Please Enter Number only ",
+                                                          Colors.redAccent);
+                                                    } else if (amount <
+                                                        amountOrder) {
+                                                      Utility.showDialogBox(
+                                                          context,
+                                                          "You have limited item",
+                                                          Colors.redAccent);
+                                                    } else {
+                                                      var itemList =
+                                                          selectedItem[index];
+                                                      var random = Random();
+                                                      var tID = random
+                                                          .nextInt(1000000);
+                                                      var today = Dates.today;
+                                                      // var salesPerson =
+                                                      //     'Meshu';
+                                                      var itemID =
+                                                          itemList['itemID'];
+                                                      var order =
+                                                          orderController.text;
+                                                      itemList['salesPerson'] =
+                                                          Hive.box("setting")
                                                               .get(
                                                                   "deviceUser");
-                                                          itemList[
-                                                                  'salesDate'] =
-                                                              today;
-                                                          itemList[
-                                                                  'soldPrices'] =
-                                                              pricesController
-                                                                  .text;
-                                                          itemList['amount'] =
-                                                              order;
-                                                          Map item = itemBox
-                                                              .get(itemID);
+                                                      itemList['salesDate'] =
+                                                          today;
+                                                      itemList['soldPrices'] =
+                                                          pricesController.text;
+                                                      itemList['amount'] =
+                                                          order;
+                                                      Map item =
+                                                          itemBox.get(itemID);
 
-                                                          await transactionBox
-                                                              .put("T$tID",
-                                                                  itemList);
-                                                          if (transactionBox
-                                                              .containsKey(
-                                                                  "T$tID")) {
-                                                            item['amount'] =
-                                                                (amount -
-                                                                        amountOrder)
-                                                                    .toString();
-                                                            item["amountSold"] =
-                                                                (int.parse(item[
-                                                                            "amountSold"]
-                                                                        .toString()) +
-                                                                    amountOrder);
-                                                            item['soldPrices'] =
-                                                                selectedItemSoldPrices;
-                                                            item['updateStatus'] =
-                                                                'yes';
-                                                            itemBox.put(
-                                                                itemID, item);
-                                                            showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return AlertDialog(
-                                                                    content:
-                                                                        Padding(
-                                                                      padding:
-                                                                          EdgeInsets.all(
+                                                      await transactionBox.put(
+                                                          "T$tID", itemList);
+                                                      if (transactionBox
+                                                          .containsKey(
+                                                              "T$tID")) {
+                                                        item['amount'] =
+                                                            (amount -
+                                                                    amountOrder)
+                                                                .toString();
+                                                        item["amountSold"] =
+                                                            (int.parse(item[
+                                                                        "amountSold"]
+                                                                    .toString()) +
+                                                                amountOrder);
+                                                        item['soldPrices'] =
+                                                            selectedItemSoldPrices;
+                                                        item['updateStatus'] =
+                                                            'yes';
+                                                        itemBox.put(
+                                                            itemID, item);
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                content:
+                                                                    Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
                                                                               8),
+                                                                  child: Text(
+                                                                    " ${itemList['brandName']} is sold::",
+                                                                    style: Style
+                                                                        .style1,
+                                                                  ),
+                                                                ),
+                                                                actions: [
+                                                                  OutlinedButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context).push(MaterialPageRoute(builder:
+                                                                            (context) {
+                                                                          return ItemList();
+                                                                        }));
+                                                                      },
+                                                                      style: Style
+                                                                          .smallButton,
                                                                       child:
                                                                           Text(
-                                                                        " ${itemList['brandName']} is sold::",
-                                                                        style: Style
-                                                                            .style1,
-                                                                      ),
-                                                                    ),
-                                                                    actions: [
-                                                                      OutlinedButton(
-                                                                          onPressed:
-                                                                              () {
-                                                                            Navigator.of(context).push(MaterialPageRoute(builder:
-                                                                                (context) {
-                                                                              return ItemList();
-                                                                            }));
-                                                                          },
-                                                                          style: Style
-                                                                              .smallButton,
-                                                                          child:
-                                                                              Text(
-                                                                            "Ok",
-                                                                            style:
-                                                                                TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                                                                          ))
-                                                                    ],
-                                                                  );
-                                                                });
-                                                          }
-                                                        }
-                                                      },
-                                                      autofocus: true,
-                                                      child: Text(
-                                                        'Sell',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      style: Style.smallButton,
-                                                    ),
-                                                    OutlinedButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: Text('Close',
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold)),
-                                                      style: Style.smallButton,
-                                                    )
-                                                  ]);
-                                            });
-                                      },
-                                      child: Text(
-                                        "Order",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      style: OutlinedButton.styleFrom(
-                                          minimumSize: Size(100, 30),
-                                          backgroundColor: Colors.deepPurple,
-                                          padding: EdgeInsets.all(3),
-                                          elevation: 5,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              ),
+                                                                        "Ok",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.bold),
+                                                                      ))
+                                                                ],
+                                                              );
+                                                            });
+                                                      }
+                                                    }
+                                                  },
+                                                  autofocus: true,
+                                                  child: Text(
+                                                    'Sell',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  style: Style.smallButton,
+                                                ),
+                                                OutlinedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text('Close',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  style: Style.smallButton,
+                                                )
+                                              ]);
+                                        });
+                                  },
+                                  child: Text(
+                                    "Order",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                      minimumSize: Size(100, 30),
+                                      backgroundColor: Colors.deepPurple,
+                                      padding: EdgeInsets.all(3),
+                                      elevation: 5,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      )),
+                                )
+                              ],
                             ),
-                          ],
-                        );
-                      }
-                      return SizedBox();
-                    }),
-              )
-            ],
-          ),
-        ),
-        bottomNavigationBar: Drawers.getBottomNavigationBar(context, 0));
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return SizedBox();
+                }),
+          )
+        ],
+      ),
+    ));
+    // bottomNavigationBar: Drawers.getBottomNavigationBar(context, 0));
   }
 
   @override

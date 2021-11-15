@@ -1,7 +1,9 @@
 import 'dart:math';
 // import 'dart:ui';
 // import 'package:boticshop/Utility/Boxes.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 class Addcategorie extends StatefulWidget {
   @override
@@ -12,7 +14,8 @@ class _AddcategorieState extends State<Addcategorie> {
   final formKey = GlobalKey<FormState>();
   var cataController = TextEditingController();
   var cata4EditingController = TextEditingController();
-
+  BannerAd bannerAd = Ads().setAd2();
+  bool isSub = Hive.box("setting").get("isSubscribed");
   var dataRow = <DataRow>[];
 
   Box catBox = Hive.box("categorie");
@@ -32,9 +35,25 @@ class _AddcategorieState extends State<Addcategorie> {
       appBar: AppBar(
         title: Text("Add Item Categorie"),
       ),
+      bottomNavigationBar: bannerAd != null && !isSub
+            ? Container(
+                height: bannerAd.size.height.toDouble(),
+                width: bannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: bannerAd,
+                ),
+              )
+            : SizedBox(),
       body: ListView(
         padding: EdgeInsets.all(15),
         children: [
+            !isSub
+              ? Center(
+                  child: Text(
+                  "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+                  style: TextStyle(fontSize: 10, color: Colors.redAccent),
+                ))
+              : SizedBox(),
           SizedBox(
             height: 30,
           ),

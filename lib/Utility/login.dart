@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:boticshop/Utility/Utility.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/https/login.dart';
 import 'package:boticshop/https/orgprof.dart';
 import 'package:boticshop/owner/MainPage.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -26,13 +28,17 @@ class _MainLoginState extends State<Login> {
     buildNumber: 'Unknown',
     buildSignature: 'Unknown',
   );
-
+  var isAdsLoad = false;
+  BannerAd bannerAd=Ads().setAd1();
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
   final companyIDController = TextEditingController();
   final userBox = Hive.box('useraccount');
 
   final formKey = GlobalKey<FormState>();
+  @override
+
+
   @override
   void initState() {
     super.initState();
@@ -41,7 +47,7 @@ class _MainLoginState extends State<Login> {
           event == ConnectivityResult.wifi) {
         _initPackageInfo();
         var orgId = Hive.box("setting").get("orgId");
-        print(Hive.box('setting').get("isWorkingLoc"));
+        // print(Hive.box('setting').get("isWorkingLoc"));
         if (orgId != null) {
           OrgProfHttp().getSubStatus(orgId);
           if (!Hive.box('setting').get("isWorkingLoc")) {
@@ -61,6 +67,21 @@ class _MainLoginState extends State<Login> {
     Hive.box("setting").get('isWorkingLoc') == null
         ? Hive.box("setting").put("isWorkingLoc", false)
         : Hive.box("setting").get('isWorkingLoc');
+
+    // bannerAd = BannerAd(
+    //     adUnitId: "ca-app-pub-3940256099942544/6300978111",
+    //     listener: BannerAdListener(onAdLoaded: (ad) {
+    //       setState(() {
+    //         isAdsLoad = true;
+    //       });
+    //     }, onAdFailedToLoad: (ad, error) {
+    //       bannerAd = null;
+    //       ad.dispose();
+    //       print("Failed to load $error");
+    //     }),
+    //     size: AdSize.banner,
+    //     request: const AdRequest());
+    // bannerAd.load();
   }
 
   Future<void> _initPackageInfo() async {
@@ -73,14 +94,25 @@ class _MainLoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     // watch.call();
+    // BannerAd bannerAd = Ads().setAd1();
+
     var loginStatus = Hive.box("setting").get("isLocal") == null;
     var isActive = Hive.box('setting').get('isActive');
-    // print("is Active ==== $isActive");
+
     return Scaffold(
         body: Container(
       color: Colors.amberAccent,
       child: ListView(
         children: [
+          // bannerAd!=null 
+          //     ? Container(
+          //         height: bannerAd.size.height.toDouble(),
+          //         width: bannerAd.size.width.toDouble(),
+          //         child: AdWidget(
+          //           ad: bannerAd,
+          //         ),
+          //       )
+          //     : Text("not Working"),
           Container(
             width: double.infinity,
             height: 150,

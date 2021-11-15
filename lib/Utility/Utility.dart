@@ -22,14 +22,16 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-// final monthlyFutureProvider = FutureProvider<double>((ref) {});
+final monthlyFutureProvider = FutureProvider<double>((ref) {
+  
+});
 
 final monthlyStateProvider = StateProvider<double>((ref) {
-  // var totalstate = ref.watch(monthlyFutureProvider);
-  // var total = 0.0;
-  // totalstate.whenData((value) {
-  //   total = value;
-  // });
+  var totalstate = ref.watch(monthlyFutureProvider);
+  var total = 0.0;
+  totalstate.whenData((value) {
+    total = value;
+  });
   return Report.getDailyExpenessPerMonth() / 30;
 });
 

@@ -31,7 +31,10 @@ xmlns:tools="http://schemas.android.com/tools"
         android:icon="@mipmap/ic_launcher">
  <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            
+            android:value="ca-app-pub-4486573175271410~5796024727"/>
+
+            <!-- ca-app-pub-4486573175271410/9821215432 -->
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

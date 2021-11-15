@@ -1,10 +1,12 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/https/orgprof.dart';
 import 'package:boticshop/owner/useredit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 final roleStateProvider = StateProvider((ref) => "Owner");
@@ -17,7 +19,8 @@ class Useraccount extends ConsumerWidget {
   final salaryController = TextEditingController();
   final userNameFocus = FocusNode();
   final userBox = Hive.box('useraccount');
-
+  BannerAd bannerAd = Ads().setAd2();
+  bool isSub = Hive.box("setting").get("isSubscribed");
   @override
   Widget build(BuildContext context, watch) {
     var initRole = watch(roleStateProvider).state;
@@ -25,12 +28,29 @@ class Useraccount extends ConsumerWidget {
         appBar: AppBar(
           title: Utility.getTitle(),
         ),
+        bottomNavigationBar: bannerAd != null && !isSub
+            ? Container(
+                height: bannerAd.size.height.toDouble(),
+                width: bannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: bannerAd,
+                ),
+              )
+            : SizedBox(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
               key: formKey,
               child: ListView(
                 children: [
+                  !isSub
+                      ? Center(
+                          child: Text(
+                          "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.redAccent),
+                        ))
+                      : SizedBox(),
                   Container(
                       padding: EdgeInsets.all(10),
                       margin: EdgeInsets.all(5),

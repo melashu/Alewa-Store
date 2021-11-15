@@ -28,7 +28,7 @@ class OrgProfHttp {
       Hive.box("setting").put("subInfo", subInfo);
     }
   }
-
+  //nat
   Future<void> updateLocation(String orgId) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var loc = Hive.box("location").get("location");

@@ -3,9 +3,11 @@ import 'package:abushakir/abushakir.dart';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/owner/expenesslist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -55,6 +57,8 @@ class Expeness extends ConsumerWidget {
     var payementYear = watch(payementYearProvider).state;
     var _monthFocus = FocusNode();
     var _dayliFocus = FocusNode();
+    BannerAd bannerAd = Ads().setAd4();
+    bool isSub = Hive.box("setting").get("isSubscribed");
     return Scaffold(
       appBar: AppBar(
         title: Utility.getTitle(),
@@ -69,9 +73,29 @@ class Expeness extends ConsumerWidget {
             },
             child: Text('List of Registered Expeness'))
       ],
+
+      bottomNavigationBar: bannerAd != null && !isSub
+                ? Container(
+                    height: bannerAd.size.height.toDouble(),
+                    width: bannerAd.size.width.toDouble(),
+                    child: AdWidget(
+                      ad: bannerAd,
+                    ),
+                  )
+                : SizedBox(),
       body: ListView(
         padding: EdgeInsets.all(15),
         children: [
+           !isSub
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom:15.0),
+                    child: Text(
+                    "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+                    style: TextStyle(fontSize: 10, color: Colors.redAccent),
+                ),
+                  ))
+              : SizedBox(),
           Container(
             child: Center(
                 child: Text(
@@ -470,7 +494,7 @@ class Expeness extends ConsumerWidget {
                                     month: int.parse(payementMonth),
                                     day: int.parse(payementDate))
                                 .toString(),
-                            'payementType': 'monthly',
+                            'payementType': 'ወርሃዊ',
                             'insertStatus': 'no',
                             'updateStatus': 'no',
                             'deleteStatus': 'no'
@@ -479,7 +503,7 @@ class Expeness extends ConsumerWidget {
 
                           await expenessBox.put('e-$eID', expenessMap);
                           if (expenessBox.containsKey('e-$eID')) {
-                            Utility.showSnakBar(context, "Done succssfuly!",
+                            Utility.showSnakBar(context, "በትክክል ተመዝግቦል!",
                                 Colors.greenAccent);
                           } else {
                             Utility.showSnakBar(

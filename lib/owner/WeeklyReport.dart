@@ -47,7 +47,7 @@ class _WekklyTransaction extends State<WekklyTransaction> {
                 await Report.getWeeklyTransaction(userName: 'owner');
             File lastPdf = await PdfInvoice.generatePDF(
                 soldItemList,
-                "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
+                "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).subtract(Duration(days: 7))} ሳምንታዊ የሽያጭ ሪፖርት",
                 Report.getWeeklyExpenes(),
                 '7');
                       await OpenFile.open(lastPdf.path);

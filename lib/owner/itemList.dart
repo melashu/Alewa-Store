@@ -3,11 +3,13 @@ import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/drawer.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/owner/editItem.dart';
 import 'package:boticshop/owner/item.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -27,7 +29,8 @@ class ItemList extends ConsumerWidget {
   final orderController = TextEditingController();
   final pricesController = TextEditingController();
   final transactionBox = Hive.lazyBox("transaction");
-
+  BannerAd bannerAd = Ads().setAd3();
+  bool isSub = Hive.box("setting").get("isSubscribed");
   @override
   Widget build(BuildContext context, watch) {
     return Scaffold(
@@ -46,6 +49,25 @@ class ItemList extends ConsumerWidget {
       body: Container(
         child: ListView(
           children: [
+              !isSub
+                ? Center(
+                    child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+                      style: TextStyle(fontSize: 10, color: Colors.redAccent),
+                    ),
+                  ))
+                : SizedBox(),
+                bannerAd != null && !isSub
+                ? Container(
+                    height: bannerAd.size.height.toDouble(),
+                    width: bannerAd.size.width.toDouble(),
+                    child: AdWidget(
+                      ad: bannerAd,
+                    ),
+                  )
+                : SizedBox(),
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Center(

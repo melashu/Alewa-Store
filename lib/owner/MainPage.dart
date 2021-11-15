@@ -5,8 +5,10 @@ import 'package:boticshop/Utility/login.dart';
 import 'package:boticshop/Utility/setting.dart';
 import 'package:boticshop/Utility/storage.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/owner/Home.dart';
 import 'package:boticshop/owner/MonthlyReport.dart';
+import 'package:boticshop/owner/Transaction.dart';
 import 'package:boticshop/owner/WeeklyReport.dart';
 import 'package:boticshop/owner/asset.dart';
 import 'package:boticshop/owner/categorie.dart';
@@ -20,6 +22,7 @@ import 'package:boticshop/owner/store_level.dart';
 import 'package:boticshop/owner/useraccont.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -38,6 +41,9 @@ class _MainPageState extends State<MainPage> {
     buildNumber: 'Unknown',
     buildSignature: 'Unknown',
   );
+  BannerAd bannerAd = Ads().setAd1();
+    bool isSub = Hive.box("setting").get("isSubscribed");
+
   @override
   void initState() {
     super.initState();
@@ -187,6 +193,7 @@ class _MainPageState extends State<MainPage> {
       //   }
       // },
       // ),
+
       body: ListView(children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -201,6 +208,15 @@ class _MainPageState extends State<MainPage> {
             )),
           ),
         ),
+        bannerAd != null && !isSub
+            ? Container(
+                height: bannerAd.size.height.toDouble(),
+                width: bannerAd.size.width.toDouble(),
+                child: AdWidget(
+                  ad: bannerAd,
+                ),
+              )
+            : SizedBox(),
         Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
@@ -214,6 +230,11 @@ class _MainPageState extends State<MainPage> {
               label: Text('Scan (መሸጫ)'),
               style: ElevatedButton.styleFrom(primary: Colors.blue),
             )),
+       !isSub? Center(
+            child: Text(
+          "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+          style: TextStyle(fontSize: 10, color: Colors.redAccent),
+        )):SizedBox(),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -286,25 +307,25 @@ class _MainPageState extends State<MainPage> {
                         },
                       ),
                     ),
-                    Card(
-                      elevation: 10,
-                      child: ListTile(
-                        horizontalTitleGap: 10,
-                        autofocus: true,
-                        title: Text(
-                          "የእቃ ብዛት",
-                          style: Style.mainStyle1,
-                        ),
-                        subtitle:
-                            Text("Product Category", style: Style.mainStyle2),
-                        onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
-                            return StoreLevel();
-                          }));
-                        },
-                      ),
-                    ),
+                    // Card(
+                    //   elevation: 10,
+                    //   child: ListTile(
+                    //     horizontalTitleGap: 10,
+                    //     autofocus: true,
+                    //     title: Text(
+                    //       "የእቃ ብዛት",
+                    //       style: Style.mainStyle1,
+                    //     ),
+                    //     subtitle:
+                    //         Text("Product Category", style: Style.mainStyle2),
+                    //     onTap: () {
+                    //       Navigator.push(context,
+                    //           MaterialPageRoute(builder: (context) {
+                    //         return StoreLevel();
+                    //       }));
+                    //     },
+                    //   ),
+                    // ),
                     Card(
                       elevation: 10,
                       child: ListTile(
@@ -433,6 +454,22 @@ class _MainPageState extends State<MainPage> {
                       elevation: 10,
                       child: ListTile(
                         horizontalTitleGap: 12,
+                        title: Text("እለታዊ ሪፖርት", style: Style.mainStyle1),
+                        subtitle:
+                            Text("Daily Report", style: Style.mainStyle2),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return Transaction();
+                          }));
+                        },
+                      ),
+                    ),
+                    Card(
+                      elevation: 10,
+                      child: ListTile(
+                        horizontalTitleGap: 12,
                         title: Text("ሳምንታዊ ሪፖርት", style: Style.mainStyle1),
                         subtitle:
                             Text("Weekliy Report", style: Style.mainStyle2),
@@ -545,26 +582,26 @@ class _MainPageState extends State<MainPage> {
                   crossAxisCount: 2,
                   shrinkWrap: true,
                   children: [
-                    Card(
-                      elevation: 10,
-                      child: ListTile(
-                        horizontalTitleGap: 10,
-                        autofocus: true,
-                        title: Text("My Profile", style: Style.mainStyle1),
-                        trailing: Icon(Icons.people_alt_outlined,
-                            color: Colors.blue[400]),
-                        onTap: () async {
-                          // String appName = _packageInfo.appName;
-                          // String packageName = _packageInfo.packageName;
-                          // String version = _packageInfo.version;
-                          // String buildNumber = _packageInfo.buildNumber;
-                          // print(" version " + version);
-                          // print(" packageName " + packageName);
-                          // print(" appName " + appName);
-                          // print(" buildNumber " + buildNumber);
-                        },
-                      ),
-                    ),
+                    // Card(
+                    //   elevation: 10,
+                    //   child: ListTile(
+                    //     horizontalTitleGap: 10,
+                    //     autofocus: true,
+                    //     title: Text("My Profile", style: Style.mainStyle1),
+                    //     trailing: Icon(Icons.people_alt_outlined,
+                    //         color: Colors.blue[400]),
+                    //     onTap: () async {
+                    //       // String appName = _packageInfo.appName;
+                    //       // String packageName = _packageInfo.packageName;
+                    //       // String version = _packageInfo.version;
+                    //       // String buildNumber = _packageInfo.buildNumber;
+                    //       // print(" version " + version);
+                    //       // print(" packageName " + packageName);
+                    //       // print(" appName " + appName);
+                    //       // print(" buildNumber " + buildNumber);
+                    //     },
+                    //   ),
+                    // ),
                     Card(
                       elevation: 10,
                       child: ListTile(
@@ -602,7 +639,8 @@ class _MainPageState extends State<MainPage> {
                         autofocus: true,
                         title: Text("አባልነት ", style: Style.mainStyle1),
                         subtitle: Text("Membership ", style: Style.mainStyle2),
-                        trailing: Icon(Icons.card_membership, color: Colors.blue[400]),
+                        trailing: Icon(Icons.card_membership,
+                            color: Colors.blue[400]),
                         onTap: () {
                           Navigator.push(context,
                               MaterialPageRoute(builder: (contex) {
@@ -626,13 +664,12 @@ class _MainPageState extends State<MainPage> {
                     //     },
                     //   ),
                     // ),
-                      Card(
+                    Card(
                       elevation: 10,
                       child: ListTile(
                         horizontalTitleGap: 10,
                         autofocus: true,
-                        title:
-                            Text("Logout", style: Style.mainStyle1),
+                        title: Text("Logout", style: Style.mainStyle1),
                         trailing: Icon(Icons.logout_outlined,
                             color: Colors.blue[400]),
                         onTap: () {

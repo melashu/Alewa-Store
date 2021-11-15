@@ -3,9 +3,11 @@ import 'dart:math';
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
+import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/owner/debtedit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class Debt extends StatefulWidget {
@@ -27,7 +29,8 @@ class DebtState extends State<Debt> {
   var isVisible = false;
   var otherID;
   var debtBox = Hive.box("debt");
-
+  BannerAd bannerAd = Ads().setAd4();
+  bool isSub = Hive.box("setting").get("isSubscribed");
   List<DataRow> listRow = [];
   var salaryController = TextEditingController();
   // var workDateController = TextEditingController();
@@ -40,6 +43,15 @@ class DebtState extends State<Debt> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Utility.getTitle()),
+      bottomNavigationBar: bannerAd != null && !isSub
+                ? Container(
+                    height: bannerAd.size.height.toDouble(),
+                    width: bannerAd.size.width.toDouble(),
+                    child: AdWidget(
+                      ad: bannerAd,
+                    ),
+                  )
+                : SizedBox(),
       body: ListView(padding: const EdgeInsets.all(10.0), children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -47,6 +59,14 @@ class DebtState extends State<Debt> {
               key: _forKey,
               child: Column(
                 children: [
+                   !isSub
+                      ? Center(
+                          child: Text(
+                          "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.redAccent),
+                        ))
+                      : SizedBox(),
                   Text("የብድር እና ዱቤ ዝርዝሮች", style: Style.mainStyle1),
                   Divider(thickness: 1, color: Colors.blueAccent),
                   Row(

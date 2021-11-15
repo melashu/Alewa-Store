@@ -2,11 +2,14 @@ import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/Utility/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
   await Hive.initFlutter();
   await Boxes.getCatBox();
   await Boxes.getItemBox();

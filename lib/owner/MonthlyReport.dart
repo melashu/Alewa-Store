@@ -65,7 +65,7 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
                 data: soldItemList,
                 context: context,
                 date:
-                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).add(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
+                    "የቀን ${Dates.today} to ${EtDatetime.parse(Dates.today).subtract(Duration(days: 30))} ወርሃዊ የሽያጭ ሪፖርት",
                 expenes: Report.getMonthlyExpenes());
           },
         )
