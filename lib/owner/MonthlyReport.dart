@@ -146,7 +146,7 @@ class _MonthlyTransaction extends State<MonthlyTransaction> {
                                             "የሽያጭ ባለሙያው ስም ፡ ${snapshot.data[index]['salesPerson']}",
                                             style: Style.style1),
                                         Text(
-                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
+                                            "ትርፍ ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount'])} ብር",
                                             style: Style.style1),
                                       ],
                                     ),

@@ -22,9 +22,7 @@ import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-final monthlyFutureProvider = FutureProvider<double>((ref) {
-  
-});
+final monthlyFutureProvider = FutureProvider<double>((ref) {});
 
 final monthlyStateProvider = StateProvider<double>((ref) {
   var totalstate = ref.watch(monthlyFutureProvider);
@@ -165,9 +163,8 @@ class Utility {
                 totalBuy = totalBuy +
                     (double.parse(row['buyPrices']) * int.parse(row['amount']));
                 totalSell = totalSell +
-                    (double.parse(row['soldPrices']) *
-                        int.parse(row['amount']));
-
+                    (double.parse(row['soldPrices']));
+                // (double.parse(row['soldPrices']) * int.parse(row['amount']));
                 content = content +
                     "\n የእቃው ስም፡ " +
                     row['brandName'] +
@@ -460,8 +457,7 @@ Password: ${orgMap['password']}
   static bool isPaymentDone() {
     var paymentBox = Hive.box('payment');
     var month = paymentBox.get("month");
-
-    var isDate;
+    bool isDate;
     if (month == null) {
       isDate = false;
     } else {
@@ -673,23 +669,23 @@ Password: ${orgMap['password']}
         });
   }
 
-  static Future<void> setCurrentWorkingLocation() async {
-    var position = await Locations.getCurrentLocation();
-    var latitude = position.latitude.toString();
-    var longtitude = position.longitude.toString();
+  // static Future<void> setCurrentWorkingLocation() async {
+  //   var position = await Locations.getCurrentLocation();
+  //   var latitude = position.latitude.toString();
+  //   var longtitude = position.longitude.toString();
 
-    var altitude = position.altitude.toString();
-    print("Long==$longtitude and Latitude == $latitude and Alt == $altitude");
-    var location = Hive.box('location');
-    Map locationMap = {
-      "latitude": latitude,
-      "longtitude": longtitude,
-      "altitude": altitude,
-      "action": "locationUpdate",
-      "orgId": Hive.box("setting").get("orgId")
-    };
-    location.put("location", locationMap);
-  }
+  //   var altitude = position.altitude.toString();
+  //   print("Long==$longtitude and Latitude == $latitude and Alt == $altitude");
+  //   var location = Hive.box('location');
+  //   Map locationMap = {
+  //     "latitude": latitude,
+  //     "longtitude": longtitude,
+  //     "altitude": altitude,
+  //     "action": "locationUpdate",
+  //     "orgId": Hive.box("setting").get("orgId")
+  //   };
+  //   location.put("location", locationMap);
+  // }
 
   static Future<bool> isConnection() async {
     ConnectivityResult connectivityResult =

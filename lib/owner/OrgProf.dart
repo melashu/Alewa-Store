@@ -9,7 +9,7 @@ import 'package:boticshop/owner/success.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:sn_progress_dialog/progress_dialog.dart';
 
@@ -309,6 +309,8 @@ class _OrgProfState extends State<OrgProf> {
                     await Connectivity().checkConnectivity();
                 if (formKey.currentState.validate()) {
                   if (await Utility.isConnection()) {
+                      Utility.showProgress(context);
+
                     var orgBox = Hive.lazyBox("orgprofile");
                     var orgName = orgNameController.text;
                     var ownerName = ownerController.text;
@@ -328,10 +330,10 @@ class _OrgProfState extends State<OrgProf> {
                    */
                     var businessType = "001";
                     try {
-                      var position = await Locations.getCurrentLocation();
-                      var latitude = position.latitude;
-                      var longtitude = position.longitude;
-                      var altitude = position.altitude;
+                      // var position = await Locations.getCurrentLocation();
+                      // var latitude = position.latitude;
+                      // var longtitude = position.longitude;
+                      // var altitude = position.altitude;
                       var orgMap = {
                         'orgName': orgName,
                         'ownerName': ownerName,
@@ -342,9 +344,9 @@ class _OrgProfState extends State<OrgProf> {
                         'password': password,
                         'orgId': orgId,
                         'registrationDate': registrationDate,
-                        'latitude': latitude.toString(),
-                        'longtitude': longtitude.toString(),
-                        'altitude': altitude.toString(),
+                        // 'latitude': latitude.toString(),
+                        // 'longtitude': longtitude.toString(),
+                        // 'altitude': altitude.toString(),
                         'businessType': businessType,
                         "role": "Owner",
                         "fullName": ownerName,
@@ -355,12 +357,12 @@ class _OrgProfState extends State<OrgProf> {
                         'isActive': '1'
                       };
                       ProgressDialog pd = ProgressDialog(context: context);
-                      Utility.showProgress(context);
                       var result = await OrgProfHttp().insertOrgProf(orgMap);
+                      Hive.box("setting").put("isSubscribed", false); 
                       if (result == "ok") {
-                        Hive.box("setting").put("isSubscribed",
-                            false); // to check weather the users are subscribed for fee or not
-                        Hive.box("setting").put("isWorkingLoc", false);
+                        // Hive.box("setting").put("isSubscribed",
+                        //     false); // to check weather the users are subscribed for fee or not
+                        // Hive.box("setting").put("isWorkingLoc", false);
                         var subInfo = {
                           'regDate': Dates.today,
                           "freeDay": 30,
@@ -414,14 +416,8 @@ class _OrgProfState extends State<OrgProf> {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.redAccent,
                         duration: Duration(minutes: 1),
-                        content: Text("$e Please turn on your location"),
-                        action: SnackBarAction(
-                          label: 'Turn on ',
-                          onPressed: () async {
-                            await Geolocator.openLocationSettings();
-                          },
-                          textColor: Colors.white,
-                        ),
+                        content: Text("$e "),
+                      
                       ));
                     }
                   } else {

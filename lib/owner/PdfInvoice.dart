@@ -70,7 +70,7 @@ class PdfInvoice {
       totalBuy = totalBuy +
           (double.parse(row['buyPrices']) * int.parse(row['amount']));
       totalSell = totalSell +
-          (double.parse(row['soldPrices']) * int.parse(row['amount']));
+          (double.parse(row['soldPrices']));
       if (data.length <= 10) {
         index = index + 1;
         content = content +
@@ -134,7 +134,7 @@ class PdfInvoice {
     );
     allPages.add(
       Text(
-        "Total Item amount $totalBuy Birr",
+        "Total Orginal Prices $totalBuy Birr",
         style: style1,
       ),
     );
@@ -146,7 +146,7 @@ class PdfInvoice {
     );
     allPages.add(
       Text(
-        "Total Profite before ${totalSell - totalBuy} Birr",
+        "Total Profit ${totalSell - totalBuy} Birr",
         style: style1,
       ),
     );

@@ -2,7 +2,7 @@ import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/ads/ads.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -22,36 +22,36 @@ class Lower extends ConsumerWidget {
   final orderController = TextEditingController();
   final pricesController = TextEditingController();
   final transactionBox = Hive.lazyBox("transaction");
-  BannerAd bannerAd = Ads().setAd3();
-  bool isSub = Hive.box("setting").get("isSubscribed");
+  // BannerAd bannerAd = Ads().setAd3();
+  // bool isSub = Hive.box("setting").get("isSubscribed");
   @override
   Widget build(BuildContext context, watch) {
     return Scaffold(
       appBar: AppBar(
         title: Text('በማለቅ ላይ ያሉ እቃዎች ዝርዝር'),
       ),
-      bottomNavigationBar: bannerAd != null && !isSub
-            ? Container(
-                height: bannerAd.size.height.toDouble(),
-                width: bannerAd.size.width.toDouble(),
-                child: AdWidget(
-                  ad: bannerAd,
-                ),
-              )
-            : SizedBox(),
+      // bottomNavigationBar: bannerAd != null && !isSub
+      //       ? Container(
+      //           height: bannerAd.size.height.toDouble(),
+      //           width: bannerAd.size.width.toDouble(),
+      //           child: AdWidget(
+      //             ad: bannerAd,
+      //           ),
+      //         )
+      //       : SizedBox(),
       body: Container(
         child: ListView(
           children: [
-             !isSub
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                      "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                      style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                  ),
-                    ))
-                : SizedBox(),
+            //  !isSub
+            //     ? Center(
+            //         child: Padding(
+            //           padding: const EdgeInsets.all(15.0),
+            //           child: Text(
+            //           "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+            //           style: TextStyle(fontSize: 10, color: Colors.redAccent),
+            //       ),
+            //         ))
+            //     : SizedBox(),
                 Divider(
                   thickness: 1,
                   color: Colors.lightBlueAccent,

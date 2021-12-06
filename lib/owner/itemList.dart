@@ -9,7 +9,7 @@ import 'package:boticshop/owner/item.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -29,8 +29,8 @@ class ItemList extends ConsumerWidget {
   final orderController = TextEditingController();
   final pricesController = TextEditingController();
   final transactionBox = Hive.lazyBox("transaction");
-  BannerAd bannerAd = Ads().setAd3();
-  bool isSub = Hive.box("setting").get("isSubscribed");
+  // BannerAd bannerAd = Ads().setAd3();
+  // bool isSub = Hive.box("setting").get("isSubscribed");
   @override
   Widget build(BuildContext context, watch) {
     return Scaffold(
@@ -49,25 +49,25 @@ class ItemList extends ConsumerWidget {
       body: Container(
         child: ListView(
           children: [
-              !isSub
-                ? Center(
-                    child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                      style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                    ),
-                  ))
-                : SizedBox(),
-                bannerAd != null && !isSub
-                ? Container(
-                    height: bannerAd.size.height.toDouble(),
-                    width: bannerAd.size.width.toDouble(),
-                    child: AdWidget(
-                      ad: bannerAd,
-                    ),
-                  )
-                : SizedBox(),
+              // !isSub
+              //   ? Center(
+              //       child: Padding(
+              //       padding: const EdgeInsets.all(15.0),
+              //       child: Text(
+              //         "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+              //         style: TextStyle(fontSize: 10, color: Colors.redAccent),
+              //       ),
+              //     ))
+              //   : SizedBox(),
+                // bannerAd != null && !isSub
+                // ? Container(
+                //     height: bannerAd.size.height.toDouble(),
+                //     width: bannerAd.size.width.toDouble(),
+                //     child: AdWidget(
+                //       ad: bannerAd,
+                //     ),
+                //   )
+                // : SizedBox(),
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Center(
@@ -209,10 +209,13 @@ class ItemList extends ConsumerWidget {
                             } else if (Utility.isPaymentDone()) {
                                      Utility.setServicePayment(context);
                             } else {
+
                               showDialog(
                                   context: context,
+
                                   builder: (context) {
                                     return AlertDialog(
+                                      title: Text("ሽያጭ"),
                                         content: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: SingleChildScrollView(
@@ -241,7 +244,7 @@ class ItemList extends ConsumerWidget {
                                                     controller: orderController
                                                       ..text = '1',
                                                     decoration: InputDecoration(
-                                                        labelText: 'Quantity',
+                                                        labelText: 'ብዛት',
                                                         border:
                                                             OutlineInputBorder()),
                                                   ),
@@ -256,7 +259,7 @@ class ItemList extends ConsumerWidget {
                                                                   ['soldPrices']
                                                               .toString(),
                                                     decoration: InputDecoration(
-                                                        labelText: 'Prices',
+                                                        labelText: 'ዋጋ',
                                                         border:
                                                             OutlineInputBorder()),
                                                   ),
@@ -269,11 +272,11 @@ class ItemList extends ConsumerWidget {
                                         actions: [
                                           OutlinedButton(
                                             onPressed: () async {
-                                              if (!Hive.box('setting')
-                                                  .get("isWorkingLoc")) {
-                                                Utility.setCurrentWorkingLocation();
+                                              // if (!Hive.box('setting')
+                                              //     .get("isWorkingLoc")) {
+                                              //   Utility.setCurrentWorkingLocation();
                                                 
-                                              }
+                                              // }
                                               var amountOrder = int.parse(
                                                   orderController.text);
 
@@ -392,10 +395,11 @@ class ItemList extends ConsumerWidget {
                                           )
                                         ]);
                                   });
+                          
                             }
                           },
                           child: Text(
-                            "Order",
+                            "ሽጡ",
                             style: TextStyle(color: Colors.white),
                           ),
                           style: OutlinedButton.styleFrom(

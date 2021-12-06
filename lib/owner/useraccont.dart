@@ -1,12 +1,10 @@
 import 'package:boticshop/Utility/Utility.dart';
 import 'package:boticshop/Utility/date.dart';
 import 'package:boticshop/Utility/style.dart';
-import 'package:boticshop/ads/ads.dart';
 import 'package:boticshop/https/orgprof.dart';
 import 'package:boticshop/owner/useredit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 final roleStateProvider = StateProvider((ref) => "Owner");
@@ -19,8 +17,8 @@ class Useraccount extends ConsumerWidget {
   final salaryController = TextEditingController();
   final userNameFocus = FocusNode();
   final userBox = Hive.box('useraccount');
-  BannerAd bannerAd = Ads().setAd2();
-  bool isSub = Hive.box("setting").get("isSubscribed");
+  // BannerAd bannerAd = Ads().setAd2();
+  // bool isSub = Hive.box("setting").get("isSubscribed");
   @override
   Widget build(BuildContext context, watch) {
     var initRole = watch(roleStateProvider).state;
@@ -28,29 +26,22 @@ class Useraccount extends ConsumerWidget {
         appBar: AppBar(
           title: Utility.getTitle(),
         ),
-        bottomNavigationBar: bannerAd != null && !isSub
-            ? Container(
-                height: bannerAd.size.height.toDouble(),
-                width: bannerAd.size.width.toDouble(),
-                child: AdWidget(
-                  ad: bannerAd,
-                ),
-              )
-            : SizedBox(),
+        // bottomNavigationBar: bannerAd != null && !isSub
+        //     ? Container(
+        //         height: bannerAd.size.height.toDouble(),
+        //         width: bannerAd.size.width.toDouble(),
+        //         child: AdWidget(
+        //           ad: bannerAd,
+        //         ),
+        //       )
+        //     : SizedBox(),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Form(
               key: formKey,
               child: ListView(
                 children: [
-                  !isSub
-                      ? Center(
-                          child: Text(
-                          "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                          style:
-                              TextStyle(fontSize: 10, color: Colors.redAccent),
-                        ))
-                      : SizedBox(),
+       
                   Container(
                       padding: EdgeInsets.all(10),
                       margin: EdgeInsets.all(5),
@@ -58,7 +49,7 @@ class Useraccount extends ConsumerWidget {
                           border: Border.all(
                               width: 1, color: Colors.deepPurpleAccent)),
                       child: Text(
-                        "Employee Registeration Form",
+                        "የስራተኞች መመዝገቢያ ቅጽ",
                         style: Style.style1,
                         textAlign: TextAlign.center,
                       )),
@@ -67,7 +58,7 @@ class Useraccount extends ConsumerWidget {
                     child: Row(
                       children: [
                         Text(
-                          "User Account Role",
+                          "የስራ ሀላፊነት",
                           style: Style.style1,
                         ),
                         Spacer(),
@@ -80,14 +71,14 @@ class Useraccount extends ConsumerWidget {
                                 child: Text("Owner"),
                                 value: "Owner",
                               ),
-                              DropdownMenuItem(
-                                child: Text("Sales"),
-                                value: "Sales",
-                              ),
-                              DropdownMenuItem(
-                                child: Text("Encoder"),
-                                value: "Encoder",
-                              )
+                              // DropdownMenuItem(
+                              //   child: Text("Sales"),
+                              //   value: "Sales",
+                              // ),
+                              // DropdownMenuItem(
+                              //   child: Text("Encoder"),
+                              //   value: "Encoder",
+                              // )
                             ],
                             value: initRole,
                             onChanged: (val) {
@@ -105,7 +96,7 @@ class Useraccount extends ConsumerWidget {
                       },
                       validator: (val) {
                         if (val.isEmpty) {
-                          return "Please Enter Full Name";
+                          return "እባክዎትን ስም ያስገቡ፡፡";
                         }
                         return null;
                       },
@@ -113,8 +104,8 @@ class Useraccount extends ConsumerWidget {
                       focusNode: userNameFocus,
                       autofocus: true,
                       decoration: InputDecoration(
-                          labelText: "Enter Full Name",
-                          hintText: 'Like. Samuel Eframe',
+                          labelText: "ስም ያስገቡ",
+                          hintText: 'ም.ሳ Samuel Eframe',
                           border: OutlineInputBorder(),
                           floatingLabelBehavior: FloatingLabelBehavior.auto),
                     ),
@@ -149,7 +140,7 @@ class Useraccount extends ConsumerWidget {
                       onChanged: (val) {},
                       validator: (val) {
                         if (val.isEmpty) {
-                          return "Please Enter Username";
+                          return "Username ያስገቡ";
                         } else if (userBox.containsKey(val)) {
                           return "Username " + val + " exist";
                         }
@@ -158,7 +149,7 @@ class Useraccount extends ConsumerWidget {
                       },
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                          labelText: "Enter Username",
+                          labelText: "Username ያስገቡ",
                           hintText: 'Like. Mom123',
                           border: OutlineInputBorder(),
                           floatingLabelBehavior: FloatingLabelBehavior.auto),
@@ -174,7 +165,7 @@ class Useraccount extends ConsumerWidget {
                       },
                       validator: (val) {
                         if (val.isEmpty) {
-                          return "Please Enter Password";
+                          return "Password ያስገቡ";
                         }
                         return null;
                       },
@@ -182,7 +173,7 @@ class Useraccount extends ConsumerWidget {
                       obscuringCharacter: '*',
                       textCapitalization: TextCapitalization.characters,
                       decoration: InputDecoration(
-                          labelText: "Enter Password",
+                          labelText: "Password ያስገቡ",
                           hintText: 'Like. abc#123',
                           suffixIcon: Icon(
                             Icons.remove_red_eye,
@@ -222,17 +213,18 @@ class Useraccount extends ConsumerWidget {
                             if (result == 'ok') {
                               userBox.put(userName, userList);
                               if (userBox.containsKey(userName)) {
+                                   Hive.box("setting").put("deviceUser", userName);
                                 Utility.successMessage(
-                                    context, "Successfuly Created");
+                                    context, "በትክክል ተመዝግቦል፡፡");
                                 // Utility.showSnakBar(context,
                                 //     "Successfuly Registred!", Colors.greenAccent);
                               }
                             } else if (result == "error") {
                               Utility.showDangerMessage(context,
-                                  "Please Change your user name and try again");
+                                  "እባክዎትን Username እና Password ይቀይሩ");
                             } else {
                               Utility.showDangerMessage(
-                                  context, "Please try again!");
+                                  context, "ድጋሚ ያስገቡ");
                             }
                           }
                         } else {
@@ -252,7 +244,7 @@ class Useraccount extends ConsumerWidget {
                           border: Border.all(
                               width: 1, color: Colors.deepPurpleAccent)),
                       child: Text(
-                        "List of registered Employee",
+                        "የተመዘገቡ ሰራተኞች ዝርዝር",
                         style: Style.style1,
                         textAlign: TextAlign.center,
                       )),
@@ -328,7 +320,11 @@ class Useraccount extends ConsumerWidget {
                                             style: Style.style1,
                                           ),
                                           Text(
-                                            "Username: ${userList[index]['userName']}",
+                                            "Username: ${userList[index]['usreName']}",
+                                            style: Style.style1,
+                                          ),
+                                           Text(
+                                            "Comapny ID ${userList[index]['orgId']}",
                                             style: Style.style1,
                                           ),
                                         ],

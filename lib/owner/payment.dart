@@ -6,7 +6,7 @@ import 'package:boticshop/owner/PaymentHistory.dart';
 import 'package:boticshop/owner/agreement.dart';
 import 'package:boticshop/owner/servicecharge.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive/hive.dart';
 
 class Payment extends StatefulWidget {
@@ -21,7 +21,7 @@ class _PaymentState extends State<Payment> {
     super.initState();
   }
   bool isSub = Hive.box("setting").get("isSubscribed");
-  BannerAd bannerAd = Ads().setAd3();
+  // BannerAd bannerAd = Ads().setAd3();
 
   @override
   Widget build(BuildContext context) {
@@ -40,29 +40,29 @@ class _PaymentState extends State<Payment> {
         //   )
         // ],
       ),
-      bottomNavigationBar: bannerAd != null && !isSub
-          ? Container(
-              height: bannerAd.size.height.toDouble(),
-              width: bannerAd.size.width.toDouble(),
-              child: AdWidget(
-                ad: bannerAd,
-              ),
-            )
-          : SizedBox(),
+      // bottomNavigationBar: bannerAd != null && !isSub
+      //     ? Container(
+      //         height: bannerAd.size.height.toDouble(),
+      //         width: bannerAd.size.width.toDouble(),
+      //         child: AdWidget(
+      //           ad: bannerAd,
+      //         ),
+      //       )
+      //     : SizedBox(),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: ListView(
           children: [
-             !isSub
-                ? Center(
-                    child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                      style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                    ),
-                  ))
-                : SizedBox(),
+            //  !isSub
+            //     ? Center(
+            //         child: Padding(
+            //         padding: const EdgeInsets.all(15.0),
+            //         child: Text(
+            //           "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+            //           style: TextStyle(fontSize: 10, color: Colors.redAccent),
+            //         ),
+            //       ))
+            //     : SizedBox(),
              !isSub? Card(
               elevation: 10,
               child: ListTile(

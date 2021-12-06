@@ -5,7 +5,7 @@ import 'package:boticshop/Utility/style.dart';
 import 'package:boticshop/ads/ads.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 // import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:hive/hive.dart';
 import 'package:screenshot/screenshot.dart';
@@ -28,8 +28,8 @@ class _ItemState extends State<Item> {
   var itemBox = Hive.box('item');
   var itemCata = Hive.box('categorie');
   var brandFocus = FocusNode();
-  BannerAd bannerAd = Ads().setAd2();
-  bool isSub = Hive.box("setting").get("isSubscribed");
+  // BannerAd bannerAd = Ads().setAd2();
+  // bool isSub = Hive.box("setting").get("isSubscribed");
   String initVal = 'Select';
   var qrStatus = 'On';
   bool isQR = true;
@@ -52,22 +52,22 @@ class _ItemState extends State<Item> {
           controller: screenshotController,
           child: ListView(
             children: [
-               !isSub
-                  ? Center(
-                      child: Text(
-                      "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                      style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                    ))
-                  : SizedBox(),
-              bannerAd != null && !isSub
-                  ? Container(
-                      height: bannerAd.size.height.toDouble(),
-                      width: bannerAd.size.width.toDouble(),
-                      child: AdWidget(
-                        ad: bannerAd,
-                      ),
-                    )
-                  : SizedBox(),
+              //  !isSub
+              //     ? Center(
+              //         child: Text(
+              //         "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+              //         style: TextStyle(fontSize: 10, color: Colors.redAccent),
+              //       ))
+              //     : SizedBox(),
+              // bannerAd != null && !isSub
+              //     ? Container(
+              //         height: bannerAd.size.height.toDouble(),
+              //         width: bannerAd.size.width.toDouble(),
+              //         child: AdWidget(
+              //           ad: bannerAd,
+              //         ),
+              //       )
+              //     : SizedBox(),
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -83,7 +83,7 @@ class _ItemState extends State<Item> {
               Row(
                 children: [
                   Spacer(),
-                  Text('Qr Mode'),
+                  Text('QR Mode'),
                   Switch(
                       value: isQR,
                       onChanged: (val) {

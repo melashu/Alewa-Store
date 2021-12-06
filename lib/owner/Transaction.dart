@@ -19,6 +19,8 @@ class Transaction extends StatefulWidget {
 class _TransactionState extends State<Transaction> {
   final formKey = GlobalKey<FormState>();
   Box catBox = Hive.box("categorie");
+  final pricesController = TextEditingController();
+  final orderController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -142,7 +144,7 @@ class _TransactionState extends State<Transaction> {
                                             "የሽያጭ ባለሙያው ስም ፡ ${snapshot.data[index]['salesPerson']}",
                                             style: Style.style1),
                                         Text(
-                                            "ልዮነት ፡ ${int.parse(snapshot.data[index]['soldPrices']) - int.parse(snapshot.data[index]['buyPrices'])} ብር",
+                                            "ትርፍ ፡ ${int.parse(snapshot.data[index]['soldPrices']) - (int.parse(snapshot.data[index]['buyPrices']) * int.parse(snapshot.data[index]['amount']))} ብር",
                                             style: Style.style1),
                                         OutlinedButton(
                                           onPressed: () async {
@@ -151,7 +153,7 @@ class _TransactionState extends State<Transaction> {
                                                 builder: (context) {
                                                   return AlertDialog(
                                                     content: Text(
-                                                        "  ${snapshot.data[index]['brandName']} Size ${snapshot.data[index]['size']} Do you want return back? "),
+                                                        "  ${snapshot.data[index]['brandName']} ቁጥር ${snapshot.data[index]['size']} መመለስ ይፈልጋሉ? "),
                                                     actions: [
                                                       OutlinedButton(
                                                         autofocus: true,
@@ -177,60 +179,133 @@ class _TransactionState extends State<Transaction> {
                                                         onPressed: () async {
                                                           Navigator.of(context)
                                                               .pop();
-                                                          var itemBox =
-                                                              Hive.box("item");
-
-                                                          var itemID = snapshot
-                                                                  .data[index]
-                                                              ['itemID'];
-                                                          var tID = snapshot
-                                                                  .data[index]
-                                                              ['tID'];
-
-                                                          // Map item = itemBox.get(
-                                                          //             itemID) ==
-                                                          //         null
-                                                          //     ? await Hive.lazyBox(
-                                                          //             "transaction")
-                                                          //         .get(tID)
-                                                          // :
-
-                                                          Map item = itemBox
-                                                              .get(itemID);
-                                                          item['deleteStatus'] =
-                                                              'no';
+/***
+ * This Dialog box is poped to accept 
+ * the amount of item user want to return 
+ */
                                                           var itemAmount =
                                                               snapshot
                                                                   .data[index]
                                                                       ['amount']
                                                                   .toString();
-
-                                                          item['amount'] = ((int
-                                                                  .parse(
-                                                                      itemAmount)) +
-                                                              (int.parse(item[
-                                                                      'amount']
-                                                                  .toString())));
-                                                          item[
-                                                              "amountSold"] = ((int
-                                                                  .parse(
-                                                                      itemAmount)) -
-                                                              (int.parse(item[
-                                                                      'amount']
-                                                                  .toString())));
-                                                          item['updateStatus'] =
-                                                              'yes';
-                                                          itemBox.put(
-                                                              itemID, item);
-                                                          await Hive.lazyBox(
-                                                                  "transaction")
-                                                              .delete(tID);
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) {
-                                                            return Transaction();
-                                                          }));
+                                                          showDialog(
+                                                              context: context,
+                                                              builder:
+                                                                  (context) {
+                                                                return AlertDialog(
+                                                                    title: Text(
+                                                                      "እባክዎትን መመለስ የሚፈልጉትን የእቃ ብዛት ያስገቡ",
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                    ),
+                                                                    content:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              8.0),
+                                                                      child:
+                                                                          SingleChildScrollView(
+                                                                        child:
+                                                                            Column(
+                                                                          // shrinkWrap: true,
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: TextFormField(
+                                                                                onChanged: (val) {},
+                                                                                validator: (val) {
+                                                                                  if (int.tryParse(val) == null || val.isEmpty) {
+                                                                                    return "እባክዎትን ትክክለኛ ቁጥር ያስገቡ";
+                                                                                  } else if (int.parse(itemAmount) < int.parse(val)) {
+                                                                                    return "ከተሽጠው በላይ ለመመለስ እየሙክሩ ነው";
+                                                                                  }
+                                                                                  return null;
+                                                                                },
+                                                                                controller: orderController..text = itemAmount,
+                                                                                decoration: InputDecoration(labelText: 'ብዛት', border: OutlineInputBorder()),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    // ),
+                                                                    actions: [
+                                                                      OutlinedButton(
+                                                                        onPressed:
+                                                                            () async {
+                                                                          if (int.tryParse(orderController.text) == null ||
+                                                                              orderController.text.isEmpty) {
+                                                                            Utility.showDangerMessage(context,
+                                                                                "እባክዎትን ትክክለኛ ቁጥር ያስገቡ");
+                                                                            // return "እባክዎትን ትክክለኛ ቁጥር ያስገቡ";
+                                                                          } else if (int.parse(itemAmount) <
+                                                                              int.parse(orderController.text)) {
+                                                                            Utility.showDangerMessage(context,
+                                                                                "ከተሽጠው በላይ ለመመለስ እየሙክሩ ነው");
+                                                                            // return "";
+                                                                          } else {
+                                                                            var itemBox =
+                                                                                Hive.box("item");
+                                                                            var itemID =
+                                                                                snapshot.data[index]['itemID'];
+                                                                            var tID =
+                                                                                snapshot.data[index]['tID'];
+                                                                            Map item =
+                                                                                itemBox.get(itemID);
+                                                                            item['deleteStatus'] =
+                                                                                'no';
+                                                                            item['amount'] =
+                                                                                ((int.parse(orderController.text)) + (int.parse(item['amount'].toString())));
+                                                                            item["amountSold"] =
+                                                                                ((int.parse(orderController.text)) - (int.parse(item['amount'].toString())));
+                                                                            item['updateStatus'] =
+                                                                                'yes';
+                                                                            itemBox.put(itemID,
+                                                                                item);
+                                                                            if (int.parse(itemAmount) - int.parse(orderController.text) ==
+                                                                                0) {
+                                                                              await Hive.lazyBox("transaction").delete(tID);
+                                                                            } else {
+                                                                              var thisTrasaction = snapshot.data[index];
+                                                                              thisTrasaction['amount'] = (int.parse(itemAmount) - int.parse(orderController.text)).toString();
+                                                                              await Hive.lazyBox("transaction").put(tID, thisTrasaction);
+                                                                            }
+//delete it if it is less than zero
+                                                                            Navigator.of(context).push(MaterialPageRoute(builder:
+                                                                                (context) {
+                                                                              return Transaction();
+                                                                            }));
+                                                                          }
+                                                                        },
+                                                                        autofocus:
+                                                                            true,
+                                                                        child:
+                                                                            Text(
+                                                                          'ይመለስ',
+                                                                          style: TextStyle(
+                                                                              color: Colors.white,
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                        style: Style
+                                                                            .smallButton,
+                                                                      ),
+                                                                      OutlinedButton(
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                        child: Text(
+                                                                            'Close',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                                                        style: Style
+                                                                            .smallButton,
+                                                                      )
+                                                                    ]);
+                                                              });
                                                         },
                                                         child: Text(
                                                           'Yes',
@@ -271,7 +346,7 @@ class _TransactionState extends State<Transaction> {
                                                 });
                                           },
                                           child: Text(
-                                            "Return Back",
+                                            "ይመልሱ",
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),

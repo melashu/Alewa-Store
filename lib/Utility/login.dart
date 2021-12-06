@@ -13,7 +13,7 @@ import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -29,16 +29,15 @@ class _MainLoginState extends State<Login> {
     buildSignature: 'Unknown',
   );
   var isAdsLoad = false;
-  BannerAd bannerAd=Ads().setAd1();
+  // BannerAd bannerAd = Ads().setAd1();
   final userNameController = TextEditingController();
   final passwordController = TextEditingController();
+  final passKey = GlobalKey();
   final companyIDController = TextEditingController();
   final userBox = Hive.box('useraccount');
 
   final formKey = GlobalKey<FormState>();
   @override
-
-
   @override
   void initState() {
     super.initState();
@@ -50,10 +49,10 @@ class _MainLoginState extends State<Login> {
         // print(Hive.box('setting').get("isWorkingLoc"));
         if (orgId != null) {
           OrgProfHttp().getSubStatus(orgId);
-          if (!Hive.box('setting').get("isWorkingLoc")) {
-            OrgProfHttp().updateLocation(orgId);
-            Hive.box('setting').put("isWorkingLoc", true);
-          }
+          // if (!Hive.box('setting').get("isWorkingLoc")) {
+          // OrgProfHttp().updateLocation(orgId);
+          //   Hive.box('setting').put("isWorkingLoc", true);
+          // }
           OrgProfHttp().getOrgBlockStatus(orgId);
         }
       }
@@ -64,9 +63,9 @@ class _MainLoginState extends State<Login> {
                                            * not thr user loged in with internet location sync status is 
                                            * seted to false   
                                            */
-    Hive.box("setting").get('isWorkingLoc') == null
-        ? Hive.box("setting").put("isWorkingLoc", false)
-        : Hive.box("setting").get('isWorkingLoc');
+    // Hive.box("setting").get('isWorkingLoc') == null
+    //     ? Hive.box("setting").put("isWorkingLoc", false)
+    //     : Hive.box("setting").get('isWorkingLoc');
 
     // bannerAd = BannerAd(
     //     adUnitId: "ca-app-pub-3940256099942544/6300978111",
@@ -104,7 +103,7 @@ class _MainLoginState extends State<Login> {
       color: Colors.amberAccent,
       child: ListView(
         children: [
-          // bannerAd!=null 
+          // bannerAd!=null
           //     ? Container(
           //         height: bannerAd.size.height.toDouble(),
           //         width: bannerAd.size.width.toDouble(),
@@ -214,6 +213,7 @@ class _MainLoginState extends State<Login> {
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: TextFormField(
                                 controller: passwordController,
+                                key: passKey,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (val) {
                                   // if (formKey.currentState.validate()) {}
@@ -230,10 +230,13 @@ class _MainLoginState extends State<Login> {
                                     labelText: "Enter Password",
                                     hintText: 'Like. abc#123',
                                     labelStyle: TextStyle(color: Colors.white),
-                                    suffixIcon: Icon(
-                                      Icons.remove_red_eye,
-                                      color: Colors.white,
-                                    ),
+                                    // suffixIcon: IconButton(
+                                    //   onPressed: (){
+                                    //     passKey.o
+                                    //   },
+                                    //   icon:Icon(Icons.remove_red_eye),
+                                    //   color: Colors.white,
+                                    // ),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
@@ -286,7 +289,8 @@ class _MainLoginState extends State<Login> {
                                               Hive.box("setting")
                                                   .put("orgId", orgId);
                                               userBox.put(userName, data);
-                                              OrgProfHttp().getSubStatus(orgId);
+                                              await OrgProfHttp().getSubStatus(orgId);
+                                              // OrgProfHttp().getSubStatus(orgId);
 
                                               Navigator.of(context).push(
                                                   MaterialPageRoute(
@@ -444,7 +448,8 @@ class _MainLoginState extends State<Login> {
                                         context, "ይቅርታ ወደ  መደውል አልቻልኩም፡፡");
                                   }
                                 },
-                                child: Text(" Alewa-Botic ለእኔ ሥራ ምን ይጠቅመኛል?",
+                                child: Text(
+                                    " Alewa-Boutique  ለእኔ ሥራ ምን ይጠቅመኛል?",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
@@ -464,7 +469,7 @@ class _MainLoginState extends State<Login> {
                               color: Colors.white,
                               thickness: 1,
                             ),
-                            Text(" Copywrite @Mount Technology Group 2021 ",
+                            Text(" Copyright @Mount Technology Group 2021 ",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -495,7 +500,7 @@ class _MainLoginState extends State<Login> {
                         height: 200,
                       ),
                       Text(
-                        "ይቅርታ፣ በጊዜዊነት Alewa-Botic ን ከመጠቀም ታገደዋል:: ለበለጠ መረጃ እባክዎትን የሚከተለውን ስልክ ተጭነው ይደውሉ፡፡ ",
+                        "ይቅርታ፣ በጊዜዊነት Alewa-Boutique  ን ከመጠቀም ታገደዋል:: ለበለጠ መረጃ እባክዎትን የሚከተለውን ስልክ ተጭነው ይደውሉ፡፡ ",
                         style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,

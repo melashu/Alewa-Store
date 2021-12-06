@@ -30,7 +30,17 @@ class Agre extends ConsumerWidget {
             height: 20,
           ),
           futureAgreement.when(data: (result) {
-            return ListView(shrinkWrap: true, 
+            return result['maintitle'].toString().isEmpty
+                ? Center(
+                    child: Container(
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.all(10),
+                    decoration: Utility.getBoxDecoration(),
+                    child: Text("ይቅርታ ለጊዜው ምንም አይነት መረጃ የለም",
+                        textAlign: TextAlign.center,
+                        style:
+                            TextStyle(fontSize: 25, color: Colors.redAccent)),
+                  )):ListView(shrinkWrap: true, 
             physics: ClampingScrollPhysics(),
             children: [
               Center(

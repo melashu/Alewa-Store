@@ -20,7 +20,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var itemBox = Hive.box("item");
   var transactionBox = Hive.lazyBox("transaction");
-  var flash = "Flash On";
+  var flash = "On";
   var back = "Back Camera";
   var pause = "Pause Scanning";
   bool isSuccess = false;
@@ -176,20 +176,20 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                ElevatedButton(
+                ElevatedButton.icon(
                   onPressed: () {
                     QRcontroler.toggleFlash();
                     if (isFlash(flash)) {
                       setState(() {
-                        flash = "Flash Off";
+                        flash = "Off";
                       });
                     } else {
                       setState(() {
-                        flash = "Flash On";
+                        flash = "On";
                       });
                     }
                   },
-                  child: Text(flash),
+                  label: Text("Flash"),
                   style: ElevatedButton.styleFrom(
                       elevation: 8,
                       textStyle:
@@ -198,13 +198,12 @@ class _HomeState extends State<Home> {
                       onPrimary: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
-                      )),
+                      )), icon: isFlash(flash)?Icon(Icons.flash_on): Icon(Icons.flash_off),
                 ),
                 Spacer(),
                 ElevatedButton(
                   onPressed: () {
                     QRcontroler.flipCamera();
-
                     if (isBack(back)) {
                       setState(() {
                         back = "Front Camera";
@@ -268,9 +267,9 @@ class _HomeState extends State<Home> {
                 } else if (Utility.isPaymentDone()) {
                   Utility.setServicePayment(context);
                 } else {
-                  if (!Hive.box('setting').get("isWorkingLoc")) {
-                    Utility.setCurrentWorkingLocation();
-                  }
+                  // if (!Hive.box('setting').get("isWorkingLoc")) {
+                    // Utility.setCurrentWorkingLocation();
+                  // }
                   var filtered = [];
                   if (val.isEmpty) {
                     filtered = [];
@@ -442,7 +441,7 @@ class _HomeState extends State<Home> {
                                                         amountOrder) {
                                                       Utility.showDialogBox(
                                                           context,
-                                                          "You have limited item",
+                                                          "ያለው እቃ ዝቅተኛ ነው",
                                                           Colors.redAccent);
                                                     } else {
                                                       var itemList =
@@ -501,7 +500,7 @@ class _HomeState extends State<Home> {
                                                                           .all(
                                                                               8),
                                                                   child: Text(
-                                                                    " ${itemList['brandName']} is sold::",
+                                                                    " ${itemList['brandName']} ሽያጭ ተካሄዶል፡፡::",
                                                                     style: Style
                                                                         .style1,
                                                                   ),
@@ -556,7 +555,7 @@ class _HomeState extends State<Home> {
                                         });
                                   },
                                   child: Text(
-                                    "Order",
+                                    "ሽጡ",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   style: OutlinedButton.styleFrom(
@@ -600,9 +599,9 @@ class _HomeState extends State<Home> {
         /**
          * This is to get the worring co-ordinates of the customer 
          */
-        if (!Hive.box('setting').get("isWorkingLoc")) {
-          Utility.setCurrentWorkingLocation();
-        }
+        // if (!Hive.box('setting').get("isWorkingLoc")) {
+        //   Utility.setCurrentWorkingLocation();
+        // }
 
         var random = Random();
         var tID = random.nextInt(1000000);
@@ -654,7 +653,7 @@ class _HomeState extends State<Home> {
   }
 
   bool isFlash(String flash) {
-    return flash == "Flash On";
+    return flash == "On";
   }
 
   bool isBack(String back) {

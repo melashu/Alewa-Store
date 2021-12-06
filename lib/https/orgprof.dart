@@ -12,7 +12,7 @@ class OrgProfHttp {
     return response.body;
   }
 
-  Future<void> getSubStatus(String orgId) async {
+  Future<bool> getSubStatus(String orgId) async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
     var response =
         await client.post(url, body: {"action": 'getsub', "orgId": orgId});
@@ -27,20 +27,21 @@ class OrgProfHttp {
       Hive.box("setting").put("isSubscribed", status);
       Hive.box("setting").put("subInfo", subInfo);
     }
+    return Hive.box("setting").get("isSubscribed");
   }
   //nat
-  Future<void> updateLocation(String orgId) async {
-    var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
-    var loc = Hive.box("location").get("location");
-    if (loc != null) {
-      var response = await client.post(url, body: loc);
-      print("response.body====="+response.body);
-      if(response.body=='ok'){
-            Hive.box('setting').put("isWorkingLoc", true);
-        
-      }
-    }
-  }
+  // Future<void> updateLocation(String orgId) async {
+  //   var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
+  //   var loc = Hive.box("location").get("location");
+  //   if (loc != null) {
+  //     var response = await client.post(url, body: loc);
+  //     // print("response.body====="+response.body);
+  //     if(response.body=='ok'){
+  //           Hive.box('setting').put("isWorkingLoc", true);
+
+  //     }
+  //   }
+  // }
 
   Future<String> checkVersion() async {
     var url = Uri.parse("https://keteraraw.com/ourbotic/index.php");
@@ -118,7 +119,6 @@ class OrgProfHttp {
     var result = jsonDecode(response.body) as List;
     var status = result[0]['isActive'] as String;
     Hive.box('setting').put('isActive', status);
-    // print("Newtoekr is");
   }
 
   Future<bool> request4PaymentConfirmation(String orgId, String monthID) async {

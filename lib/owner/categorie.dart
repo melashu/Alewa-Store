@@ -3,8 +3,9 @@ import 'dart:math';
 // import 'package:boticshop/Utility/Boxes.dart';
 import 'package:boticshop/ads/ads.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+// import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 class Addcategorie extends StatefulWidget {
   @override
   _AddcategorieState createState() => _AddcategorieState();
@@ -14,8 +15,8 @@ class _AddcategorieState extends State<Addcategorie> {
   final formKey = GlobalKey<FormState>();
   var cataController = TextEditingController();
   var cata4EditingController = TextEditingController();
-  BannerAd bannerAd = Ads().setAd2();
-  bool isSub = Hive.box("setting").get("isSubscribed");
+  // BannerAd bannerAd = Ads().setAd2();
+  // bool isSub = Hive.box("setting").get("isSubscribed");
   var dataRow = <DataRow>[];
 
   Box catBox = Hive.box("categorie");
@@ -35,25 +36,25 @@ class _AddcategorieState extends State<Addcategorie> {
       appBar: AppBar(
         title: Text("Add Item Categorie"),
       ),
-      bottomNavigationBar: bannerAd != null && !isSub
-            ? Container(
-                height: bannerAd.size.height.toDouble(),
-                width: bannerAd.size.width.toDouble(),
-                child: AdWidget(
-                  ad: bannerAd,
-                ),
-              )
-            : SizedBox(),
+      // bottomNavigationBar: bannerAd != null && !isSub
+      //       ? Container(
+      //           height: bannerAd.size.height.toDouble(),
+      //           width: bannerAd.size.width.toDouble(),
+      //           child: AdWidget(
+      //             ad: bannerAd,
+      //           ),
+      //         )
+      //       : SizedBox(),
       body: ListView(
         padding: EdgeInsets.all(15),
         children: [
-            !isSub
-              ? Center(
-                  child: Text(
-                  "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
-                  style: TextStyle(fontSize: 10, color: Colors.redAccent),
-                ))
-              : SizedBox(),
+          // !isSub
+          //   ? Center(
+          //       child: Text(
+          //       "በቆሚነት አባል ከሆኑ በሆላ ሁሉም ማስታውቂያዎች ከሲስተሙ ይጠፋሉ፡፡",
+          //       style: TextStyle(fontSize: 10, color: Colors.redAccent),
+          //     ))
+          //   : SizedBox(),
           SizedBox(
             height: 30,
           ),
@@ -70,7 +71,7 @@ class _AddcategorieState extends State<Addcategorie> {
                       autocorrect: true,
                       validator: (val) {
                         if (val.isEmpty) {
-                          return "እባክወትን የእቃውን አይነት ያስገቡ ";
+                          return "እባክወትን የእቃውን ምድብ ያስገቡ ";
                         }
                         return null;
                       },
@@ -87,6 +88,7 @@ class _AddcategorieState extends State<Addcategorie> {
                   OutlinedButton(
                     onPressed: () async {
                       if (formKey.currentState.validate()) {
+                        
                         var random = Random();
                         var randomID = random.nextInt(1000000);
                         Map catMap = {
@@ -96,7 +98,10 @@ class _AddcategorieState extends State<Addcategorie> {
                           // "deleteStatus": 'no'
                         };
                         // catMap.toString();
+                        cataController.text = "";
+
                         catBox.put("I$randomID", catMap);
+                        cataController.text = null;
                       }
                     },
                     child: Text("Save"),
@@ -187,14 +192,10 @@ class _AddcategorieState extends State<Addcategorie> {
 
   void showEditingBox(String row, String key) {
     showDialog(
-
         barrierDismissible: false,
         context: context,
-        
         builder: (context) {
-
           return AlertDialog(
-            
             title: Text("Editing $row"),
             actions: [
               TextButton(
@@ -232,14 +233,11 @@ class _AddcategorieState extends State<Addcategorie> {
             ],
             content: Form(
                 child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Catagorie Name',
-                      border: OutlineInputBorder()),
-                  controller: cata4EditingController..text = row,
-                )),
+              decoration: InputDecoration(
+                  labelText: 'Catagorie Name', border: OutlineInputBorder()),
+              controller: cata4EditingController..text = row,
+            )),
           );
-     
-     
         });
   }
 }

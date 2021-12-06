@@ -71,13 +71,12 @@ class Report {
     return itemLists;
   }
 
-  static double getDailyExpenessPerMonth() {
+ static double getDailyExpenessPerMonth() {
     var expenessBox = Hive.box("expenes");
     var valList = expenessBox.values;
     var totalExpeness = 0.0;
 
     for (var val in valList) {
-      // var items =  expenessBox.get(key);
       if (val['payementType'] == 'ወርሃዊ') {
         totalExpeness = totalExpeness + double.parse(val['paidAmount']);
       }
