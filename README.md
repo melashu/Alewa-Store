@@ -1,4 +1,4 @@
 # Alewa Store
 
-A new Flutter project.
+A store management app
 
